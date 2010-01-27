@@ -1,41 +1,37 @@
-MeioMask - Copyright (c) 2009 [Fábio Miranda Costa](http://meiocodigo.com/)
+Meio.Autocomplete - Copyright (c) 2010 [Fábio Miranda Costa](http://meiocodigo.com/)
 ========================================================================
 
-MeioMask - a mootools plugin for masking text inputs.
+Meio.Autocomplete - a mootools plugin for creating autocomplete fields.
 
-![Screenshot](http://github.com/fabiomcosta/mootools-meio-mask/raw/master/Assets/image_forge.png)
+![Screenshot](http://github.com/fabiomcosta/mootools-meio-autocomplete/raw/master/Assets/image_forge.png)
 
 How to use
 ----------
+	
+soon.
+	
+	#HTML
 	<html>
 		<head>
-			<!--include mootools library and meioMask plugin -->
-			<script type="text/javascript" src="mootools-core-1.2.4.js" charset="utf-8"></script>
-			<!-- Just Element.Form is needed -->
-			<script type="text/javascript" src="mootools-more-1.2.4.2.js" charset="utf-8"></script>
 		</head>
 	
 		<body>
-			<form>
-				<label for="cpf">Time Mask:</label>
-				<input type="text" name="time" data-meiomask="fixed.time" />
-			</form>
-
-			<script type="text/javascript" >
-				$$('input').each(function(input){
-					input.meiomask(input.get('data-meiomask'));
-				});
-			</script>
 		</body>
 	</html>
 
 Demos
 -----
 
+soon.
+
 
 Credits
 -------
 
+Inspiration and some ideas came from:
+
+* Digitarald's Autocompleter (http://digitarald.de/project/autocompleter/);
+* jQuery's Autocomplete (http://docs.jquery.com/Plugins/Autocomplete).
 
 License
 -------
