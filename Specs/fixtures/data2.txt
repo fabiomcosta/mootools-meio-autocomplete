@@ -1,0 +1,18 @@
+[
+    {"value": 0, "text": "ajax"},
+    {"value": 1, "text": "sim ajax"},
+    {"value": 2, "text": "mais um ajax"},
+    {"value": 3, "text": "aaaaa"},
+    {"value": 4, "text": "aff"},
+    {"value": 5, "text": "alguma coisa"},
+    {"value": 6, "text": "something"},
+    {"value": 7, "text": "omg"},
+    {"value": 8, "text": "testing"},
+    {"value": 9, "text": "so what?"},
+    {"value": 10, "text": "other chars"},
+    {"value": 11, "text": "á latin é"},
+    {"value": 12, "text": "hmmm"},
+    {"value": 13, "text": "hmmmmmmm"},
+    {"value": 14, "text": "ok"},
+    {"value": 15, "text": "it\" fine"}
+]

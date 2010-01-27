@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title></title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		
+		<script src="../../Assets/mootools-1.2.4-core.js" type="text/javascript"></script>
+		<script src="../../Assets/mootools-1.2.4.2-more.js" type="text/javascript"></script>
+		<script src="../../Source/Meio.Autocomplete.js" type="text/javascript"></script>
+
+	</head>
+	<body>
+		<form id="form" action="" method="get" accept-charset="utf-8">
+			<fieldset>
+				<input id="input_text" name="input_text" type="text" value="" />
+				<input type="submit" value="Send" />
+			</fieldset>
+		</form>
+		
+		<script type="text/javascript" charset="utf-8">
+			var inputText = $('input_text');
+			inputText.addEvent('changed', function(){
+				inputText.set('value', 'changed');
+			});
+		</script>
+		
+	</body>
+</html>

@@ -1,0 +1,64 @@
+TODO:
+
+* FIXED BUG, sometimes you cant focus an option using the keyboard
+* FIXED cache option should be an integer that determines the number of url+inputedText to cache
+* FIXED make it auto-scrollable
+* FIXED improve code for determining the height of a li.
+* FIXED make it work with a json formatted response
+* FIXED delay should be 'cleared' when you input another char
+* FIXED BUG special chars (like 'á') don't fire the update function because it doenst fire the keydown nor keypress event.
+  Maybe on a Portuguese layout it does but not on an english one. Use keyup to fix this issue.
+* FIXED apply a class when the json is loading and remove it when its done
+* FIXED the URL is being evaluated twice as necessary, avoid this
+* FIXED if the input element is not focused the options should not show
+* FIXED BUG if I select the text from the input and press the right or left arrow it will understand that theres no value at the input.
+  Fix this at the getElementKeyDownValue function.
+* FIXED should have a reset function to reset everything like the cached url and the cache (flushCache)
+* FIXED should have a function to remove the events that are applied to it
+* FIXED remove listNumber if its just needed for toggleVisibility
+* FIXED automatically take care of special chars that are equivalent to ascII chars. Like it you input 'á', words with 'a' should appear too.
+  It will be optional. (This is something that should be done into the filter function. Just make some examples with the diff cases).
+* INVALID (if you dont need a filter just set it as a $lambda(true) function) check the need to filter even when the data is a request data
+* FEATURE you can pass an element as an extra parameter (extraParam) as long as it has a name and a value property (input elements for example).
+* FIXED option to select on tab key pressed
+* FIXED (just set this into the onSelectItem event) should synchronize its value with anything (hidden input for example).
+* FEATURE create pre-defined filters to make it easyer for users to start using it ('contains' and 'startswith')
+* FIXED BUG when you tab elements with autocomplete quickly it doesnt the list doenst gets hidden.
+* FIXED prepare list when you paste a text into the input (paste event), Paste event should be detected
+* FIXED pay attention, it should synchronize the value before the form is submitted, no matter what.
+
+* fix the problem on select overlay (ie)
+
+* allow effects to be used with the list
+* the destroy method should remove everything (dom list element) in case you remove all instances of autocomplete from the page
+* make it scalable. It means that it should add minimun events and DOM els if i add more than one Autocomplete on the same page.
+  Things to consider: keyPressControl, cache, list DOM element and its events.
+* make it possible to enter multiple values
+
+* adapt it in a way that it could be used without being just an autocomplete. It could be used to create a dynamic list for a search for example.
+  Would be awezomm!
+* test if the browser has max-height, if it does use it instead of calculating it.
+
+Miscelaneous thoughts:
+
+initial synchronize
+---------------------
+With 'initial synchronize' i mean that the sync fields and the autocomplete field would have theyr values synced when the page loads.
+
+I was trying to make the initial synchronize feature but i think its costly and error-prone enought to be discarded. It should be done server-side.
+
+Credits:
+Digitarald's Autocompleter (http://digitarald.de/project/autocompleter/) and jQuery's Autocomplete (http://docs.jquery.com/Plugins/Autocomplete)
+
+Meio.Autocomplete plugin main goals:
+
+* Should be able to synchronize safely any value with something, like the value of a hidden input with a passed value;
+
+It should be able to get the String value corresponding to this dependent value when it is still setted at the initialization,
+Like when your on a edit page (if the current text input is empty).
+
+* Should be capable of using ajax (by receiving an string that will eval to an array) or using a local passed array;
+* Should handle safely mouse and keyboard events;
+* Should have easily customizable styles;
+* Should be easy to make the results dependent on another input;
+* Should be optimized to have more than one instance on one page.

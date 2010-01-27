@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ko">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8" />
+		<title>List Bench</title>
+		<script src="JSLitmus.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../Assets/mootools-1.2.4-core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../Assets/mootools-1.2.4.2-more.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script type="text/javascript" charset="utf-8">
+		
+			var fixture = [];
+			var lis = [];
+			var ul = new Element('ul');
+			
+			for(var i = 200; i--;){
+				fixture.push('something');
+				lis.push(new Element('li'));
+			}
+			
+			var renderItems1 = function(fixture){
+				for(var i = 0, li; li = lis[i++];){
+					li.innerHTML = fixture[i];
+				}
+			};
+			
+			var renderRow2 = function(text, i){
+				return '<li class="' + (i%2 ? 'event' : 'odd') + '">' + text + '</li>';
+			};
+			
+			var renderItems2 = function(fixture){
+				var txt = [];
+				for(var i = 0, text; text = fixture[i++];){
+					txt.push(renderRow2(text, i));
+				}
+				ul.set('html', txt.join(''));
+			};
+			
+			var renderRow3 = function(text, i, pushOnMe){
+				pushOnMe.push('<li class="', (i%2 ? 'event' : 'odd'), '">', text, '</li>');
+			};
+			
+			var renderItems3 = function(fixture){
+				var pushOnMe = [];
+				for(var i = 0, text; text = fixture[i++];){
+					renderRow3(text, i, pushOnMe);
+				}
+				ul.set('html', pushOnMe.join(''));
+			};
+			
+			JSLitmus.test('renderItems1', function(count) {
+				while (count--){
+					renderItems1(fixture);
+				}
+			});
+			
+			JSLitmus.test('renderItems2', function(count) {
+				while (count--){
+					renderItems2(fixture);
+				}
+			});
+			
+			JSLitmus.test('renderItems3', function(count) {
+				while (count--){
+					renderItems2(fixture);
+				}
+			});
+			
+		</script>
+	</head>
+	<body>
+	
+	</body>
+</html>

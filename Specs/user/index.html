@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Meio Plugin Specs</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		
+		<script src="../../Assets/mootools-1.2.4-core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../Assets/mootools-1.2.4.2-more.js" type="text/javascript" charset="utf-8"></script>
+		<!--<script src="../../../../assets/firebug/firebug-lite-compressed.js" type="text/javascript" charset="utf-8"></script>-->
+		<script src="../../../../assets/js-spec/Builder.js" type="text/javascript" charset="utf-8"></script>
+		
+		<link href="../../../../assets/firebug/firebug-lite.css" rel="stylesheet" type="text/css" />
+		
+		<script type="text/javascript" charset="utf-8">
+			Builder.build('../../', {
+				Source: [
+					'Event.Changed',
+					'Meio.Autocomplete'
+				]
+			});
+		</script>
+		
+		<style>
+			*{
+				margin:0;
+				padding:0;
+			}
+			#some{
+				border: 10px solid #000;
+			}
+			.ma-container{
+				color: #eee;
+				border: 5px solid #226622;
+				background-color: #228822;
+				position: absolute;
+				visibility: hidden;
+			}
+			.ma-container ul{
+				margin: 0;
+				padding: 0;
+				list-style: none;
+			}
+			.ma-container li{
+				padding: 2px 5px;
+				line-height: 16px;
+				cursor: pointer;
+			}
+			.ma-container .ma-hover{
+				background: #223322;
+			}
+			.ma-loading{
+				background: yellow !important;
+			}
+			.ma-selected{
+				background: green !important;
+			}
+			.ma-even{
+				background: #227722;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<form method="post" action="">
+			<fieldset>
+				<input type="text" id="some" name="some" value="" />
+				<input type="text" id="some2" name="some2" value="" />
+				<input type="text" id="some3" name="some3" value="" />
+				<input type="text" id="some4" name="some4" value="" />
+				<input type="text" id="some5" name="some5" value="" />
+			</fieldset>
+			
+			<a title="Test refreshAll" href="#" onclick="instance.refreshAll(); return false;">Test refreshAll</a>
+		</form>
+		
+		<script type="text/javascript">
+			//var data = '../../Specs/fixtures/data.txt';
+			var data = '../../Specs/fixtures/data2.txt';
+			var instance = new Meio.Autocomplete($('some'), data, {
+				selectOnTab: false,
+				filter: function(text, data){
+					return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true; // 'startswith' filter
+					//return text ? data.contains(text) : true; // 'contains' filter
+					//return text ? data.contains(text.standardize()) : true; // 'standardize-contains' filter, shouldnt be included to avoid more dependencie, but will be left as example of custom filter
+				},
+				formatMatch: function(text, data, i){
+					return data.text;
+				},
+				formatItem: function(text, data){
+					return text ? data.text.replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data.text;
+					//return text ? data.text.replace(new RegExp('(' + text.standardize().escapeRegExp() + '|' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data;
+				},
+				listOptions: {
+					onSelectItem: function(data){
+						this.element.addClass(this.options.classes.hasItemSelected);
+						[$('some2')].each(function(el){
+							el.set('value', data.value);
+						}, this);
+					}
+				},
+				requestOptions: {
+					extraParams: [
+						{name: $('some3').get('name'), value: function(){ return $('some3').get('value') }},
+						$('some4')
+					]
+				}
+			});
+			
+			var data2 = ['aff2', 'alguma coisa2', 'something2', 'omg2', 'testing2', 'so what?2', 'other chars2', 'á latin é2', 'hmmm2', 'hmmmmmm2', 'ok2', 'it\'s fine2'];
+			var instance2 = new Meio.Autocomplete($('some5'), data2);
+		</script>
+	</body>
+</html>

@@ -1,0 +1,1 @@
+["ajax", "sim ajax", "mais um ajax", "aaaaa", "aff", "alguma coisa", "something", "omg", "testing", "so what?", "other chars", "á latin é", "hmmm", "hmmmmmm", "ok", "it\"s fine"]
