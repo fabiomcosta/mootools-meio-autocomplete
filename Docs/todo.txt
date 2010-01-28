@@ -26,12 +26,11 @@ TODO:
 * FIXED BUG when you tab elements with autocomplete quickly it doesnt the list doenst gets hidden.
 * FIXED prepare list when you paste a text into the input (paste event), Paste event should be detected
 * FIXED pay attention, it should synchronize the value before the form is submitted, no matter what.
+* INVALID (the programer will have to do it on server-side. I won't make an ajax request just for this little thing, of course ill include examples talking about this) analyze what to do in cases that the input comes with value setted. What should it do? I need to know if the value is setted or not.
 
-* analyze what to do in cases that the input comes with value setted. What should it do? I need to know if the value is setted or not.
+* include examples talking about the value synchronization (a very often case).
 * test the various width options, including if you wich to make it scrollable horizontally.
 * fix the problem on select overlay (ie)
-
-
 
 * allow effects to be used with the list
 * the destroy method should remove everything (dom list element) in case you remove all instances of autocomplete from the page
