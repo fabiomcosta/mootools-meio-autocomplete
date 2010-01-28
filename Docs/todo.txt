@@ -27,7 +27,11 @@ TODO:
 * FIXED prepare list when you paste a text into the input (paste event), Paste event should be detected
 * FIXED pay attention, it should synchronize the value before the form is submitted, no matter what.
 
+* analyze what to do in cases that the input comes with value setted. What should it do? I need to know if the value is setted or not.
+* test the various width options, including if you wich to make it scrollable horizontally.
 * fix the problem on select overlay (ie)
+
+
 
 * allow effects to be used with the list
 * the destroy method should remove everything (dom list element) in case you remove all instances of autocomplete from the page

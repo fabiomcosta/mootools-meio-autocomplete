@@ -40,7 +40,7 @@ Element.Events.paste = {
 	
 	var $ = global.document.id || global.$;
 	
-	var keyEventThatRepeats = (Browser.Engine.gecko || Browser.Engine.opera) ? 'keypress' : 'keydown';
+	var keyEventThatRepeats = (Browser.Engine.gecko || Browser.Engine.presto) ? 'keypress' : 'keydown';
 	
 	var keysThatDontChangeValueOnKeyUp = {
 		16: 1,  // shift
@@ -88,9 +88,7 @@ Element.Events.paste = {
 			
 			this.refreshCache();
 			this.handleData(data);
-			
-			this.bound = {};
-			this.addEventsToElement({'paste': 0, 'focus': 0, 'blur': 0, 'keyup': 0, 'keydown': keyEventThatRepeats});
+			this.attach();
 			
 			this.addEvent('dataReady', this.dataReady.bind(this));
 			
@@ -107,23 +105,29 @@ Element.Events.paste = {
 			this.data.addEvent('ready', this.dataReady.bind(this));
 		},
 		
-		keydown: function(e){
-			keyPressControl[e.key] = true;
-			this.inputedText = this.getElementKeyDownValue(e);
-			switch(e.key){
+		keydown: function(e, delay){
+			var e_key = e.key;
+			if(!delay){
+				if(e_key == 'up' || e_key == 'down' || e_key == 'enter') e.preventDefault();
+				// this let me get the value of the input on keydown and keypress
+				$clear(this.keydownTimer);
+				this.keydownTimer = this.keydown.delay(1, this, [e, true]);
+				return true;
+			}
+			keyPressControl[e_key] = true;
+			this.inputedText = this.element.get('value');
+			switch(e_key){
 			case 'left': case 'right':
 				break; // do nothing cause they dont change the input's value
 			case 'up': case 'down':
-				e.preventDefault();
-				this.focusItem(e.key);
+				this.focusItem(e_key);
 				break;
 			case 'enter':
-				e.preventDefault();
 				this.list.setInputValue();
 				break;
 			case 'tab':
 				if(this.options.selectOnTab) this.list.setInputValue();
-				keyPressControl['tab'] = false; // tab blurs the input so the keyup event wont happen
+				keyPressControl[e_key] = false; // tab blurs the input so the keyup event wont happen
 				break;
 			case 'esc':
 				this.list.hide();
@@ -150,7 +154,7 @@ Element.Events.paste = {
 			return this.paste();
 		},
 		
-		blur: function(){
+		blur: function(e){
 			this.list.active = false;
 			this.list.hide();
 			return true;
@@ -189,42 +193,25 @@ Element.Events.paste = {
 			}
 		},
 		
-		getElementKeyDownValue: function(e){
-			var charCode = e.event.charCode;
-			var inputedChar = (charCode && !(e.meta || e.control)) ? String.fromCharCode(charCode) : '';
-			var value = this.element.get('value'),
-				range = this.element.getSelectedRange(),
-				start = range.start,
-				end = range.end;
-			if(start == end){
-				var keyCode = e.event.keyCode,
-					delKey = (keyCode == 46),
-					bksKey = (keyCode == 8 || (Browser.Platform.ipod && keyCode == 127));
-				if(delKey){
-					start = range.start;
-					end = range.end + 1;
-				}else if(bksKey){
-					start = range.start - 1;
-					end = range.end;
-				}
-			}
-			return value.substring(0, start) + inputedChar + value.substring(end);
-		},
-		
-		addEventsToElement: function(events){
+		attach: function(){
+			this.bound = {'paste': 0, 'focus': 0, 'blur': 0, 'keyup': 0, 'keydown': keyEventThatRepeats};
 			var e;
-			for(fnName in events){
-				e = events[fnName];
+			for(fnName in this.bound){
+				e = this.bound[fnName];
 				if(!e) e = fnName;
 				this.bound[e] = this[fnName].bindWithEvent(this);
 				this.element.addEvent(e, this.bound[e]);
 			}
 		},
 		
-		destroy: function(){
+		detach: function(){
 			for(e in this.bound){
 				this.element.removeEvent(e, this.bound[e]);
 			}
+		},
+		
+		destroy: function(){
+			this.detach();
 			this.element.removeAttribute('autocomplete');
 		},
 		
@@ -322,8 +309,7 @@ Element.Events.paste = {
 			this.focusedItem = null;
 			this.fireEvent('unselectItem');
 			this.list.set('html', html);
-			if(!this.options.scrollItem) return;
-			this.applyMaxHeight();
+			if(this.options.scrollItem) this.applyMaxHeight();
 		},
 		
 		applyMaxHeight: function(){
@@ -364,6 +350,7 @@ Element.Events.paste = {
 		},
 		
 		mousedown: function(e){
+			e.preventDefault();
 			this.focusedItem = this.getItemFromEvent(e);
 			this.setInputValue();
 			this.focusedItem.removeClass(this.options.classes.hover);
