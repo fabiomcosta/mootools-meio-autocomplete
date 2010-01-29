@@ -68,6 +68,7 @@
 				<input type="text" id="some3" name="some3" value="" />
 				<input type="text" id="some4" name="some4" value="" />
 				<input type="text" id="some5" name="some5" value="" />
+				<input type="submit" name="some_button" id="some_button" value="" />
 			</fieldset>
 			
 			<a title="Test refreshAll" href="#" onclick="instance.refreshAll(); return false;">Test refreshAll</a>
@@ -95,6 +96,12 @@
 						this.element.addClass(this.options.classes.hasItemSelected);
 						[$('some2')].each(function(el){
 							el.set('value', data.value);
+						}, this);
+					},
+					onUnselectItem: function(data){
+						this.element.removeClass(this.options.classes.hasItemSelected);
+						[$('some2')].each(function(el){
+							el.set('value', '');
 						}, this);
 					}
 				},

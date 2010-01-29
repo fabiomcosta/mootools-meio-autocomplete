@@ -1,7 +1,7 @@
 [
     {"value": 0, "text": "ajax"},
     {"value": 1, "text": "sim ajax"},
-    {"value": 2, "text": "mais um ajax"},
+    {"value": 2, "text": "a very long text so we can test the width property properly"},
     {"value": 3, "text": "aaaaa"},
     {"value": 4, "text": "aff"},
     {"value": 5, "text": "alguma coisa"},

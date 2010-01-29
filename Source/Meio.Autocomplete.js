@@ -17,20 +17,25 @@ provides: [Meio.Autocomplete]
 ...
 */
 
-
-// thanks Jan Kassens
-$extend(Element.NativeEvents, {
-	'paste': 2, 'input': 2
-});
-Element.Events.paste = {
-	base : (Browser.Engine.presto || (Browser.Engine.gecko && Browser.Engine.version < 19))? 'input': 'paste',
-	condition: function(e){
-		this.fireEvent('paste', e, 1);
-		return false;
-	}
-};
-
 (function(global){
+
+	// thanks Jan Kassens
+	$extend(Element.NativeEvents, {
+		'paste': 2, 'input': 2
+	});
+	Element.Events.paste = {
+		base : (Browser.Engine.presto || (Browser.Engine.gecko && Browser.Engine.version < 19)) ? 'input' : 'paste',
+		condition: function(e){
+			this.fireEvent('paste', e, 1);
+			return false;
+		}
+	};
+	
+	// the key event that repeats
+	Element.Events.keyrepeat = {
+		base : (Browser.Engine.gecko || Browser.Engine.presto) ? 'keypress' : 'keydown',
+		condition: $lambda(true)
+	};
 
 	var Meio = {};
 	
@@ -40,17 +45,17 @@ Element.Events.paste = {
 	
 	var $ = global.document.id || global.$;
 	
-	var keyEventThatRepeats = (Browser.Engine.gecko || Browser.Engine.presto) ? 'keypress' : 'keydown';
-	
 	var keysThatDontChangeValueOnKeyUp = {
-		16: 1,  // shift
-		17: 1,  // control
-		18: 1,  // alt
-		224: 1, // command (meta)
-		37: 1,  // left
-		38: 1,  // up
-		39: 1,  // right
-		40: 1   // down
+		9:   1,  // tab
+		16:  1,  // shift
+		17:  1,  // control
+		18:  1,  // alt
+		224: 1,  // command (meta onkeypress)
+		91:  1,  // command (meta onkeydown)
+		37:  1,  // left
+		38:  1,  // up
+		39:  1,  // right
+		40:  1   // down
 	}; 
 	
 	Meio.Autocomplete = new Class({
@@ -72,6 +77,7 @@ Element.Events.paste = {
 				return text ? data.replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data;
 			},
 			
+			listClass: null,
 			requestOptions: {}, // see request options
 			listOptions: {} // see List options
 			
@@ -83,8 +89,9 @@ Element.Events.paste = {
 			this.setOptions(options);
 			
 			this.element.set('autocomplete', 'off');
+			this.options.listClass = this.options.listClass || Meio.Autocomplete.List;
 			
-			this.list = new Meio.Autocomplete.List(this.element, this.options.listOptions);
+			this.list = new this.options.listClass(this.element, this.options.listOptions);
 			
 			this.refreshCache();
 			this.handleData(data);
@@ -105,20 +112,20 @@ Element.Events.paste = {
 			this.data.addEvent('ready', this.dataReady.bind(this));
 		},
 		
-		keydown: function(e, delay){
+		keyrepeat: function(e){
+			this.list.active = 1;
 			var e_key = e.key;
-			if(!delay){
-				if(e_key == 'up' || e_key == 'down' || e_key == 'enter') e.preventDefault();
-				// this let me get the value of the input on keydown and keypress
-				$clear(this.keydownTimer);
-				this.keydownTimer = this.keydown.delay(1, this, [e, true]);
-				return true;
-			}
+			if(e_key == 'up' || e_key == 'down' || (e_key == 'enter' && this.list.showing)) e.preventDefault();
+			// this let me get the value of the input on keydown and keypress
+			$clear(this.keyrepeatTimer);
+			this.keyrepeatTimer = this._keyrepeat.delay(1, this, [e, true]);
+			return true;
+		},
+		
+		_keyrepeat: function(e, delay){
+			var e_key = e.key;
 			keyPressControl[e_key] = true;
-			this.inputedText = this.element.get('value');
 			switch(e_key){
-			case 'left': case 'right':
-				break; // do nothing cause they dont change the input's value
 			case 'up': case 'down':
 				this.focusItem(e_key);
 				break;
@@ -127,7 +134,7 @@ Element.Events.paste = {
 				break;
 			case 'tab':
 				if(this.options.selectOnTab) this.list.setInputValue();
-				keyPressControl[e_key] = false; // tab blurs the input so the keyup event wont happen
+				keyPressControl[e_key] = false; // tab blurs the input so the keyup event wont happen at the same input you made a keydown
 				break;
 			case 'esc':
 				this.list.hide();
@@ -141,7 +148,6 @@ Element.Events.paste = {
 		keyup: function(e){
 			if(!keysThatDontChangeValueOnKeyUp[e.code]){
 				if(!keyPressControl[e.key]){
-					this.inputedText = this.element.get('value');
 					this.setupList();
 				}
 				keyPressControl[e.key] = false;
@@ -150,29 +156,38 @@ Element.Events.paste = {
 		},
 
 		focus: function(){
-			this.list.active = true;
-			return this.paste();
+			this.list.active++;
+		},
+		
+		click: function(){
+			if(this.list.active++ > 1 && !this.list.showing){
+				this.setupList();
+			}
 		},
 		
 		blur: function(e){
-			this.list.active = false;
+			this.list.active = 0;
 			this.list.hide();
+			if(this.list.shouldNotBlur){
+				this.element.setCaretPosition('end');
+				this.list.shouldNotBlur = false;
+			}
 			return true;
 		},
 		
 		paste: function(){
-			this.inputedText = this.element.get('value');
-			this.setupList();
-			return true;
+			return this.setupList();
 		},
 		
 		setupList: function(){
-			if(this.inputedText.length >= this.options.minChars){
+			this.inputedText = this.element.get('value');
+			if(this.inputedText.length >= this.options.minChars && this.inputedText !== this.list.oldInputedText){
 				$clear(this.prepareTimer);
 				this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, this.inputedText);
 			}else{
 				this.list.hide();
 			}
+			return true;
 		},
 		
 		dataReady: function(){
@@ -194,14 +209,11 @@ Element.Events.paste = {
 		},
 		
 		attach: function(){
-			this.bound = {'paste': 0, 'focus': 0, 'blur': 0, 'keyup': 0, 'keydown': keyEventThatRepeats};
-			var e;
-			for(fnName in this.bound){
-				e = this.bound[fnName];
-				if(!e) e = fnName;
-				this.bound[e] = this[fnName].bindWithEvent(this);
+			this.bound = {};
+			['paste', 'focus', 'blur', 'click', 'keyup', 'keyrepeat'].each(function(e){
+				this.bound[e] = this[e].bindWithEvent(this);
 				this.element.addEvent(e, this.bound[e]);
-			}
+			}, this);
 		},
 		
 		detach: function(){
@@ -274,6 +286,7 @@ Element.Events.paste = {
 		initialize: function(element, options){
 			this.element = element;
 			this.focusedItem = null;
+			this.active = 0;
 			this.setOptions(options);
 			this.render();
 		},
@@ -281,10 +294,11 @@ Element.Events.paste = {
 		update: function(ac){
 			var text = ac.inputedText, data = ac.data, options = ac.options;
 			var filter = Meio.Autocomplete.Filters.get(options.filter), formatMatch = options.formatMatch, formatItem = options.formatItem; 
-			var cacheKey = data.getKey(), cached = cache.get(cacheKey), html;
+			var cacheKey = data.getKey(), cached = cache.get(cacheKey), html, len;
 			if(cached){
 				html = cached.html;
 				this.itemsData = cached.data;
+				len = cached.length;
 			}else{
 				data = data.get();
 				var itemsHtml = [], itemsData = [], classes = this.options.classes;
@@ -301,11 +315,11 @@ Element.Events.paste = {
 						n++;
 					}
 				}
+				len = n;
 				html = itemsHtml.join('');
 				this.itemsData = itemsData;
-				cache.set(cacheKey, {html: html, data: itemsData});
+				cache.set(cacheKey, {html: html, data: itemsData, length: len});
 			}
-
 			this.focusedItem = null;
 			this.fireEvent('unselectItem');
 			this.list.set('html', html);
@@ -317,7 +331,7 @@ Element.Events.paste = {
 			var node = listChildren[this.options.scrollItem - 1] || (listChildren.length ? listChildren[listChildren.length - 1] : null);
 			if(!node) return;
 			this.container.setStyles({
-				'height': node.getCoordinates(this.list).bottom,
+				'height': $(node).getCoordinates(this.list).bottom,
 				'overflow-x': 'auto',
 				'overflow-y': 'hidden'
 			});
@@ -354,12 +368,14 @@ Element.Events.paste = {
 			this.focusedItem = this.getItemFromEvent(e);
 			this.setInputValue();
 			this.focusedItem.removeClass(this.options.classes.hover);
+			this.shouldNotBlur = true;
 		},
 		
 		setInputValue: function(){
 			if(this.focusedItem){
 				var text = this.focusedItem.get('title');
 				this.element.set('value', text);
+				this.oldInputedText = text;
 				this.fireEvent('selectItem', [this.itemsData[this.focusedItem.get('data-index')], text]);
 			}
 			this.hide();
@@ -402,7 +418,7 @@ Element.Events.paste = {
 		getItemFromEvent: function(e){
 			var target = e.target;
 			while(target.tagName != 'LI') target = target.parentNode;
-			return target;
+			return $(target);
 		},
 		
 		positionateNextToElement: function(){
@@ -425,15 +441,9 @@ Element.Events.paste = {
 			this.showing = true;
 		},
 		
-		hide: function(delay){
-			delay = delay || 0;
-			$clear(this.hideTimer);
-			if(delay){
-				this.hideTimer = this.hide.delay(delay, this);
-			}else{
-				this.showing = false;
-				this.container.setStyle('visibility', 'hidden');
-			}
+		hide: function(){
+			this.showing = false;
+			this.container.setStyle('visibility', 'hidden');
 		},
 		
 		toElement: function(){
