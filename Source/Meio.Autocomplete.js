@@ -167,10 +167,12 @@ provides: [Meio.Autocomplete]
 		
 		blur: function(e){
 			this.list.active = 0;
-			this.list.hide();
 			if(this.list.shouldNotBlur){
 				this.element.setCaretPosition('end');
 				this.list.shouldNotBlur = false;
+				if(this.list.focusedItem) this.list.hide();
+			}else{
+				this.list.hide();
 			}
 			return true;
 		},
@@ -271,7 +273,7 @@ provides: [Meio.Autocomplete]
 				this.element.removeClass(this.options.classes.hasItemSelected);
 			},
 			
-			width: 'auto', // 'input' for the same width as the input's
+			width: 'auto', // 'input' for the same width as the input
 			scrollItem: 10,
 			classes: {
 				container: 'ma-container',
@@ -294,11 +296,10 @@ provides: [Meio.Autocomplete]
 		update: function(ac){
 			var text = ac.inputedText, data = ac.data, options = ac.options;
 			var filter = Meio.Autocomplete.Filters.get(options.filter), formatMatch = options.formatMatch, formatItem = options.formatItem; 
-			var cacheKey = data.getKey(), cached = cache.get(cacheKey), html, len;
+			var cacheKey = data.getKey(), cached = cache.get(cacheKey), html;
 			if(cached){
 				html = cached.html;
 				this.itemsData = cached.data;
-				len = cached.length;
 			}else{
 				data = data.get();
 				var itemsHtml = [], itemsData = [], classes = this.options.classes;
@@ -318,7 +319,7 @@ provides: [Meio.Autocomplete]
 				len = n;
 				html = itemsHtml.join('');
 				this.itemsData = itemsData;
-				cache.set(cacheKey, {html: html, data: itemsData, length: len});
+				cache.set(cacheKey, {html: html, data: itemsData});
 			}
 			this.focusedItem = null;
 			this.fireEvent('unselectItem');
@@ -330,33 +331,34 @@ provides: [Meio.Autocomplete]
 			var listChildren = this.list.childNodes;
 			var node = listChildren[this.options.scrollItem - 1] || (listChildren.length ? listChildren[listChildren.length - 1] : null);
 			if(!node) return;
-			this.container.setStyles({
-				'height': $(node).getCoordinates(this.list).bottom,
-				'overflow-x': 'auto',
-				'overflow-y': 'hidden'
-			});
+			this.container.setStyle('height', $(node).getCoordinates(this.list).bottom);
 		},
 		
 		render: function(){
-			var width = this.options.width;
 			this.container = new Element('div', {
 				'class': this.options.classes.container,
-				'styles': {
-					'width': width == 'input' ? this.element.getWidth() : width
+				'events': {
+					'mousedown': this.mousedown.bindWithEvent(this)
 				}
 			});
 			this.list = new Element('ul', {
-				events: {
-					'mouseover': this.mouseover.bindWithEvent(this),
-					'mousedown': this.mousedown.bindWithEvent(this)
+				'events': {
+					'mouseover': this.mouseover.bindWithEvent(this)
 				}
 			}).inject(this.container);
 			$(document.body).adopt(this.container);
+			this.setContainerWidth();
 			this.positionateNextToElement();
+		},
+		
+		setContainerWidth: function(){
+			var width = this.options.width;
+			this.container.setStyle('width', width == 'input' ? this.element.getWidth().toInt() - this.container.getStyle('border-left-width').toInt() - this.container.getStyle('border-right-width').toInt() : width);
 		},
 		
 		mouseover: function(e){
 			var item = this.getItemFromEvent(e), hoverClass = this.options.classes.hover;
+			if(!item) return true;
 			if(this.focusedItem) this.focusedItem.removeClass(hoverClass);
 			item.addClass(hoverClass);
 			this.focusedItem = item;
@@ -365,10 +367,10 @@ provides: [Meio.Autocomplete]
 		
 		mousedown: function(e){
 			e.preventDefault();
-			this.focusedItem = this.getItemFromEvent(e);
+			this.shouldNotBlur = true;
+			if(!(this.focusedItem = this.getItemFromEvent(e))) return true;
 			this.setInputValue();
 			this.focusedItem.removeClass(this.options.classes.hover);
-			this.shouldNotBlur = true;
 		},
 		
 		setInputValue: function(){
@@ -417,7 +419,10 @@ provides: [Meio.Autocomplete]
 		
 		getItemFromEvent: function(e){
 			var target = e.target;
-			while(target.tagName != 'LI') target = target.parentNode;
+			while(target && target.tagName != 'LI'){
+				if(target === this.container) return null;
+				target = target.parentNode;
+			}
 			return $(target);
 		},
 		
@@ -437,6 +442,7 @@ provides: [Meio.Autocomplete]
 		
 		show: function(){
 			if(!this.active) return;
+			this.container.scrollTop = 0;
 			this.container.setStyle('visibility', 'visible');
 			this.showing = true;
 		},

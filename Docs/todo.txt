@@ -28,10 +28,17 @@ TODO:
 * FIXED pay attention, it should synchronize the value before the form is submitted, no matter what.
 * INVALID (the programer will have to do it on server-side. I won't make an ajax request just for this little thing, of course ill include examples talking about this) analyze what to do in cases that the input comes with value setted. What should it do? I need to know if the value is setted or not.
 * FIXED when you press enter it should prevent default just when the list is showing.
+* FIXED the list should be scrollable (show scroll);
 
-* include examples talking about the value synchronization (a very often case, and problem).
-* test the various width options, including if you wich to make it scrollable horizontally.
-* fix the problem on select overlay (ie)
+* the onUnselectItem event should not fire when the input value havent changed (and maybe it should be onDeselectItem);
+* test value to enable " and other stuff, just convert some chars to html encoded;
+* test the various width options, including if you wish to make it scrollable horizontally;
+* include examples talking about the value synchronization (a very often case, and problem);
+* fix the problem with select and flash overlay (ie);
+* the update event is still being called when its not needed.
+  It should just be called when the value of the input changes.
+  This is happening because the old value is not being controlled correctly;
+
 
 * allow effects to be used with the list
 * the destroy method should remove everything (dom list element) in case you remove all instances of autocomplete from the page
@@ -42,6 +49,7 @@ TODO:
 * adapt it in a way that it could be used without being just an autocomplete. It could be used to create a dynamic list for a search for example.
   Would be awezomm!
 * test if the browser has max-height, if it does use it instead of calculating it.
+* make it work on the iphone in a usable way
 
 Miscelaneous thoughts:
 

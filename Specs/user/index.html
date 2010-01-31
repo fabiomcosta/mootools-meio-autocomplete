@@ -34,6 +34,7 @@
 				background-color: #228822;
 				position: absolute;
 				visibility: hidden;
+				overflow: auto;
 			}
 			.ma-container ul{
 				margin: 0;
@@ -92,6 +93,7 @@
 					//return text ? data.text.replace(new RegExp('(' + text.standardize().escapeRegExp() + '|' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data;
 				},
 				listOptions: {
+					width: 'input',
 					onSelectItem: function(data){
 						this.element.addClass(this.options.classes.hasItemSelected);
 						[$('some2')].each(function(el){
