@@ -29,9 +29,10 @@ TODO:
 * INVALID (the programer will have to do it on server-side. I won't make an ajax request just for this little thing, of course ill include examples talking about this) analyze what to do in cases that the input comes with value setted. What should it do? I need to know if the value is setted or not.
 * FIXED when you press enter it should prevent default just when the list is showing.
 * FIXED the list should be scrollable (show scroll);
+* FIXEd test value to enable " and other stuff, just convert some chars to html encoded;
+
 
 * the onUnselectItem event should not fire when the input value havent changed (and maybe it should be onDeselectItem);
-* test value to enable " and other stuff, just convert some chars to html encoded;
 * test the various width options, including if you wish to make it scrollable horizontally;
 * include examples talking about the value synchronization (a very often case, and problem);
 * fix the problem with select and flash overlay (ie);

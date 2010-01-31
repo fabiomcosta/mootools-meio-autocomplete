@@ -12,7 +12,9 @@
     {"value": 10, "text": "other chars"},
     {"value": 11, "text": "á latin é"},
     {"value": 12, "text": "hmmm"},
-    {"value": 13, "text": "hmmmmmmm"},
-    {"value": 14, "text": "ok"},
-    {"value": 15, "text": "it\" fine"}
+    {"value": 13, "text": "chars test > gg"},
+    {"value": 14, "text": "chars test < gg"},
+    {"value": 15, "text": "chars test & gg"},
+    {"value": 16, "text": "ok"},
+    {"value": 17, "text": "it\" fine"}
 ]

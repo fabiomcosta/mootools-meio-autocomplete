@@ -306,7 +306,7 @@ provides: [Meio.Autocomplete]
 				for(var row, i = 0, n = 0, formattedMatch; row = data[i++];){
 					if(filter.call(ac, text, row)){
 						itemsHtml.push(
-							'<li title="', formatMatch.call(ac, text, row),
+							'<li title="', this.encode(formatMatch.call(ac, text, row)),
 							'" data-index="', n,
 							'" class="', (n%2 ? classes.even : classes.odd), '">',
 							formatItem.call(ac, text, row, n),
@@ -438,6 +438,10 @@ provides: [Meio.Autocomplete]
 				this.fireEvent('noItemToList');
 				this.hide();
 			}
+		},
+		
+		encode: function(str){
+			return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 		},
 		
 		show: function(){
