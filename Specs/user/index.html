@@ -95,13 +95,13 @@
 				listOptions: {
 					width: 'input',
 					onSelectItem: function(data){
-						this.element.addClass(this.options.classes.hasItemSelected);
+						this.element.addClass(this.options.classes.selected);
 						[$('some2')].each(function(el){
 							el.set('value', data.value);
 						}, this);
 					},
 					onDeselectItem: function(data){
-						this.element.removeClass(this.options.classes.hasItemSelected);
+						this.element.removeClass(this.options.classes.selected);
 						[$('some2')].each(function(el){
 							el.set('value', '');
 						}, this);

@@ -36,7 +36,6 @@ TODO:
   This is happening because the old value is not being controlled correctly;
 * FIXED the onUnselectItem event should not fire when the input value havent changed (and maybe it should be onDeselectItem);
 
-
 * include examples talking about the value synchronization (a very often case, and problem);
 * fix the problem with select and flash overlay (ie);
 

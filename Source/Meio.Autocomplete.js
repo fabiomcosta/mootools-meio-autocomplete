@@ -19,6 +19,8 @@ provides: [Meio.Autocomplete]
 
 (function(global){
 
+	// Custom Events
+	
 	// thanks Jan Kassens
 	$extend(Element.NativeEvents, {
 		'paste': 2, 'input': 2
@@ -36,6 +38,8 @@ provides: [Meio.Autocomplete]
 		base : (Browser.Engine.gecko || Browser.Engine.presto) ? 'keypress' : 'keydown',
 		condition: $lambda(true)
 	};
+	
+	// Autocomplete itself
 
 	var Meio = {};
 	
@@ -142,7 +146,7 @@ provides: [Meio.Autocomplete]
 			default:
 				this.setupList();
 			}
-			this.list.oldInputedText = this.element.get('value');
+			this.oldInputedText = this.element.get('value');
 			return true;
 		},
 		
@@ -184,7 +188,7 @@ provides: [Meio.Autocomplete]
 		
 		setupList: function(){
 			this.inputedText = this.element.get('value');
-			if(this.inputedText.length >= this.options.minChars && this.inputedText !== this.list.oldInputedText){
+			if(this.inputedText.length >= this.options.minChars && this.inputedText !== this.oldInputedText){
 				this.forceSetupList(this.inputedText);
 			}else{
 				this.list.hide();
@@ -246,23 +250,6 @@ provides: [Meio.Autocomplete]
 		
 	});
 	
-	Meio.Autocomplete.Filters = {
-		filters: {
-			contains: function(text, data){
-				return text ? data.contains(text) : true;
-			},
-			startswith: function(text, data){
-				return text ? data.test(new RegExp('^' + text.escapeRegExp())) : true;
-			}
-		},
-		add: function(name, fn){
-			this.filters[name] = fn;
-		},
-		get: function(name){
-			return this.filters[name] || name || $empty;
-		}
-	};
-	
 	Meio.Autocomplete.List = new Class({
 		
 		Implements: [Options, Events],
@@ -273,20 +260,20 @@ provides: [Meio.Autocomplete]
 				this.element.highlight('#ff0000');
 			},
 			onSelectItem: function(){
-				this.element.addClass(this.options.classes.hasItemSelected);
+				this.element.addClass(this.options.classes.selected);
 			},
 			onDeselectItem: function(){
-				this.element.removeClass(this.options.classes.hasItemSelected);
+				this.element.removeClass(this.options.classes.selected);
 			},
 			
 			width: 'auto', // 'input' for the same width as the input
-			scrollItem: 10,
+			maxVisibleItems: 10,
 			classes: {
 				container: 'ma-container',
 				hover: 'ma-hover',
 				odd: 'ma-odd',
 				even: 'ma-even',
-				hasItemSelected: 'ma-selected'
+				selected: 'ma-selected'
 			}
 			
 		},
@@ -330,12 +317,12 @@ provides: [Meio.Autocomplete]
 			this.focusedItem = null;
 			this.fireEvent('deselectItem');
 			this.list.set('html', html);
-			if(this.options.scrollItem) this.applyMaxHeight();
+			if(this.options.maxVisibleItems) this.applyMaxHeight();
 		},
 		
 		applyMaxHeight: function(){
 			var listChildren = this.list.childNodes;
-			var node = listChildren[this.options.scrollItem - 1] || (listChildren.length ? listChildren[listChildren.length - 1] : null);
+			var node = listChildren[this.options.maxVisibleItems - 1] || (listChildren.length ? listChildren[listChildren.length - 1] : null);
 			if(!node) return;
 			this.container.setStyle('height', $(node).getCoordinates(this.list).bottom);
 		},
@@ -467,6 +454,23 @@ provides: [Meio.Autocomplete]
 		
 	});
 	
+	Meio.Autocomplete.Filters = {
+		filters: {
+			contains: function(text, data){
+				return text ? data.contains(text) : true;
+			},
+			startswith: function(text, data){
+				return text ? data.test(new RegExp('^' + text.escapeRegExp())) : true;
+			}
+		},
+		add: function(name, fn){
+			this.filters[name] = fn;
+			return this;
+		},
+		get: function(name){
+			return this.filters[name] || name || $empty;
+		}
+	};
 	
 	Meio.Autocomplete.Data = new Class({
 		
