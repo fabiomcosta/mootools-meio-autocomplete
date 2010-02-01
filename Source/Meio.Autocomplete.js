@@ -142,6 +142,7 @@ provides: [Meio.Autocomplete]
 			default:
 				this.setupList();
 			}
+			this.list.oldInputedText = this.element.get('value');
 			return true;
 		},
 		
@@ -161,7 +162,7 @@ provides: [Meio.Autocomplete]
 		
 		click: function(){
 			if(this.list.active++ > 1 && !this.list.showing){
-				this.setupList();
+				this.forceSetupList();
 			}
 		},
 		
@@ -184,12 +185,17 @@ provides: [Meio.Autocomplete]
 		setupList: function(){
 			this.inputedText = this.element.get('value');
 			if(this.inputedText.length >= this.options.minChars && this.inputedText !== this.list.oldInputedText){
-				$clear(this.prepareTimer);
-				this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, this.inputedText);
+				this.forceSetupList(this.inputedText);
 			}else{
 				this.list.hide();
 			}
 			return true;
+		},
+		
+		forceSetupList: function(inputedText){
+			inputedText = inputedText || this.element.get('value');
+			$clear(this.prepareTimer);
+			this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, this.inputedText);
 		},
 		
 		dataReady: function(){
@@ -203,7 +209,7 @@ provides: [Meio.Autocomplete]
 		
 		focusItem: function(direction){
 			if(!this.list.showing){
-				this.setupList();
+				this.forceSetupList();
 				this.onUpdate = function(){ this.list.focusItem(direction); };
 			}else{
 				this.list.focusItem(direction);
@@ -269,7 +275,7 @@ provides: [Meio.Autocomplete]
 			onSelectItem: function(){
 				this.element.addClass(this.options.classes.hasItemSelected);
 			},
-			onUnselectItem: function(){
+			onDeselectItem: function(){
 				this.element.removeClass(this.options.classes.hasItemSelected);
 			},
 			
@@ -322,7 +328,7 @@ provides: [Meio.Autocomplete]
 				cache.set(cacheKey, {html: html, data: itemsData});
 			}
 			this.focusedItem = null;
-			this.fireEvent('unselectItem');
+			this.fireEvent('deselectItem');
 			this.list.set('html', html);
 			if(this.options.scrollItem) this.applyMaxHeight();
 		},
@@ -332,28 +338,6 @@ provides: [Meio.Autocomplete]
 			var node = listChildren[this.options.scrollItem - 1] || (listChildren.length ? listChildren[listChildren.length - 1] : null);
 			if(!node) return;
 			this.container.setStyle('height', $(node).getCoordinates(this.list).bottom);
-		},
-		
-		render: function(){
-			this.container = new Element('div', {
-				'class': this.options.classes.container,
-				'events': {
-					'mousedown': this.mousedown.bindWithEvent(this)
-				}
-			});
-			this.list = new Element('ul', {
-				'events': {
-					'mouseover': this.mouseover.bindWithEvent(this)
-				}
-			}).inject(this.container);
-			$(document.body).adopt(this.container);
-			this.setContainerWidth();
-			this.positionateNextToElement();
-		},
-		
-		setContainerWidth: function(){
-			var width = this.options.width;
-			this.container.setStyle('width', width == 'input' ? this.element.getWidth().toInt() - this.container.getStyle('border-left-width').toInt() - this.container.getStyle('border-right-width').toInt() : width);
 		},
 		
 		mouseover: function(e){
@@ -377,7 +361,6 @@ provides: [Meio.Autocomplete]
 			if(this.focusedItem){
 				var text = this.focusedItem.get('title');
 				this.element.set('value', text);
-				this.oldInputedText = text;
 				this.fireEvent('selectItem', [this.itemsData[this.focusedItem.get('data-index')], text]);
 			}
 			this.hide();
@@ -426,6 +409,28 @@ provides: [Meio.Autocomplete]
 			return $(target);
 		},
 		
+		render: function(){
+			this.container = new Element('div', {
+				'class': this.options.classes.container,
+				'events': {
+					'mousedown': this.mousedown.bindWithEvent(this)
+				}
+			});
+			this.list = new Element('ul', {
+				'events': {
+					'mouseover': this.mouseover.bindWithEvent(this)
+				}
+			}).inject(this.container);
+			$(document.body).adopt(this.container);
+			this.setContainerWidth();
+			this.positionateNextToElement();
+		},
+		
+		setContainerWidth: function(){
+			var width = this.options.width;
+			this.container.setStyle('width', width == 'input' ? this.element.getWidth().toInt() - this.container.getStyle('border-left-width').toInt() - this.container.getStyle('border-right-width').toInt() : width);
+		},
+		
 		positionateNextToElement: function(){
 			var elPosition = this.element.getCoordinates();
 			this.container.setPosition({x: elPosition.left, y: elPosition.bottom});
@@ -440,10 +445,6 @@ provides: [Meio.Autocomplete]
 			}
 		},
 		
-		encode: function(str){
-			return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-		},
-		
 		show: function(){
 			if(!this.active) return;
 			this.container.scrollTop = 0;
@@ -454,6 +455,10 @@ provides: [Meio.Autocomplete]
 		hide: function(){
 			this.showing = false;
 			this.container.setStyle('visibility', 'hidden');
+		},
+		
+		encode: function(str){
+			return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 		},
 		
 		toElement: function(){

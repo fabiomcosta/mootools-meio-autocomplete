@@ -100,7 +100,7 @@
 							el.set('value', data.value);
 						}, this);
 					},
-					onUnselectItem: function(data){
+					onDeselectItem: function(data){
 						this.element.removeClass(this.options.classes.hasItemSelected);
 						[$('some2')].each(function(el){
 							el.set('value', '');
