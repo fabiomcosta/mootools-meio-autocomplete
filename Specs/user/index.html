@@ -78,7 +78,7 @@
 		<script type="text/javascript">
 			//var data = '../../Specs/fixtures/data.txt';
 			var data = '../../Specs/fixtures/data2.txt';
-			var instance = new Meio.Autocomplete($('some'), data, {
+			var instance = new Meio.Autocomplete.Widget($('some'), data, {
 				selectOnTab: false,
 				filter: function(text, data){
 					return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true; // 'startswith' filter
@@ -116,7 +116,7 @@
 			});
 			
 			var data2 = ['aff2', 'alguma coisa2', 'something2', 'omg2', 'testing2', 'so what?2', 'other chars2', 'á latin é2', 'hmmm2', 'hmmmmmm2', 'ok2', 'it\'s fine2'];
-			var instance2 = new Meio.Autocomplete($('some5'), data2);
+			var instance2 = new Meio.Autocomplete.Widget($('some5'), data2);
 		</script>
 	</body>
 </html>

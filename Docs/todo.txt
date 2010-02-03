@@ -50,6 +50,18 @@ TODO:
 * test if the browser has max-height, if it does use it instead of calculating it.
 * make it work on the iphone in a usable way
 
+
+New structure im thinking about:
+
+Meio.Widget should be a class for a widget that contains references to 'n' instances of the Meio.Element class.
+Meio.Autocomplete should extend Meio.Widget.
+Both the Input and the List will extend the Meio.Element Class.
+Hmm thinking about something like each widget would have a 'key' in a way that i could register an event from one element by another element.
+Example: i would regiter to the 'field:keyrepeat' from the List class and it would do something from there.
+thats basically it.
+
+
+
 Miscelaneous thoughts:
 
 initial synchronize
