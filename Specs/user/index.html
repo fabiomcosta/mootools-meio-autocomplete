@@ -78,35 +78,37 @@
 		<script type="text/javascript">
 			//var data = '../../Specs/fixtures/data.txt';
 			var data = '../../Specs/fixtures/data2.txt';
-			var instance = new Meio.Autocomplete.Widget($('some'), data, {
+			var instance = new Meio.Autocomplete($('some'), data, {
 				selectOnTab: false,
 				filter: function(text, data){
 					return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true; // 'startswith' filter
-					//return text ? data.contains(text) : true; // 'contains' filter
-					//return text ? data.contains(text.standardize()) : true; // 'standardize-contains' filter, shouldnt be included to avoid more dependencie, but will be left as example of custom filter
 				},
 				formatMatch: function(text, data, i){
 					return data.text;
 				},
 				formatItem: function(text, data){
 					return text ? data.text.replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data.text;
-					//return text ? data.text.replace(new RegExp('(' + text.standardize().escapeRegExp() + '|' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data;
 				},
+				
 				listOptions: {
-					width: 'input',
-					onSelectItem: function(data){
-						this.element.addClass(this.options.classes.selected);
+					width: 'input'
+				},
+				
+				elementOptions: {
+					onSelect: function(elements, data){
+						elements.field.select();
 						[$('some2')].each(function(el){
 							el.set('value', data.value);
-						}, this);
+						});
 					},
-					onDeselectItem: function(data){
-						this.element.removeClass(this.options.classes.selected);
+					onDeselect: function(elements){
+						elements.field.deselect();
 						[$('some2')].each(function(el){
 							el.set('value', '');
-						}, this);
+						});
 					}
 				},
+				
 				requestOptions: {
 					extraParams: [
 						{name: $('some3').get('name'), value: function(){ return $('some3').get('value') }},
@@ -116,7 +118,7 @@
 			});
 			
 			var data2 = ['aff2', 'alguma coisa2', 'something2', 'omg2', 'testing2', 'so what?2', 'other chars2', 'á latin é2', 'hmmm2', 'hmmmmmm2', 'ok2', 'it\'s fine2'];
-			var instance2 = new Meio.Autocomplete.Widget($('some5'), data2);
+			var instance2 = new Meio.Autocomplete($('some5'), data2);
 		</script>
 	</body>
 </html>
