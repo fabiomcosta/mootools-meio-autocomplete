@@ -40,6 +40,8 @@ TODO:
 
 * include examples talking about the value synchronization (a very often case, and problem);
 * fix the problem with select and flash overlay (ie);
+* options to sync at start, that will be disabled by default;
+
 
 * allow effects to be used with the list
 * the destroy method should remove everything (dom list element) in case you remove all instances of autocomplete from the page

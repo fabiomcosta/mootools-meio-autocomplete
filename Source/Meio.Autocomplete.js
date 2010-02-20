@@ -160,6 +160,16 @@ provides: [Meio.Autocomplete]
 			this.addElement('list', lists[listClass]);
 			this.addElement('field', new Meio.Element.Field(input, this.options.elementOptions));
 			
+			this.addFieldEvents();
+			this.addListEvents();
+			
+			this.refreshCache();
+			this.attach();
+			this.handleData(data);
+			//this.addEvent('dataReady', this.dataReady.bind(this));
+		},
+		
+		addFieldEvents: function(){
 			this.addEventsToElement('field', {
 				'beforeKeyrepeat': function(e){
 					this.elements.list.active = 1;
@@ -198,6 +208,7 @@ provides: [Meio.Autocomplete]
 				},
 				'focus': function(){
 					this.elements.list.active = 1;
+					this.elements.list.focusedItem = null;
 					this.elements.list.positionNextTo(this.elements.field.node);
 				},
 				'click': function(){
@@ -219,17 +230,14 @@ provides: [Meio.Autocomplete]
 					return this.setupList();
 				}
 			});
-			
+		},
+		
+		addListEvents: function(){
 			this.addEventsToElement('list', {
 				'mousedown': function(e){
 					this.setInputValue();
 				}
 			});
-			
-			this.refreshCache();
-			this.attach();
-			this.handleData(data);
-			//this.addEvent('dataReady', this.dataReady.bind(this));
 		},
 		
 		update: function(){
