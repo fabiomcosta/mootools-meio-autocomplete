@@ -172,9 +172,10 @@ provides: [Meio.Autocomplete]
 		addFieldEvents: function(){
 			this.addEventsToElement('field', {
 				'beforeKeyrepeat': function(e){
-					this.elements.list.active = 1;
+					var list = this.elements.list;
+					list.active = 1;
 					var e_key = e.key;
-					if(e_key == 'up' || e_key == 'down' || (e_key == 'enter' && this.elements.list.showing)) e.preventDefault();
+					if(e_key == 'up' || e_key == 'down' || (e_key == 'enter' && list.showing)) e.preventDefault();
 				},
 				'delayedKeyrepeat': function(e){
 					var e_key = e.key;
@@ -207,23 +208,26 @@ provides: [Meio.Autocomplete]
 					}
 				},
 				'focus': function(){
-					this.elements.list.active = 1;
-					this.elements.list.focusedItem = null;
-					this.elements.list.positionNextTo(this.elements.field.node);
+					var list = this.elements.list;
+					list.active = 1;
+					list.focusedItem = null;
+					list.positionNextTo(this.elements.field.node);
 				},
 				'click': function(){
-					if(this.elements.list.active++ > 1 && !this.elements.list.showing){
+					var list = this.elements.list;
+					if(list.active++ > 1 && !list.showing){
 						this.forceSetupList();
 					}
 				},
 				'blur': function(e){
-					this.elements.list.active = 0;
-					if(this.elements.list.shouldNotBlur){
+					var list = this.elements.list;
+					list.active = 0;
+					if(list.shouldNotBlur){
 						this.elements.field.node.setCaretPosition('end');
-						this.elements.list.shouldNotBlur = false;
-						if(this.elements.list.focusedItem) this.elements.list.hide();
+						list.shouldNotBlur = false;
+						if(list.focusedItem) list.hide();
 					}else{
-						this.elements.list.hide();
+						list.hide();
 					}
 				},
 				'paste': function(){

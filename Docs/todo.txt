@@ -38,6 +38,8 @@ TODO:
 
 * find a way to cache properly the values when its comes from an array.
 
+* BUG write 'ajax' and remove the 'jax'. It will not render the list correct sometimes.
+
 * include examples talking about the value synchronization (a very often case, and problem);
 * fix the problem with select and flash overlay (ie);
 * options to sync at start, that will be disabled by default;
