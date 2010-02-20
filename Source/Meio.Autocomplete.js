@@ -71,7 +71,48 @@ provides: [Meio.Autocomplete]
 	// Temporary thing
 	// more on Docs/todo.txt
 
+	Meio.Widget = new Class({
+		
+		initialize: function(){
+			this.elements = {};
+		},
+		
+		addElement: function(name, obj){
+			this.elements[name] = obj;
+		},
+		
+		addEventToElement: function(name, eventName, event){
+			this.elements[name].addEvent(eventName, event.bindWithEvent(this));
+		},
+		
+		addEventsToElement: function(name, events){
+			for(eventName in events){
+				this.addEventToElement(name, eventName, events[eventName]);
+			};
+		},
+		
+		attach: function(){
+			for(element in this.elements){
+				this.elements[element].attach();
+			}
+		},
+		
+		detach: function(){
+			for(element in this.elements){
+				this.elements[element].detach();
+			}
+		},
+		
+		destroy: function(){
+			for(element in this.elements){
+				this.elements[element] && this.elements[element].destroy();
+			}
+		}
+	});
+	
 	Meio.Autocomplete = new Class({
+		
+		Extends: Meio.Widget,
 		
 		Implements: [Options, Events, Chain],
 		
@@ -93,10 +134,10 @@ provides: [Meio.Autocomplete]
 			},
 
 			onSelect: function(elements){
-				elements.field.select();
+				elements.field.addSelectedClass();
 			},
 			onDeselect: function(elements){
-				elements.field.deselect();
+				elements.field.removeSelectedClass();
 			},
 			onNoItemToList: function(elements){
 				elements.field.node.highlight('#ff0000');
@@ -110,79 +151,78 @@ provides: [Meio.Autocomplete]
 		},
 		
 		initialize: function(input, data, options){
-			var widget = this;
+			this.parent();
 			this.setOptions(options);
 			
-			this.elements = {};
 			var listClass = this.options.list || Meio.Element.List;
 			if(!lists[listClass]) lists[listClass] = new listClass(this.options.listOptions);
 			
 			this.addElement('list', lists[listClass]);
 			this.addElement('field', new Meio.Element.Field(input, this.options.elementOptions));
 			
-			this.elements.field.addEvents({
+			this.addEventsToElement('field', {
 				'beforeKeyrepeat': function(e){
-					widget.elements.list.active = 1;
+					this.elements.list.active = 1;
 					var e_key = e.key;
-					if(e_key == 'up' || e_key == 'down' || (e_key == 'enter' && widget.elements.list.showing)) e.preventDefault();
+					if(e_key == 'up' || e_key == 'down' || (e_key == 'enter' && this.elements.list.showing)) e.preventDefault();
 				},
 				'delayedKeyrepeat': function(e){
 					var e_key = e.key;
 					keyPressControl[e_key] = true;
 					switch(e_key){
 					case 'up': case 'down':
-						widget.focusItem(e_key);
+						this.focusItem(e_key);
 						break;
 					case 'enter':
-						widget.setInputValue();
+						this.setInputValue();
 						break;
 					case 'tab':
-						if(widget.options.selectOnTab) widget.setInputValue();
+						if(this.options.selectOnTab) this.setInputValue();
 						keyPressControl[e_key] = false; // tab blurs the input so the keyup event wont happen at the same input you made a keydown
 						break;
 					case 'esc':
-						widget.elements.list.hide();
+						this.elements.list.hide();
 						break;
 					default:
-						widget.setupList();
+						this.setupList();
 					}
-					widget.oldInputedText = widget.elements.field.node.get('value');
+					this.oldInputedText = this.elements.field.node.get('value');
 				},
 				'keyup': function(e){
 					if(!keysThatDontChangeValueOnKeyUp[e.code]){
 						if(!keyPressControl[e.key]){
-							widget.setupList();
+							this.setupList();
 						}
 						keyPressControl[e.key] = false;
 					}
 				},
 				'focus': function(){
-					widget.elements.list.active = 1;
-					widget.elements.list.positionNextTo(widget.elements.field.node);
+					this.elements.list.active = 1;
+					this.elements.list.positionNextTo(this.elements.field.node);
 				},
 				'click': function(){
-					if(widget.elements.list.active++ > 1 && !widget.elements.list.showing){
-						widget.forceSetupList();
+					if(this.elements.list.active++ > 1 && !this.elements.list.showing){
+						this.forceSetupList();
 					}
 				},
 				'blur': function(e){
-					widget.elements.list.active = 0;
-					if(widget.elements.list.shouldNotBlur){
-						widget.elements.field.node.setCaretPosition('end');
-						widget.elements.list.shouldNotBlur = false;
-						if(widget.elements.list.focusedItem) widget.elements.list.hide();
+					this.elements.list.active = 0;
+					if(this.elements.list.shouldNotBlur){
+						this.elements.field.node.setCaretPosition('end');
+						this.elements.list.shouldNotBlur = false;
+						if(this.elements.list.focusedItem) this.elements.list.hide();
 					}else{
-						widget.elements.list.hide();
+						this.elements.list.hide();
 					}
 				},
 				'paste': function(){
-					return widget.setupList();
+					return this.setupList();
 				}
 			});
 			
-			this.elements.list.addEvents({
+			this.addEventsToElement('list', {
 				'mousedown': function(e){
-					widget.setInputValue();
+					this.setInputValue();
 				}
 			});
 			
@@ -282,24 +322,6 @@ provides: [Meio.Autocomplete]
 			}
 		},
 		
-		attach: function(){
-			for(element in this.elements){
-				this.elements[element].attach();
-			}
-		},
-		
-		detach: function(){
-			for(element in this.elements){
-				this.elements[element].detach();
-			}
-		},
-		
-		destroy: function(){
-			for(element in this.elements){
-				this.elements[element] && this.elements[element].destroy();
-			}
-		},
-		
 		refreshCache: function(cacheLength){
 			cache = Meio.Autocomplete.Cache.initialize(cacheLength || this.options.cacheLength);
 		},
@@ -308,10 +330,6 @@ provides: [Meio.Autocomplete]
 			// TODO, do you really need to refresh the url? see a better way of doing this
 			this.refreshCache(cacheLength);
 			this.data.refreshKey(urlOptions);
-		},
-		
-		addElement: function(name, obj){
-			this.elements[name] = obj;
 		}
 
 	});
@@ -415,11 +433,11 @@ provides: [Meio.Autocomplete]
 			this.node.removeClass(this.options.classes.loading);
 		},
 		
-		select: function(){
+		addSelectedClass: function(){
 			this.node.addClass(this.options.classes.selected);
 		},
 		
-		deselect: function(){
+		removeSelectedClass: function(){
 			this.node.removeClass(this.options.classes.selected);
 		}
 		
@@ -647,13 +665,13 @@ provides: [Meio.Autocomplete]
 		Implements: [Options],
 		
 		options: {
-			extraParams: {},
+			extraParams: null,
 			max: 20
 		},
 		
 		initialize: function(url, options){
 			this.setOptions(options);
-			var params = this.options.extraParams;
+			var params = $splat(this.options.extraParams);
 			var urlParams = [];
 			this.dynamicExtraParams = [];
 			for(var i = params.length; i--;){
@@ -661,7 +679,7 @@ provides: [Meio.Autocomplete]
 					this.dynamicExtraParams.push(params[i]) : urlParams.push(params[i].name + '=' + params[i].value);
 			}
 			if(this.options.max) urlParams.push('limit=' + this.options.max);
-			url += (url.contains('?')) ? '&' : '?';	
+			url += (url.contains('?')) ? '&' : '?';
 			url += urlParams.join('&');
 			this.url = url;
 		},
@@ -681,7 +699,7 @@ provides: [Meio.Autocomplete]
 	Meio.Autocomplete.Cache = {
 		
 		initialize: function(maxLength){
-			this.maxLength = maxLength;
+			this.maxLength = Math.max(maxLength, 1);
 			this.cache = {};
 			this.pos = [];
 			return this;
@@ -690,7 +708,7 @@ provides: [Meio.Autocomplete]
 		set: function(key, value){
 			if(!this.cache[key]){
 				if(this.getLength() >= this.maxLength){
-					var keyToRemove = this.pos.pop();
+					var keyToRemove = this.pos.shift();
 					this.cache[keyToRemove] = null;
 					delete this.cache[keyToRemove];
 				}

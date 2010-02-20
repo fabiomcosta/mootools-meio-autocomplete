@@ -21,19 +21,14 @@
 		<link  href="../../../../assets/firebug/firebug-lite.css" rel="stylesheet" type="text/css" />
 		<link  href="../../Assets/jasmine/jasmine.css" rel="stylesheet" type="text/css" />
 
-		<style type="text/css">
-			iframe{
-				width: 0;
-				height: 0;
-				border: 0;
-			}
-		</style>
 	</head>
 	<body>
 
-		<iframe id="iframe" src="iframe.html" onload="var jasmineEnv = jasmine.getEnv();
-		jasmineEnv.reporter = new jasmine.TrivialReporter();
-		jasmineEnv.execute();" />
+		<script type="text/javascript" charset="utf-8">
+			var jasmineEnv = jasmine.getEnv();
+			jasmineEnv.reporter = new jasmine.TrivialReporter();
+			jasmineEnv.execute();
+		</script>
 
 	</body>
 </html>
