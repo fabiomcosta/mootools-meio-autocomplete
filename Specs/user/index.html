@@ -90,23 +90,22 @@
 					return text ? data.text.replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data.text;
 				},
 				
-				listOptions: {
-					width: 'input'
+				onSelect: function(elements, data){
+					elements.field.addSelectedClass();
+					[$('some2')].each(function(el){
+						el.set('value', data.value);
+					});
 				},
 				
-				elementOptions: {
-					onSelect: function(elements, data){
-						elements.field.select();
-						[$('some2')].each(function(el){
-							el.set('value', data.value);
-						});
-					},
-					onDeselect: function(elements){
-						elements.field.deselect();
-						[$('some2')].each(function(el){
-							el.set('value', '');
-						});
-					}
+				onDeselect: function(elements){
+					elements.field.removeSelectedClass();
+					[$('some2')].each(function(el){
+						el.set('value', '');
+					});
+				},
+				
+				listOptions: {
+					width: 'input'
 				},
 				
 				requestOptions: {

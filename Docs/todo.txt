@@ -38,7 +38,6 @@ TODO:
 
 * find a way to cache properly the values when its comes from an array.
 
-
 * include examples talking about the value synchronization (a very often case, and problem);
 * fix the problem with select and flash overlay (ie);
 
