@@ -65,10 +65,11 @@
 		<form method="post" action="">
 			<fieldset>
 				<input type="text" id="some" name="some" value="" />
+				<input type="text" id="some1" name="some1" value="" />
 				<input type="text" id="some2" name="some2" value="" />
 				<input type="text" id="some3" name="some3" value="" />
+				<br />
 				<input type="text" id="some4" name="some4" value="" />
-				<input type="text" id="some5" name="some5" value="" />
 				<input type="submit" name="some_button" id="some_button" value="" />
 			</fieldset>
 			
@@ -92,14 +93,14 @@
 				
 				onSelect: function(elements, data){
 					elements.field.addSelectedClass();
-					[$('some2')].each(function(el){
+					[$('some4')].each(function(el){
 						el.set('value', data.value);
 					});
 				},
 				
 				onDeselect: function(elements){
 					elements.field.removeSelectedClass();
-					[$('some2')].each(function(el){
+					[$('some4')].each(function(el){
 						el.set('value', '');
 					});
 				},
@@ -108,16 +109,16 @@
 					width: 'input'
 				},
 				
-				requestOptions: {
+				urlOptions: {
 					extraParams: [
-						{name: $('some3').get('name'), value: function(){ return $('some3').get('value') }},
-						$('some4')
+						{name: $('some2').get('name'), value: function(){ return $('some2').get('value') }},
+						$('some3')
 					]
 				}
 			});
 			
 			var data2 = ['aff2', 'alguma coisa2', 'something2', 'omg2', 'testing2', 'so what?2', 'other chars2', 'á latin é2', 'hmmm2', 'hmmmmmm2', 'ok2', 'it\'s fine2'];
-			var instance2 = new Meio.Autocomplete($('some5'), data2);
+			var instance2 = new Meio.Autocomplete($('some1'), data2);
 		</script>
 	</body>
 </html>
