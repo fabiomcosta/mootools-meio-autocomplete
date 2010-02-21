@@ -154,6 +154,7 @@ provides: [Meio.Autocomplete]
 		initialize: function(input, data, options){
 			this.parent();
 			this.setOptions(options);
+			this.active = 0;
 			
 			// argh
 			var listClass = this.options.list || Meio.Element.List;
@@ -167,10 +168,7 @@ provides: [Meio.Autocomplete]
 			}
 			
 			this.addElement('list', listInstance);
-			
-			if(classIndex < 0){
-				this.addListEvents();
-			}
+			this.addListEvents();
 			
 			this.addElement('field', new Meio.Element.Field(input, this.options.elementOptions));
 			this.addFieldEvents();
@@ -178,14 +176,13 @@ provides: [Meio.Autocomplete]
 			this.refreshCache();
 			this.attach();
 			this.handleData(data);
-			//this.addEvent('dataReady', this.dataReady.bind(this));
 		},
 		
 		addFieldEvents: function(){
 			this.addEventsToElement('field', {
 				'beforeKeyrepeat': function(e){
 					var list = this.elements.list;
-					list.active = 1;
+					this.active = 1;
 					var e_key = e.key;
 					if(e_key == 'up' || e_key == 'down' || (e_key == 'enter' && list.showing)) e.preventDefault();
 				},
@@ -221,19 +218,19 @@ provides: [Meio.Autocomplete]
 				},
 				'focus': function(){
 					var list = this.elements.list;
-					list.active = 1;
+					this.active = 1;
 					list.focusedItem = null;
 					list.positionNextTo(this.elements.field.node);
 				},
 				'click': function(){
 					var list = this.elements.list;
-					if(list.active++ > 1 && !list.showing){
+					if(this.active++ > 1 && !list.showing){
 						this.forceSetupList();
 					}
 				},
 				'blur': function(e){
 					var list = this.elements.list;
-					list.active = 0;
+					this.active = 0;
 					if(list.shouldNotBlur){
 						this.elements.field.node.setCaretPosition('end');
 						list.shouldNotBlur = false;
@@ -251,7 +248,7 @@ provides: [Meio.Autocomplete]
 		addListEvents: function(){
 			this.addEventsToElement('list', {
 				'mousedown': function(e){
-					this.setInputValue();
+					if(this.active) this.setInputValue();
 				}
 			});
 		},
@@ -315,6 +312,7 @@ provides: [Meio.Autocomplete]
 		},
 		
 		dataReady: function(){
+			if(!this.active) return;
 			this.update(this);
 			if(this.onUpdate){
 				this.onUpdate();
@@ -493,7 +491,6 @@ provides: [Meio.Autocomplete]
 			this.parent();
 			this.setOptions(options);
 			this.focusedItem = null;
-			this.active = 0;
 		},
 		
 		applyMaxHeight: function(maxVisibleItems){
@@ -504,7 +501,7 @@ provides: [Meio.Autocomplete]
 			// uggly hack to fix the height of the autocomplete list
 			// TODO rethink about it
 			this.node.setStyle('height', node.getCoordinates(this.list).bottom);
-			this.node.setStyle('height', node.getCoordinates(this.list).bottom);
+			//this.node.setStyle('height', node.getCoordinates(this.list).bottom);
 		},
 		
 		mouseover: function(e){
@@ -581,7 +578,6 @@ provides: [Meio.Autocomplete]
 		},
 		
 		show: function(){
-			if(!this.active) return;
 			this.node.scrollTop = 0;
 			this.node.setStyle('visibility', 'visible');
 			this.showing = true;
