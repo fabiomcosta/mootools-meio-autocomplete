@@ -156,10 +156,9 @@ provides: [Meio.Autocomplete]
 			this.setOptions(options);
 			this.active = 0;
 			
-			// argh
 			var listClass = this.options.list || Meio.Element.List;
 			var classIndex = listClasses.indexOf(listClass);
-			var listInstance = null;
+			var listInstance;
 			if(classIndex < 0){
 				listClasses.push(listClass);
 				listInstances.push((listInstance = new listClass(this.options.listOptions)));
@@ -312,7 +311,7 @@ provides: [Meio.Autocomplete]
 		},
 		
 		dataReady: function(){
-			if(!this.active) return;
+			
 			this.update(this);
 			if(this.onUpdate){
 				this.onUpdate();
@@ -320,7 +319,7 @@ provides: [Meio.Autocomplete]
 			}
 			var list = this.elements.list;
 			if(list.list.get('html')){
-				list.show();
+				if(this.active) list.show();
 			}else{
 				this.fireEvent('noItemToList', [this.elements]);
 				list.hide();
