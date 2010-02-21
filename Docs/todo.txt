@@ -35,21 +35,23 @@ TODO:
   It should just be called when the value of the input changes.
   This is happening because the old value is not being controlled correctly;
 * FIXED the onUnselectItem event should not fire when the input value havent changed (and maybe it should be onDeselectItem);
-
-* find a way to cache properly the values when its comes from an array.
-
+* FIXED BUG mousedown was being added 2 times on the same list and is throwing error at some point.
 * BUG write 'ajax' and remove the 'jax'. It will not render the list correct sometimes.
+
+* find a way to cache properly the values when they come from an array.
 
 * include examples talking about the value synchronization (a very often case, and problem);
 * fix the problem with select and flash overlay (ie);
 * options to sync at start, that will be disabled by default;
-
 
 * allow effects to be used with the list
 * the destroy method should remove everything (dom list element) in case you remove all instances of autocomplete from the page
 * make it scalable. It means that it should add minimun events and DOM els if i add more than one Autocomplete on the same page.
   Things to consider: keyPressControl, cache, list DOM element and its events.
 * make it possible to enter multiple values
+* create a cacheType option that can be set to: (where this will be set?)
+  'individual': each instance will have its own cache;
+  'shared': all the autocomplete instances of the page will share the same cache; (default)
 
 * adapt it in a way that it could be used without being just an autocomplete. It could be used to create a dynamic list for a search for example.
   Would be awezomm!
