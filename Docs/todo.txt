@@ -42,19 +42,17 @@ TODO:
 * FEATURE create a cacheType option that can be set to:
   'own': each instance will have its own cache;
   'shared': all the autocomplete instances of the page will share the same cache; (default)
-
-
-* include examples talking about the value synchronization (a very often case, and problem);
-* fix the problem with select and flash overlay (ie);
-
-
-* allow effects to be used with the list
-* make it scalable. It means that it should add minimun events and DOM els if i add more than one Autocomplete on the same page.
+* OK make it scalable. It means that it should add minimun events and DOM els if i add more than one Autocomplete on the same page.
   Things to consider: keyPressControl, cache, list DOM element and its events.
-* make it possible to enter multiple values
-
-* adapt it in a way that it could be used without being just an autocomplete. It could be used to create a dynamic list for a search for example.
+* INVALID (if someone asks for it maybe i can do it but i dont want this into the plugin) allow effects to be used with the list
+* OK adapt it in a way that it could be used without being just an autocomplete. It could be used to create a dynamic list for a search for example.
   Would be awezomm!
+
+
+* include examples talking about the value synchronization (a very often case);
+* fix the problem with select and flash overlay (ie);
+* the list should be possible to be anything, like a table for example.
+* make it possible to enter multiple values
 * test if the browser has max-height, if it does use it instead of calculating it.
 * make it work on the iphone in a usable way
 

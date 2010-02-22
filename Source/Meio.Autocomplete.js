@@ -510,7 +510,7 @@ provides: [Meio.Autocomplete]
 			// uggly hack to fix the height of the autocomplete list
 			// TODO rethink about it
 			this.node.setStyle('height', node.getCoordinates(this.list).bottom);
-			//this.node.setStyle('height', node.getCoordinates(this.list).bottom);
+			this.node.setStyle('height', node.getCoordinates(this.list).bottom);
 		},
 		
 		mouseover: function(e){
