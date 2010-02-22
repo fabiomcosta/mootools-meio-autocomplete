@@ -4,12 +4,12 @@ var cache;
 describe('Meio.Autocomplete.Cache', function(){
 	
 	it('should initialize empty', function(){
-		cache = Meio.Autocomplete.Cache.initialize();
+		cache = new Meio.Autocomplete.Cache();
 		expect(cache.getLength()).toEqual(0);
 	});
 	
 	it('should remove the last item if included more than the defined maxlength', function(){
-		cache = Meio.Autocomplete.Cache.initialize(2);
+		cache = new Meio.Autocomplete.Cache(2);
 		cache.set('a', 1);
 		expect(cache.getLength()).toEqual(1);
 		cache.set('b', 2);

@@ -43,9 +43,7 @@ provides: [Meio.Autocomplete]
 
 	var Meio = {};
 	
-	var keyPressControl = {};
-	
-	var cache;
+	var globalCache;
 	
 	var listClasses = [];
 	var listInstances = [];
@@ -124,7 +122,8 @@ provides: [Meio.Autocomplete]
 			cacheLength: 20,
 			selectOnTab: true,
 			maxVisibleItems: 10,
-			list: null,
+			cacheType: 'shared', // 'shared' or 'own'
+			listClass: null,
 			
 			filter: 'contains',
 			formatMatch: function(text, data){
@@ -156,7 +155,7 @@ provides: [Meio.Autocomplete]
 			this.setOptions(options);
 			this.active = 0;
 			
-			var listClass = this.options.list || Meio.Element.List;
+			var listClass = this.options.listClass || Meio.Element.List;
 			var classIndex = listClasses.indexOf(listClass);
 			var listInstance;
 			if(classIndex < 0){
@@ -172,22 +171,21 @@ provides: [Meio.Autocomplete]
 			this.addElement('field', new Meio.Element.Field(input, this.options.elementOptions));
 			this.addFieldEvents();
 			
-			this.refreshCache();
 			this.attach();
+			this.handleCache();
 			this.handleData(data);
 		},
 		
 		addFieldEvents: function(){
 			this.addEventsToElement('field', {
 				'beforeKeyrepeat': function(e){
-					var list = this.elements.list;
 					this.active = 1;
-					var e_key = e.key;
+					var e_key = e.key, list = this.elements.list;
 					if(e_key == 'up' || e_key == 'down' || (e_key == 'enter' && list.showing)) e.preventDefault();
 				},
 				'delayedKeyrepeat': function(e){
-					var e_key = e.key;
-					keyPressControl[e_key] = true;
+					var e_key = e.key, field = this.elements.field;
+					field.keyPressControl[e_key] = true;
 					switch(e_key){
 					case 'up': case 'down':
 						this.focusItem(e_key);
@@ -197,7 +195,7 @@ provides: [Meio.Autocomplete]
 						break;
 					case 'tab':
 						if(this.options.selectOnTab) this.setInputValue();
-						keyPressControl[e_key] = false; // tab blurs the input so the keyup event wont happen at the same input you made a keydown
+						field.keyPressControl[e_key] = false; // tab blurs the input so the keyup event wont happen at the same input you made a keydown
 						break;
 					case 'esc':
 						this.elements.list.hide();
@@ -205,19 +203,20 @@ provides: [Meio.Autocomplete]
 					default:
 						this.setupList();
 					}
-					this.oldInputedText = this.elements.field.node.get('value');
+					this.oldInputedText = field.node.get('value');
 				},
 				'keyup': function(e){
+					var field = this.elements.field;
 					if(!keysThatDontChangeValueOnKeyUp[e.code]){
-						if(!keyPressControl[e.key]){
+						if(!field.keyPressControl[e.key]){
 							this.setupList();
 						}
-						keyPressControl[e.key] = false;
+						field.keyPressControl[e.key] = false;
 					}
 				},
 				'focus': function(){
-					var list = this.elements.list;
 					this.active = 1;
+					var list = this.elements.list;
 					list.focusedItem = null;
 					list.positionNextTo(this.elements.field.node);
 				},
@@ -228,8 +227,8 @@ provides: [Meio.Autocomplete]
 					}
 				},
 				'blur': function(e){
-					var list = this.elements.list;
 					this.active = 0;
+					var list = this.elements.list;
 					if(list.shouldNotBlur){
 						this.elements.field.node.setCaretPosition('end');
 						list.shouldNotBlur = false;
@@ -255,7 +254,7 @@ provides: [Meio.Autocomplete]
 		update: function(){
 			var text = this.inputedText, data = this.data, options = this.options, list = this.elements.list;
 			var filter = Meio.Autocomplete.Filters.get(options.filter), formatMatch = options.formatMatch, formatItem = options.formatItem; 
-			var cacheKey = data.getKey(), cached = cache.get(cacheKey), html;
+			var cacheKey = data.getKey(), cached = this.cache.get(cacheKey), html;
 			if(cached){
 				html = cached.html;
 				this.itemsData = cached.data;
@@ -276,7 +275,7 @@ provides: [Meio.Autocomplete]
 					}
 				}
 				html = itemsHtml.join('');
-				cache.set(cacheKey, {html: html, data: itemsData});
+				this.cache.set(cacheKey, {html: html, data: itemsData});
 				this.itemsData = itemsData;
 			}
 			list.focusedItem = null;
@@ -303,15 +302,7 @@ provides: [Meio.Autocomplete]
 			}
 		},
 		
-		handleData: function(data){
-			this.data = ($type(data) == 'string') ?
-				new Meio.Autocomplete.Data.Request(data, this.elements.field, this.options.requestOptions, this.options.urlOptions) :
-				new Meio.Autocomplete.Data(data);
-			this.data.addEvent('ready', this.dataReady.bind(this));
-		},
-		
 		dataReady: function(){
-			
 			this.update(this);
 			if(this.onUpdate){
 				this.onUpdate();
@@ -346,8 +337,26 @@ provides: [Meio.Autocomplete]
 			}
 		},
 		
+		handleData: function(data){
+			this.data = ($type(data) == 'string') ?
+				new Meio.Autocomplete.Data.Request(data, this.cache, this.elements.field, this.options.requestOptions, this.options.urlOptions) :
+				new Meio.Autocomplete.Data(data, this.cache);
+			this.data.addEvent('ready', this.dataReady.bind(this));
+		},
+		
+		handleCache: function(){
+			var cacheLength = this.options.cacheLength;
+			if(this.options.cacheType == 'shared'){
+				this.cache = globalCache;
+				this.cache.setMaxLength(cacheLength);
+			}else{ // 'own'
+				this.cache = new Meio.Autocomplete.Cache(cacheLength);
+			}
+		},
+		
 		refreshCache: function(cacheLength){
-			cache = Meio.Autocomplete.Cache.initialize(cacheLength || this.options.cacheLength);
+			this.cache.refresh();
+			this.cache.setMaxLength(cacheLength || this.options.cacheLength);
 		},
 		
 		refreshAll: function(cacheLength, urlOptions){
@@ -420,6 +429,7 @@ provides: [Meio.Autocomplete]
 		},
 		
 		initialize: function(field, options){
+			this.keyPressControl = {};
 			this.boundEvents = ['paste', 'focus', 'blur', 'click', 'keyup', 'keyrepeat'];
 			this.parent(field);
 			this.setOptions(options);
@@ -611,8 +621,9 @@ provides: [Meio.Autocomplete]
 		
 		Implements: [Options, Events],
 		
-		initialize: function(data){
+		initialize: function(data, cache){
 			this.data = data;
+			this._cache = cache;
 		},
 		
 		get: function(){
@@ -629,10 +640,10 @@ provides: [Meio.Autocomplete]
 		},
 		
 		cache: function(key, data){
-			cache.set(key, data);
+			this._cache.set(key, data);
 		},
 		
-		refreshKey: function(){}
+		refreshKey: $empty
 		
 	});
 	
@@ -644,18 +655,19 @@ provides: [Meio.Autocomplete]
 			noCache: true
 		},
 		
-		initialize: function(url, element, options, urlOptions){
+		initialize: function(url, cache, element, options, urlOptions){
 			this.setOptions(options);
-			this.urlOptions = urlOptions;
-			this.element = element;
 			this.rawUrl = url;
+			this._cache = cache;
+			this.element = element;
+			this.urlOptions = urlOptions;
 			this.refreshKey();
 			this.createRequest();
 		},
 		
 		prepare: function(text){
 			this.cachedKey = this.url.evaluate(text);
-			if(cache.has(this.cachedKey)){
+			if(this._cache.has(this.cachedKey)){
 				this.fireEvent('ready');
 			}else{
 				this.request.send({url: this.cachedKey});
@@ -722,13 +734,11 @@ provides: [Meio.Autocomplete]
 		
 	});
 	
-	Meio.Autocomplete.Cache = {
+	Meio.Autocomplete.Cache = new Class({
 		
 		initialize: function(maxLength){
-			this.maxLength = Math.max(maxLength, 1);
-			this.cache = {};
-			this.pos = [];
-			return this;
+			this.refresh();
+			this.setMaxLength(maxLength);
 		},
 		
 		set: function(key, value){
@@ -754,9 +764,20 @@ provides: [Meio.Autocomplete]
 		
 		getLength: function(){
 			return this.pos.length;
+		},
+		
+		refresh: function(){
+			this.cache = {};
+			this.pos = [];
+		},
+		
+		setMaxLength: function(maxLength){
+			this.maxLength = Math.max(maxLength, 1);
 		}
 		
-	};
+	});
+	
+	globalCache = new Meio.Autocomplete.Cache();
 	
 	if(typeof global.Meio == 'undefined') global.Meio = Meio;
 	else $extend(global.Meio, Meio);
