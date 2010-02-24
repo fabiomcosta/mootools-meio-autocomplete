@@ -19,6 +19,14 @@ provides: [Meio.Autocomplete]
 
 (function(global){
 
+	var $ = global.document.id || global.$;
+	var browserEngine = Browser.Engine; // better compression and faster
+	
+	if(!console) var console = {};
+	if(!console.log) console.log = function(text){
+		$(document.body).grab(new Element('span', {'html': text + ' '}), 'bottom');
+	}
+
 	// Custom Events
 	
 	// thanks Jan Kassens
@@ -26,7 +34,7 @@ provides: [Meio.Autocomplete]
 		'paste': 2, 'input': 2
 	});
 	Element.Events.paste = {
-		base : (Browser.Engine.presto || (Browser.Engine.gecko && Browser.Engine.version < 19)) ? 'input' : 'paste',
+		base : (browserEngine.presto || (browserEngine.gecko && browserEngine.version < 19)) ? 'input' : 'paste',
 		condition: function(e){
 			this.fireEvent('paste', e, 1);
 			return false;
@@ -35,20 +43,64 @@ provides: [Meio.Autocomplete]
 	
 	// the key event that repeats
 	Element.Events.keyrepeat = {
-		base : (Browser.Engine.gecko || Browser.Engine.presto) ? 'keypress' : 'keydown',
+		base : (browserEngine.gecko || browserEngine.presto) ? 'keypress' : 'keydown',
 		condition: $lambda(true)
 	};
+	
+	
+	/* Port of bgiframe plugin for mootools
+	 * Original plugin copyright:
+	 * Copyright (c) 2006 Brandon Aaron (http://brandonaaron.net)
+	 * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) 
+	 * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
+	 * Version 2.1.1
+	 */
+	
+	var BgIframe = new Class({
+		Implements: Options,
+		options: {
+			top		: 'auto',
+			left	: 'auto',
+			width	: 'auto',
+			height	: 'auto',
+			opacity	: true,
+			src		: 'javascript:false;'
+		},
+		initialize: function(element, options){
+			if(!browserEngine.trident4) return;
+			this.setOptions(options);
+			this.element = $(element);
+			var firstChild = this.element.getFirst();
+			if(!(firstChild && firstChild.hasClass('bgiframe')))
+				this.element.grab(document.createElement(this.render()), 'top');
+		},
+		toPx: function(n){ 
+			return isFinite(n) ? n + 'px' : n;
+		},
+		render: function(){
+			var options = this.options;
+			return '<iframe class="bgiframe" frameborder="0" tabindex="-1" src="' + options.src + '" ' +
+				'style="display:block;position:absolute;z-index:-1;' +
+				(options.opacity !== false ? 'filter:alpha(opacity=\'0\');' : '') +
+				'top:' + (options.top == 'auto' ? 'expression(((parseInt(this.parentNode.currentStyle.borderTopWidth)||0)*-1)+\'px\')' : this.toPx(options.top)) + ';' +
+				'left:' + (options.left == 'auto' ? 'expression(((parseInt(this.parentNode.currentStyle.borderLeftWidth)||0)*-1)+\'px\')' : this.toPx(options.left)) + ';' +
+				'width:' + (options.width == 'auto' ? 'expression(this.parentNode.offsetWidth+\'px\')' : this.toPx(options.width)) + ';' +
+				'height:' + (options.height == 'auto' ? 'expression(this.parentNode.offsetHeight+\'px\')' : this.toPx(options.height)) + ';' +
+			'"/>';
+		}
+	});
+	
+	Element.implement('bgiframe', function(options){
+		if(browserEngine.trident4) new BgIframe(this, options);
+		return this;
+	});
 	
 	// Autocomplete itself
 
 	var Meio = {};
-	
 	var globalCache;
-	
 	var listClasses = [];
 	var listInstances = [];
-	
-	var $ = global.document.id || global.$;
 	
 	var keysThatDontChangeValueOnKeyUp = {
 		9:   1,  // tab
@@ -151,6 +203,7 @@ provides: [Meio.Autocomplete]
 		},
 		
 		initialize: function(input, data, options){
+			
 			this.parent();
 			this.setOptions(options);
 			this.active = 0;
@@ -158,6 +211,7 @@ provides: [Meio.Autocomplete]
 			var listClass = this.options.listClass || Meio.Element.List;
 			var classIndex = listClasses.indexOf(listClass);
 			var listInstance;
+			
 			if(classIndex < 0){
 				listClasses.push(listClass);
 				listInstances.push((listInstance = new listClass(this.options.listOptions)));
@@ -420,17 +474,16 @@ provides: [Meio.Autocomplete]
 		Implements: [Options],
 		
 		options: {
-
 			classes: {
 				loading: 'ma-loading',
 				selected: 'ma-selected'
-			},
-			
+			}
 		},
 		
 		initialize: function(field, options){
 			this.keyPressControl = {};
 			this.boundEvents = ['paste', 'focus', 'blur', 'click', 'keyup', 'keyrepeat'];
+			if(browserEngine.trident4) this.boundEvents.push('keypress'); // yeah super ugly, but what can be awesome with ie?
 			this.parent(field);
 			this.setOptions(options);
 			
@@ -452,6 +505,13 @@ provides: [Meio.Autocomplete]
 		
 		_keyrepeat: function(e){
 			this.fireEvent('delayedKeyrepeat', e);
+		},
+		
+		//ie6 only
+		keypress: function(e){
+			this.fireEvent('beforeKeyrepeat', e);
+			this.keyrepeat(e);
+			this.fireEvent('keyrepeat', e);
 		},
 		
 		destroy: function(){
@@ -484,7 +544,6 @@ provides: [Meio.Autocomplete]
 		Implements: [Options],
 		
 		options: {
-			
 			width: 'auto', // 'input' for the same width as the input
 			classes: {
 				container: 'ma-container',
@@ -492,7 +551,6 @@ provides: [Meio.Autocomplete]
 				odd: 'ma-odd',
 				even: 'ma-even'
 			}
-			
 		},
 		
 		initialize: function(options){
@@ -573,9 +631,9 @@ provides: [Meio.Autocomplete]
 		},
 		
 		render: function(){
-			var node = new Element('div', {'class': this.options.classes.container});
+			var node = new Element('div', {'class': this.options.classes.container}).bgiframe({top: 0, left: 0});
 			this.list = new Element('ul').inject(node);
-			$(document.body).adopt(node);
+			$(document.body).grab(node);
 			return node;
 		},
 		

@@ -1,5 +1,9 @@
 TODO:
 
+* OK New structure im thinking about: OK
+  Meio.Widget should be a class for a widget that contains references to 'n' instances of the Meio.Element class.
+  Meio.Autocomplete should extend Meio.Widget.
+  Both the Input and the List will extend the Meio.Element Class.
 * FIXED BUG, sometimes you cant focus an option using the keyboard
 * FIXED cache option should be an integer that determines the number of url+inputedText to cache
 * FIXED make it auto-scrollable
@@ -49,23 +53,23 @@ TODO:
   Would be awezomm!
 
 
+* make it work exactly like a select. It will have an options that will receive a selector for a hidden input field.
+  With this option, i would be able to synchronize the value of the input text onload, by sending an ajax request to the server ondomready
+  containing the id of the hidden field. Thats a proposal, lets see if this is possible while coding.
 * include examples talking about the value synchronization (a very often case);
-* fix the problem with select and flash overlay (ie);
+* fix the problem with select and flash overlay (ie6);
 * the list should be possible to be anything, like a table for example.
 * make it possible to enter multiple values
 * test if the browser has max-height, if it does use it instead of calculating it.
 * make it work on the iphone in a usable way
 
 
-New structure im thinking about: OK
-Meio.Widget should be a class for a widget that contains references to 'n' instances of the Meio.Element class.
-Meio.Autocomplete should extend Meio.Widget.
-Both the Input and the List will extend the Meio.Element Class.
-thats basically it.
-
-
 
 Miscelaneous thoughts:
+
+interesting article about accent folding:
+
+http://www.alistapart.com/articles/accent-folding-for-auto-complete/
 
 initial synchronize
 ---------------------
@@ -83,8 +87,8 @@ Meio.Autocomplete plugin main goals:
 It should be able to get the String value corresponding to this dependent value when it is still setted at the initialization,
 Like when your on a edit page (if the current text input is empty).
 
-* Should be capable of using ajax (by receiving an string that will eval to an array) or using a local passed array;
+* Should be capable of using ajax or using a local passed array;
 * Should handle safely mouse and keyboard events;
 * Should have easily customizable styles;
-* Should be easy to make the results dependent on another input;
+* Should be easy to make the results dependent on another input values;
 * Should be optimized to have more than one instance on one page.
