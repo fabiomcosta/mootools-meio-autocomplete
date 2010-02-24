@@ -51,13 +51,13 @@ TODO:
 * INVALID (if someone asks for it maybe i can do it but i dont want this into the plugin) allow effects to be used with the list
 * OK adapt it in a way that it could be used without being just an autocomplete. It could be used to create a dynamic list for a search for example.
   Would be awezomm!
+* fix the problem with select and flash overlay (ie6);
 
 
 * make it work exactly like a select. It will have an options that will receive a selector for a hidden input field.
   With this option, i would be able to synchronize the value of the input text onload, by sending an ajax request to the server ondomready
   containing the id of the hidden field. Thats a proposal, lets see if this is possible while coding.
 * include examples talking about the value synchronization (a very often case);
-* fix the problem with select and flash overlay (ie6);
 * the list should be possible to be anything, like a table for example.
 * make it possible to enter multiple values
 * test if the browser has max-height, if it does use it instead of calculating it.

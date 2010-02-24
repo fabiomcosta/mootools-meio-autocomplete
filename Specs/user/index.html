@@ -34,7 +34,8 @@
 				background-color: #228822;
 				position: absolute;
 				visibility: hidden;
-				overflow: auto;
+				overflow-y: auto;
+				overflow-x: hidden;
 			}
 			.ma-container ul{
 				margin: 0;
@@ -58,9 +59,7 @@
 			.ma-container .ma-selected{
 				background: green !important;
 			}
-			
-			
-			
+
 			#list_test{
 				width: 240px;
 				height: 220px;
@@ -68,11 +67,9 @@
 				overflow-y: auto;
 				border: 1px solid green;
 			}
-			
 			#list_test ul{
 				list-style: none;
 			}
-			
 			#list_test li{
 				float: left;
 				padding: 5px;
@@ -81,7 +78,6 @@
 				height: 40px;
 				border: 1px solid red;
 			}
-			
 			#list_test li.ma-hover{
 				background: #223322;
 			}
