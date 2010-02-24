@@ -22,10 +22,12 @@ provides: [Meio.Autocomplete]
 	var $ = global.document.id || global.$;
 	var browserEngine = Browser.Engine; // better compression and faster
 	
-	if(!console) var console = {};
-	if(!console.log) console.log = function(text){
-		$(document.body).grab(new Element('span', {'html': text + ' '}), 'bottom');
-	}
+	/*if(typeof console == 'undefined'){
+		var console = {};
+		if(!console.log) console.log = function(text){
+			$(document.body).grab(new Element('span', {'html': text + ' '}), 'bottom');
+		}
+	}*/
 
 	// Custom Events
 	
@@ -300,7 +302,7 @@ provides: [Meio.Autocomplete]
 		addListEvents: function(){
 			this.addEventsToElement('list', {
 				'mousedown': function(e){
-					if(this.active) this.setInputValue();
+					if(this.active && !e.dontHide) this.setInputValue();
 				}
 			});
 		},
@@ -507,13 +509,6 @@ provides: [Meio.Autocomplete]
 			this.fireEvent('delayedKeyrepeat', e);
 		},
 		
-		//ie6 only
-		keypress: function(e){
-			this.fireEvent('beforeKeyrepeat', e);
-			this.keyrepeat(e);
-			this.fireEvent('keyrepeat', e);
-		},
-		
 		destroy: function(){
 			this.detach();
 			this.node.removeAttribute('autocomplete');
@@ -533,6 +528,12 @@ provides: [Meio.Autocomplete]
 		
 		removeSelectedClass: function(){
 			this.node.removeClass(this.options.classes.selected);
+		},
+		
+		//ie6 only, uglyness
+		// this fix the form being submited on the press of the enter key
+		keypress: function(e){
+			if(e.key == 'enter') this.bound.keyrepeat(e);
 		}
 		
 	});
@@ -583,7 +584,10 @@ provides: [Meio.Autocomplete]
 		mousedown: function(e){
 			e.preventDefault();
 			this.shouldNotBlur = true;
-			if(!(this.focusedItem = this.getItemFromEvent(e))) return true;
+			if(!(this.focusedItem = this.getItemFromEvent(e))){
+				e.dontHide = true;
+				return true;
+			} 
 			this.focusedItem.removeClass(this.options.classes.hover);
 		},
 		
