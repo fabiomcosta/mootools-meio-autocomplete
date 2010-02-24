@@ -53,7 +53,7 @@ TODO:
   Would be awezomm!
 * fix the problem with select and flash overlay (ie6);
 
-
+* BUG Theres a little space while im on ie between the last item and the container.
 * make it work exactly like a select. It will have an options that will receive a selector for a hidden input field.
   With this option, i would be able to synchronize the value of the input text onload, by sending an ajax request to the server ondomready
   containing the id of the hidden field. Thats a proposal, lets see if this is possible while coding.

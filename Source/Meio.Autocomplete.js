@@ -530,7 +530,7 @@ provides: [Meio.Autocomplete]
 			this.node.removeClass(this.options.classes.selected);
 		},
 		
-		//ie6 only, uglyness
+		// ie6 only, uglyness
 		// this fix the form being submited on the press of the enter key
 		keypress: function(e){
 			if(e.key == 'enter') this.bound.keyrepeat(e);
@@ -569,7 +569,7 @@ provides: [Meio.Autocomplete]
 			// uggly hack to fix the height of the autocomplete list
 			// TODO rethink about it
 			this.node.setStyle('height', node.getCoordinates(this.list).bottom);
-			this.node.setStyle('height', node.getCoordinates(this.list).bottom);
+			//this.node.setStyle('height', node.getCoordinates(this.list).bottom);
 		},
 		
 		mouseover: function(e){
