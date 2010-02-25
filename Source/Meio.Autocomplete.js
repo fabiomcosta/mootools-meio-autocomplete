@@ -179,6 +179,16 @@ provides: [Meio.Autocomplete]
 			cacheType: 'shared', // 'shared' or 'own'
 			listClass: null,
 			
+			actAsSelect: false,
+			valueField: null,
+			syncAtInit: true,
+			valueFilter: function(values, value){
+				for(var i = values.length; i--;){
+					if(values[i].value == value) return values[i];
+				}
+				return null;
+			},
+			
 			filter: 'contains',
 			formatMatch: function(text, data){
 				return data;
@@ -213,7 +223,6 @@ provides: [Meio.Autocomplete]
 			var listClass = this.options.listClass || Meio.Element.List;
 			var classIndex = listClasses.indexOf(listClass);
 			var listInstance;
-			
 			if(classIndex < 0){
 				listClasses.push(listClass);
 				listInstances.push((listInstance = new listClass(this.options.listOptions)));
@@ -228,8 +237,25 @@ provides: [Meio.Autocomplete]
 			this.addFieldEvents();
 			
 			this.attach();
-			this.handleCache();
-			this.handleData(data);
+			this.initCache();
+			this.initData(data);
+			
+			if(this.options.syncAtInit && this.options.actAsSelect){
+				var valueField = this.options.valueField;
+				if(valueField){
+					var value = valueField.get('value');
+					if(value){
+						this.data.addEvent('ready', function(){
+							var selectedValue = this.options.valueFilter.call(this, this.data.get(), value);
+							if(selectedValue){
+								this.elements.field.node.set('value', this.options.formatMatch.call(this, '', selectedValue, 0));
+							}
+						}.bind(this));
+						this.data.prepare(this.elements.field.node.get('value'));
+					}
+				}
+			}
+			
 		},
 		
 		addFieldEvents: function(){
@@ -354,12 +380,12 @@ provides: [Meio.Autocomplete]
 			inputedText = inputedText || this.elements.field.node.get('value');
 			if(inputedText.length >= this.options.minChars){
 				$clear(this.prepareTimer);
-				this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, this.inputedText);	
+				this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, this.inputedText);
 			}
 		},
 		
 		dataReady: function(){
-			this.update(this);
+			this.update();
 			if(this.onUpdate){
 				this.onUpdate();
 				this.onUpdate = null;
@@ -393,14 +419,14 @@ provides: [Meio.Autocomplete]
 			}
 		},
 		
-		handleData: function(data){
+		initData: function(data){
 			this.data = ($type(data) == 'string') ?
 				new Meio.Autocomplete.Data.Request(data, this.cache, this.elements.field, this.options.requestOptions, this.options.urlOptions) :
 				new Meio.Autocomplete.Data(data, this.cache);
 			this.data.addEvent('ready', this.dataReady.bind(this));
 		},
 		
-		handleCache: function(){
+		initCache: function(){
 			var cacheLength = this.options.cacheLength;
 			if(this.options.cacheType == 'shared'){
 				this.cache = globalCache;
@@ -569,7 +595,7 @@ provides: [Meio.Autocomplete]
 			// uggly hack to fix the height of the autocomplete list
 			// TODO rethink about it
 			this.node.setStyle('height', node.getCoordinates(this.list).bottom);
-			//this.node.setStyle('height', node.getCoordinates(this.list).bottom);
+			this.node.setStyle('height', node.getCoordinates(this.list).bottom);
 		},
 		
 		mouseover: function(e){
@@ -635,7 +661,8 @@ provides: [Meio.Autocomplete]
 		},
 		
 		render: function(){
-			var node = new Element('div', {'class': this.options.classes.container}).bgiframe({top: 0, left: 0});
+			var node = new Element('div', {'class': this.options.classes.container});
+			if(node.bgiframe) node.bgiframe({top: 0, left: 0});
 			this.list = new Element('ul').inject(node);
 			$(document.body).grab(node);
 			return node;
@@ -771,6 +798,7 @@ provides: [Meio.Autocomplete]
 		
 		initialize: function(url, options){
 			this.setOptions(options);
+			this.rawUrl = url;
 			var params = $splat(this.options.extraParams);
 			var urlParams = [];
 			this.dynamicExtraParams = [];
@@ -779,7 +807,7 @@ provides: [Meio.Autocomplete]
 					this.dynamicExtraParams.push(params[i]) : urlParams.push(params[i].name + '=' + params[i].value);
 			}
 			if(this.options.max) urlParams.push('limit=' + this.options.max);
-			url += (url.contains('?')) ? '&' : '?';
+			url += url.contains('?') ? '&' : '?';
 			url += urlParams.join('&');
 			this.url = url;
 		},
