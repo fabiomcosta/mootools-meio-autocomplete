@@ -158,9 +158,11 @@
 			
 			var data2 = ['aff2', 'alguma coisa2', 'something2', 'omg2', 'testing2', 'so what?2', 'other chars2', 'á latin é2', 'hmmm2', 'hmmmmmm2', 'ok2', 'it\'s fine2'];
 			
-			var instance3 = new Meio.Autocomplete($('some6'), data, {
-				actAsSelect: true,
+			var instance3 = new Meio.Autocomplete.Select($('some6'), data, {
 				valueField: $('some7'),
+				valueFilter: function(data){
+					return data.value;
+				},
 				filter: function(text, data){
 					return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true; // 'startswith' filter
 				},

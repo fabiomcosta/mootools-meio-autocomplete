@@ -179,16 +179,6 @@ provides: [Meio.Autocomplete]
 			cacheType: 'shared', // 'shared' or 'own'
 			listClass: null,
 			
-			actAsSelect: false,
-			valueField: null,
-			syncAtInit: true,
-			valueFilter: function(values, value){
-				for(var i = values.length; i--;){
-					if(values[i].value == value) return values[i];
-				}
-				return null;
-			},
-			
 			filter: 'contains',
 			formatMatch: function(text, data){
 				return data;
@@ -215,7 +205,6 @@ provides: [Meio.Autocomplete]
 		},
 		
 		initialize: function(input, data, options){
-			
 			this.parent();
 			this.setOptions(options);
 			this.active = 0;
@@ -239,23 +228,6 @@ provides: [Meio.Autocomplete]
 			this.attach();
 			this.initCache();
 			this.initData(data);
-			
-			if(this.options.syncAtInit && this.options.actAsSelect){
-				var valueField = this.options.valueField;
-				if(valueField){
-					var value = valueField.get('value');
-					if(value){
-						this.data.addEvent('ready', function(){
-							var selectedValue = this.options.valueFilter.call(this, this.data.get(), value);
-							if(selectedValue){
-								this.elements.field.node.set('value', this.options.formatMatch.call(this, '', selectedValue, 0));
-							}
-						}.bind(this));
-						this.data.prepare(this.elements.field.node.get('value'));
-					}
-				}
-			}
-			
 		},
 		
 		addFieldEvents: function(){
@@ -448,6 +420,63 @@ provides: [Meio.Autocomplete]
 		}
 
 	});
+	
+	// This is the same autocomplete class but it acts like a normal select element.
+	// When you select an option from the autocomplete it will set the value of a given element (valueField)
+	// with the return of the valueFilter.
+	// if the syncAtInit option is set to true, it will synchonize the value of the autocomplete with the corresponding data
+	// from the valueField's value.
+	// to understand better see the user specs.
+	
+	Meio.Autocomplete.Select = new Class({
+		
+		Extends: Meio.Autocomplete,
+		
+		options: {
+			syncAtInit: true,
+			valueField: null,
+			valueFilter: function(data){
+				return data.id;
+			}
+		},
+		
+		initialize: function(input, data, options){
+			this.parent(input, data, options);
+			if(this.options.syncAtInit){
+				this.syncWithValueField();
+			}
+			this.addEvent('select', function(elements, data){
+				this.options.valueField.set('value', this.options.valueFilter.call(this, data));
+			});
+		},
+		
+		syncWithValueField: function(){
+			var valueField = this.options.valueField;
+			if(!valueField) return;
+			var value = valueField.get('value');
+			if(!value) return;
+
+			var fieldNode = this.elements.field.node;
+			var self = this; // i cant use bind here or i wont be able to remove the event
+			this.data.addEvent('ready', function runOnce(){
+				var values = this.get();
+				for(var i = values.length; i--;){
+					if(self.options.valueFilter.call(self, values[i]) == value){
+						fieldNode.set('value', self.options.formatMatch.call(self, '', values[i], 0));
+					}
+				}
+				this.removeEvent('ready', runOnce);
+			});
+			this.data.prepare(fieldNode.get('value'));
+		},
+		
+		initData: function(data){
+			this.parent(data);
+			if($type(data) == 'string') this.data.url.addParameter(this.options.valueField);
+		}
+		
+	});
+	
 	
 	Meio.Element = new Class({
 		
@@ -799,27 +828,32 @@ provides: [Meio.Autocomplete]
 		initialize: function(url, options){
 			this.setOptions(options);
 			this.rawUrl = url;
-			var params = $splat(this.options.extraParams);
-			var urlParams = [];
-			this.dynamicExtraParams = [];
-			for(var i = params.length; i--;){
-				(isFinite(params[i].nodeType) || $type(params[i].value) == 'function') ?
-					this.dynamicExtraParams.push(params[i]) : urlParams.push(params[i].name + '=' + params[i].value);
-			}
-			if(this.options.max) urlParams.push('limit=' + this.options.max);
-			url += url.contains('?') ? '&' : '?';
-			url += urlParams.join('&');
 			this.url = url;
+			this.url += this.url.contains('?') ? '&' : '?';
+			this.dynamicExtraParams = [];
+			var params = $splat(this.options.extraParams);
+			for(var i = params.length; i--;){
+				this.addParameter(params[i]);
+			}
+			if(this.options.max) this.addParameter('limit=' + this.options.max);
 		},
 		
 		evaluate: function(text){
 			text = text || '';
 			var params = this.dynamicExtraParams, url = [];
-			url.push('q=' + text);
+			url.push('q=' + encodeURIComponent(text));
 			for(var i = params.length; i--;){
-				url.push(params[i].name + '=' + $lambda(params[i].value)());
+				url.push(encodeURIComponent(params[i].name) + '=' + encodeURIComponent($lambda(params[i].value)()));
 			}
 			return this.url + url.join('&');
+		},
+		
+		addParameter: function(param){
+			if(isFinite(param.nodeType) || $type(param.value) == 'function'){
+				this.dynamicExtraParams.push(param);
+			}else{
+				this.url += (($type(param) == 'string') ? param : encodeURIComponent(param.name) + '=' + encodeURIComponent(param.value)) + '&';
+			}
 		}
 		
 	});
