@@ -433,46 +433,60 @@ provides: [Meio.Autocomplete]
 		Extends: Meio.Autocomplete,
 		
 		options: {
-			syncAtInit: true,
+			syncName: 'id', // if falsy it wont sync at start
 			valueField: null,
 			valueFilter: function(data){
 				return data.id;
 			}
 		},
 		
+		// overwritten
 		initialize: function(input, data, options){
 			this.parent(input, data, options);
-			if(this.options.syncAtInit){
-				this.syncWithValueField();
-			}
 			this.addEvent('select', function(elements, data){
 				this.options.valueField.set('value', this.options.valueFilter.call(this, data));
 			});
 		},
 		
-		syncWithValueField: function(){
+		// overwritten
+		initData: function(data){
+			this.parent(data);
+			if(this.options.syncName){
+				this.syncWithValueField(data);
+			}
+		},
+		
+		syncWithValueField: function(data){
 			var valueField = this.options.valueField;
-			if(!valueField) return;
 			var value = valueField.get('value');
-			if(!value) return;
-
-			var fieldNode = this.elements.field.node;
-			var self = this; // i cant use bind here or i wont be able to remove the event
+			if(!valueField || !value) return;
+			
+			this.addParameter(data);
+			this.addDataReadyEvent(value);
+			
+			this.data.prepare(this.elements.field.node.get('value'));
+		},
+		
+		addParameter: function(data){
+			this.parameter = {
+				name: this.options.syncName,
+				value: function(){ return this.options.valueField.value }.bind(this)
+			};
+			if($type(data) == 'string') this.data.url.addParameter(this.parameter);
+		},
+		
+		addDataReadyEvent: function(value){
+			var self = this;
 			this.data.addEvent('ready', function runOnce(){
 				var values = this.get();
 				for(var i = values.length; i--;){
 					if(self.options.valueFilter.call(self, values[i]) == value){
-						fieldNode.set('value', self.options.formatMatch.call(self, '', values[i], 0));
+						self.elements.field.node.set('value', self.options.formatMatch.call(self, '', values[i], 0));
 					}
 				}
+				this.url.removeParameter(self.parameter);
 				this.removeEvent('ready', runOnce);
 			});
-			this.data.prepare(fieldNode.get('value'));
-		},
-		
-		initData: function(data){
-			this.parent(data);
-			if($type(data) == 'string') this.data.url.addParameter(this.options.valueField);
 		}
 		
 	});
@@ -854,6 +868,11 @@ provides: [Meio.Autocomplete]
 			}else{
 				this.url += (($type(param) == 'string') ? param : encodeURIComponent(param.name) + '=' + encodeURIComponent(param.value)) + '&';
 			}
+		},
+		
+		// TODO remove non dynamic parameters
+		removeParameter: function(param){
+			this.dynamicExtraParams.erase(param);
 		}
 		
 	});

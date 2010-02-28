@@ -158,10 +158,13 @@
 			
 			var data2 = ['aff2', 'alguma coisa2', 'something2', 'omg2', 'testing2', 'so what?2', 'other chars2', 'á latin é2', 'hmmm2', 'hmmmmmm2', 'ok2', 'it\'s fine2'];
 			
-			var instance3 = new Meio.Autocomplete.Select($('some6'), data, {
+			var data3 = '../../Specs/fixtures/data.php';
+			
+			var instance3 = new Meio.Autocomplete.Select($('some6'), data3, {
+				syncName: 'id',
 				valueField: $('some7'),
 				valueFilter: function(data){
-					return data.value;
+					return data.id;
 				},
 				filter: function(text, data){
 					return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true; // 'startswith' filter
@@ -171,6 +174,9 @@
 				},
 				formatItem: function(text, data){
 					return text ? data.text.replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data.text;
+				},
+				urlOptions: {
+					max: 10
 				}
 			});
 			
