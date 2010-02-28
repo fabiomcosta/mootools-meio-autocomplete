@@ -60,6 +60,7 @@ TODO:
 
 * remove the arrays that are saving the instances of the lists.
   Make an examples for the ppl that wanna use more than one instance per page to show how it can be optimized.
+* decrease the complexity on creating the filters. The Meio.Autocomplete.Filter should have some facility functions that will easily create filters for the most common cases. 
 * include examples talking about the value synchronization (a very often case);
 * the list should be possible to be anything, like a table for example.
 * make it possible to enter multiple values

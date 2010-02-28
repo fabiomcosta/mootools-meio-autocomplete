@@ -443,17 +443,12 @@ provides: [Meio.Autocomplete]
 		// overwritten
 		initialize: function(input, data, options){
 			this.parent(input, data, options);
-			this.addEvent('select', function(elements, data){
-				this.options.valueField.set('value', this.options.valueFilter.call(this, data));
-			});
-		},
-		
-		// overwritten
-		initData: function(data){
-			this.parent(data);
 			if(this.options.syncName){
 				this.syncWithValueField(data);
 			}
+			this.addEvent('select', function(elements, data){
+				this.options.valueField.set('value', this.options.valueFilter.call(this, data));
+			});
 		},
 		
 		syncWithValueField: function(data){
@@ -472,7 +467,7 @@ provides: [Meio.Autocomplete]
 				name: this.options.syncName,
 				value: function(){ return this.options.valueField.value }.bind(this)
 			};
-			if($type(data) == 'string') this.data.url.addParameter(this.parameter);
+			if(this.data.url) this.data.url.addParameter(this.parameter);
 		},
 		
 		addDataReadyEvent: function(value){
@@ -484,7 +479,7 @@ provides: [Meio.Autocomplete]
 						self.elements.field.node.set('value', self.options.formatMatch.call(self, '', values[i], 0));
 					}
 				}
-				this.url.removeParameter(self.parameter);
+				if(this.url) this.url.removeParameter(self.parameter);
 				this.removeEvent('ready', runOnce);
 			});
 		}
