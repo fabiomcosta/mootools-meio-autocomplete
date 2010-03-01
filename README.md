@@ -38,6 +38,7 @@ How to use
 Demos
 -----
 
+Checkout the Demos folder. Ill create some public ones as soon as i can.
 
 Credits
 -------
