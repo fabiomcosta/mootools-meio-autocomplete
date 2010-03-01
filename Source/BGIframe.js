@@ -9,12 +9,7 @@ authors:
 requires:
  - core/1.2.4: [Class.Extras]
 
-license: MIT-style license
-  Original plugin copyright
-  Copyright (c) 2006 Brandon Aaron (http://brandonaaron.net)
-  Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) 
-  and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
-  Version 2.1.1
+license: MIT-style license Original plugin copyright Copyright (c) 2006 Brandon Aaron (http://brandonaaron.net) Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses. Version 2.1.1
 
 provides: [BGIFrame]
 
