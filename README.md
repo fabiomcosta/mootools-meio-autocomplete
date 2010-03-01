@@ -15,7 +15,7 @@ This plugin can also share the same list element, in a way that it will inject j
 How to use
 ----------
 
-	#HTML
+	#JAVASCRIPT
 	<script type="text/javascript">
 		var data = [
 			{"value": 0, "text": "Brazil"},
