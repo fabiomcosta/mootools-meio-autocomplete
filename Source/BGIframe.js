@@ -1,7 +1,8 @@
 /*
 ---
 
-description: Port of bgiframe plugin for mootools
+description:
+  Port of bgiframe plugin for mootools
   Original plugin copyright:
   Copyright (c) 2006 Brandon Aaron (http://brandonaaron.net)
   Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) 
