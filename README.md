@@ -5,24 +5,38 @@ Meio.Autocomplete - a mootools plugin for creating autocomplete fields.
 
 ![Screenshot](http://github.com/fabiomcosta/mootools-meio-autocomplete/raw/master/Assets/image_forge.png)
 
+Introduction
+------------
+
+Thats not just another autocomplete plugin.
+I made it because i needed it to work like a dom select element and because i wanted it to be flexible in a way that i could use anything as the autocomplete list.
+This plugin can also share the same list element, in a way that it will inject just one dom element on the document if you create more than one autocomplete instance in the same page.
+
 How to use
 ----------
-	
-soon.
-	
+
 	#HTML
-	<html>
-		<head>
-		</head>
-	
-		<body>
-		</body>
-	</html>
+	<script type="text/javascript">
+		var data = [
+			{"value": 0, "text": "Brazil"},
+			{"value": 1, "text": "Ajax"},
+		];
+
+		var autocomplete = new Meio.Autocomplete($('text_input_id'), data, {
+			selectOnTab: false,
+			onNoItemsToList: function(elements){
+				elements.field.node.highlight('#ff0000');
+			},
+			filter: {
+				type: 'contains',
+				path: 'text'
+			}
+		});
+		
+	</script>
 
 Demos
 -----
-
-soon.
 
 
 Credits
