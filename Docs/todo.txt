@@ -56,11 +56,10 @@ TODO:
 * make it work exactly like a select. It will have an options that will receive a selector for a hidden input field.
   With this option, i would be able to synchronize the value of the input text onload, by sending an ajax request to the server ondomready
   containing the id of the hidden field. Thats a proposal, lets see if this is possible while coding.
-
-
 * remove the arrays that are saving the instances of the lists.
-  Make an examples for the ppl that wanna use more than one instance per page to show how it can be optimized.
-* decrease the complexity on creating the filters. The Meio.Autocomplete.Filter should have some facility functions that will easily create filters for the most common cases. 
+* decrease the complexity on creating the filters. The Meio.Autocomplete.Filter should have some facility functions that will easily create filters for the most common cases.   
+
+* Make an examples for the ppl that wanna use more than one instance per page to show how it can be optimized.
 * include examples talking about the value synchronization (a very often case);
 * the list should be possible to be anything, like a table for example.
 * make it possible to enter multiple values

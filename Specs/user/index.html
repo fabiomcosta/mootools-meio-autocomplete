@@ -122,56 +122,46 @@
 			var data2 = ['aff2', 'alguma coisa2', 'something2', 'omg2', 'testing2', 'so what?2', 'other chars2', 'á latin é2', 'hmmm2', 'hmmmmmm2', 'ok2', 'it\'s fine2'];
 			var data3 = '../../Specs/fixtures/data.php';
 			var data4 = [
-			    {"value": 0, "text": "ajax"},
-			    {"value": 1, "text": "sim ajax"},
-			    {"value": 2, "text": "a very long text so we can test the width property properly"},
-			    {"value": 3, "text": "aaaaa"},
-			    {"value": 4, "text": "aff"},
-			    {"value": 5, "text": "alguma coisa"},
-			    {"value": 6, "text": "something"},
-			    {"value": 7, "text": "omg"},
-			    {"value": 8, "text": "testing"},
-			    {"value": 9, "text": "so what?"},
-			    {"value": 10, "text": "other chars"},
-			    {"value": 11, "text": "á latin é"},
-			    {"value": 12, "text": "hmmm"},
-			    {"value": 13, "text": "chars test > gg"},
-			    {"value": 14, "text": "chars test < gg"},
-			    {"value": 15, "text": "chars test & gg"},
-			    {"value": 16, "text": "ok"},
-			    {"value": 17, "text": "it\" fine"}
+				{"value": 0, "text": "ajax"},
+				{"value": 1, "text": "sim ajax"},
+				{"value": 2, "text": "a very long text so we can test the width property properly"},
+				{"value": 3, "text": "aaaaa"},
+				{"value": 4, "text": "aff"},
+				{"value": 5, "text": "alguma coisa"},
+				{"value": 6, "text": "something"},
+				{"value": 7, "text": "omg"},
+				{"value": 8, "text": "testing"},
+				{"value": 9, "text": "so what?"},
+				{"value": 10, "text": "other chars"},
+				{"value": 11, "text": "á latin é"},
+				{"value": 12, "text": "hmmm"},
+				{"value": 13, "text": "chars test > gg"},
+				{"value": 14, "text": "chars test < gg"},
+				{"value": 15, "text": "chars test & gg"},
+				{"value": 16, "text": "ok"},
+				{"value": 17, "text": "it\" fine"}
 			];
 
 			var instance = new Meio.Autocomplete($('some'), data1, {
-				selectOnTab: false,
-				filter: function(text, data){
-					return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true; // 'startswith' filter
-				},
-				formatMatch: function(text, data, i){
-					return data.text;
-				},
-				formatItem: function(text, data){
-					return text ? data.text.replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data.text;
-				},
 				
+				selectOnTab: false,
+				onNoItemsToList: function(elements){
+					elements.field.node.highlight('#ff0000');
+				},
+				filter: {
+					type: 'startswith',
+					path: 'text'
+				},
 				onSelect: function(elements, data){
-					elements.field.addSelectedClass();
 					[$('some4')].each(function(el){
 						el.set('value', data.value);
 					});
 				},
-				
 				onDeselect: function(elements){
-					elements.field.removeSelectedClass();
 					[$('some4')].each(function(el){
 						el.set('value', '');
 					});
 				},
-				
-				listOptions: {
-					width: 'input'
-				},
-				
 				urlOptions: {
 					extraParams: [
 						{name: $('some2').get('name'), value: function(){ return $('some2').get('value') }},
@@ -186,6 +176,9 @@
 				valueField: $('some7'),
 				valueFilter: function(data){
 					return data.id;
+				},
+				onNoItemsToList: function(elements){
+					elements.field.node.highlight('#ff0000');
 				},
 				filter: function(text, data){
 					return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true; // 'startswith' filter
@@ -207,6 +200,9 @@
 				valueFilter: function(data){
 					return data.value;
 				},
+				onNoItemsToList: function(elements){
+					elements.field.node.highlight('#ff0000');
+				},
 				filter: function(text, data){
 					return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true; // 'startswith' filter
 				},
@@ -221,22 +217,19 @@
 				}
 			});
 			
-			
-			
 			var instance2 = new Meio.Autocomplete($('some1'), data2);
 			var ContainerList = new Class({
 				Extends: Meio.Element.List,
-				
 				setNode: function(){
 					this.node = $('list_test');
 					this.list = $('ul_list_test');
 				},
-
 				hide: function(){ this.showing = false; },
 				positionNextTo: $empty,
 				applyMaxHeight: $empty
 			});
-			var instance3 = new Meio.Autocomplete($('some5'), data2, {listClass: ContainerList});
+			var containerList = new ContainerList();
+			var instance3 = new Meio.Autocomplete($('some5'), data2, {listInstance: containerList});
 		</script>
 	</body>
 </html>
