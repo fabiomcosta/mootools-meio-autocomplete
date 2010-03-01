@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>Meio Plugin Demo</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+		
+		<style type="text/css" media="screen">
+			*{
+				margin: 0;
+				padding: 0;
+			}
+		</style>
+		<link  href="meio.aucomplete.css" rel="stylesheet" type="text/css" />
+		<script src="../Assets/mootools-1.2.4-core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../Assets/jasmine/Builder.js" type="text/javascript" charset="utf-8"></script>
+		
+		<script type="text/javascript" charset="utf-8">
+			Builder.build('../', {
+				Source: [
+					'BGIFrame',
+					'Meio.Autocomplete'
+				]
+			});
+		</script>
+	</head>
+	<body>
+		<form method="post" action="">
+			<fieldset>
+				<input type="text" id="some" name="some" value="" />
+				<input type="submit" name="some_button" id="some_button" value="" />
+			</fieldset>
+		</form>
+		
+		<script type="text/javascript">
+			var data = [
+				{"value": 0, "text": "Brazil"},
+				{"value": 1, "text": "Ajax"},
+				{"value": 2, "text": "Options"},
+				{"value": 3, "text": "Mootools"},
+				{"value": 4, "text": "Meio"},
+				{"value": 5, "text": "Código"},
+				{"value": 6, "text": "Meio.Autocomplete"},
+				{"value": 7, "text": "Whale"},
+				{"value": 8, "text": "testing"},
+				{"value": 9, "text": "so what?"},
+				{"value": 10, "text": "other chars"},
+				{"value": 11, "text": "á latin é"},
+				{"value": 12, "text": "Brasil"},
+				{"value": 13, "text": "chars test > gg"},
+				{"value": 14, "text": "chars test < gg"},
+				{"value": 15, "text": "chars test & gg"},
+				{"value": 16, "text": "ok"},
+				{"value": 17, "text": "it\" fine"}
+			];
+
+			var instance = new Meio.Autocomplete($('some'), data, {
+				selectOnTab: false,
+				onNoItemsToList: function(elements){
+					elements.field.node.highlight('#ff0000');
+				},
+				filter: {
+					type: 'contains',
+					path: 'text'
+				}
+			});
+			
+		</script>
+	</body>
+</html>

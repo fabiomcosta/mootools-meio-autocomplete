@@ -1,0 +1,37 @@
+.ma-container{
+	color: #000;
+	border: 1px solid #333;
+	background-color: #fff;
+	position: absolute;
+	visibility: hidden;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+.ma-container ul{
+	list-style: none;
+	overflow: hidden;
+	width: 100%;
+}
+.ma-container li{
+	padding: 2px 5px;
+	line-height: 16px;
+	cursor: pointer;
+	float: left;
+	width: 100%;
+	overflow: hidden;
+}
+.ma-container .ma-hover{
+	color: #fff;
+	background-color: #921506 !important;
+}
+.ma-container .ma-loading{
+	background-color: #fafba4 !important;
+}
+.ma-container .ma-odd{
+}
+.ma-container .ma-even{
+	background-color: #efefef;
+}
+.ma-container .ma-selected{
+	background-color: #ccfda8;
+}

@@ -8,7 +8,6 @@ authors:
 
 requires:
  - core/1.2.4: [Class.Extras, Element.Event, Element.Style]
- - Event.Changed
 
 license: MIT-style license
 
@@ -21,13 +20,6 @@ provides: [Meio.Autocomplete]
 
 	var $ = global.document.id || global.$;
 	var browserEngine = Browser.Engine; // better compression and faster
-	
-	/*if(typeof console == 'undefined'){
-		var console = {};
-		if(!console.log) console.log = function(text){
-			$(document.body).grab(new Element('span', {'html': text + ' '}), 'bottom');
-		}
-	}*/
 
 	// Custom Events
 	
@@ -48,54 +40,6 @@ provides: [Meio.Autocomplete]
 		base : (browserEngine.gecko || browserEngine.presto) ? 'keypress' : 'keydown',
 		condition: $lambda(true)
 	};
-	
-	
-	/* Port of bgiframe plugin for mootools
-	 * Original plugin copyright:
-	 * Copyright (c) 2006 Brandon Aaron (http://brandonaaron.net)
-	 * Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) 
-	 * and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses.
-	 * Version 2.1.1
-	 */
-	
-	var BgIframe = new Class({
-		Implements: Options,
-		options: {
-			top		: 'auto',
-			left	: 'auto',
-			width	: 'auto',
-			height	: 'auto',
-			opacity	: true,
-			src		: 'javascript:false;'
-		},
-		initialize: function(element, options){
-			if(!browserEngine.trident4) return;
-			this.setOptions(options);
-			this.element = $(element);
-			var firstChild = this.element.getFirst();
-			if(!(firstChild && firstChild.hasClass('bgiframe')))
-				this.element.grab(document.createElement(this.render()), 'top');
-		},
-		toPx: function(n){ 
-			return isFinite(n) ? n + 'px' : n;
-		},
-		render: function(){
-			var options = this.options;
-			return '<iframe class="bgiframe" frameborder="0" tabindex="-1" src="' + options.src + '" ' +
-				'style="display:block;position:absolute;z-index:-1;' +
-				(options.opacity !== false ? 'filter:alpha(opacity=\'0\');' : '') +
-				'top:' + (options.top == 'auto' ? 'expression(((parseInt(this.parentNode.currentStyle.borderTopWidth)||0)*-1)+\'px\')' : this.toPx(options.top)) + ';' +
-				'left:' + (options.left == 'auto' ? 'expression(((parseInt(this.parentNode.currentStyle.borderLeftWidth)||0)*-1)+\'px\')' : this.toPx(options.left)) + ';' +
-				'width:' + (options.width == 'auto' ? 'expression(this.parentNode.offsetWidth+\'px\')' : this.toPx(options.width)) + ';' +
-				'height:' + (options.height == 'auto' ? 'expression(this.parentNode.offsetHeight+\'px\')' : this.toPx(options.height)) + ';' +
-			'"/>';
-		}
-	});
-	
-	Element.implement('bgiframe', function(options){
-		if(browserEngine.trident4) new BgIframe(this, options);
-		return this;
-	});
 	
 	// Autocomplete itself
 
@@ -165,7 +109,7 @@ provides: [Meio.Autocomplete]
 		
 		Extends: Meio.Widget,
 		
-		Implements: [Options, Events, Chain],
+		Implements: [Options, Events],
 		
 		options: {
 			
@@ -179,7 +123,18 @@ provides: [Meio.Autocomplete]
 			
 			filter: {
 				type: 'contains'
-				//path: 'a.b.c'
+				/*
+					its posible to pass the filters directly or by passing a type and optionaly a path.
+					
+					filter: function(text, data){}
+					formatMatch: function(text, data, i){}
+					formatItem: function(text, data){}
+					
+					or
+					
+					type: 'startswith' // can be any defined on the Meio.Autocomplete.Filter object
+					path: 'a.b.c' // path to the text value on each object thats contained on the data array
+				*/
 			},
 			
 			/*
@@ -200,7 +155,7 @@ provides: [Meio.Autocomplete]
 			this.setOptions(options);
 			this.active = 0;
 			
-			this.filter = Meio.Autocomplete.Filter.get(this.options.filter);
+			this.filters = Meio.Autocomplete.Filter.get(this.options.filter);
 			
 			this.addElement('list', this.options.listInstance || new Meio.Element.List(this.options.listOptions));
 			this.addListEvents();
@@ -292,7 +247,7 @@ provides: [Meio.Autocomplete]
 		
 		update: function(){
 			var text = this.inputedText, data = this.data, options = this.options, list = this.elements.list;
-			var filter = this.filter.filter, formatMatch = this.filter.formatMatch, formatItem = this.filter.formatItem; 
+			var filter = this.filters.filter, formatMatch = this.filters.formatMatch, formatItem = this.filters.formatItem; 
 			var cacheKey = data.getKey(), cached = this.cache.get(cacheKey), html;
 			if(cached){
 				html = cached.html;
@@ -723,7 +678,9 @@ provides: [Meio.Autocomplete]
 	});
 	
 	Meio.Autocomplete.Filter = {
+		
 		filters: {},
+		
 		get: function(options){
 			var type = options.type, filters = options;
 			if(type){
@@ -732,35 +689,39 @@ provides: [Meio.Autocomplete]
 			}
 			return $merge(this.defaults(keys), filters);
 		},
+		
 		define: function(name, options){
 			this.filters[name] = options;
 		},
+		
 		defaults: function(keys){
 			var self = this;
 			return {
 				filter: function(text, data){
-					return text ? self._getValueFromKeys(data, keys).contains(text) : true;
+					return text ? self._getValueFromKeys(data, keys).toLowerCase().contains(text) : true;
 				},
 				formatMatch: function(text, data){
 					return self._getValueFromKeys(data, keys);
 				},
 				formatItem: function(text, data, i){
-					return text ? self._getValueFromKeys(data, keys).replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : self._getValueFromKeys(data, keys);
+					return text ? self._getValueFromKeys(data, keys).replace(new RegExp('(' + text.escapeRegExp() + ')', 'gi'), '<strong>$1</strong>') : self._getValueFromKeys(data, keys);
 				}
 			};
 		},
+		
 		_getValueFromKeys: function(obj, keys){
 			var key, value = obj;
 			for(var i = 0; key = keys[i++];) value = value[key];
 			return value;
 		}
+		
 	};
 	
 	Meio.Autocomplete.Filter.define('contains', function(self, keys){return {};});
 	Meio.Autocomplete.Filter.define('startswith', function(self, keys){
 		return {
 			filter: function(text, data){
-				return text ? self._getValueFromKeys(data, keys).test(new RegExp('^' + text.escapeRegExp())) : true;
+				return text ? self._getValueFromKeys(data, keys).test(new RegExp('^' + text.escapeRegExp(), 'i')) : true;
 			}
 		};
 	});

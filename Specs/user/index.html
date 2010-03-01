@@ -14,7 +14,7 @@
 		<script type="text/javascript" charset="utf-8">
 			Builder.build('../../', {
 				Source: [
-					'Event.Changed',
+					'BGIFrame',
 					'Meio.Autocomplete'
 				]
 			});
@@ -24,9 +24,6 @@
 			*{
 				margin:0;
 				padding:0;
-			}
-			#some{
-				border: 10px solid #000;
 			}
 			.ma-container{
 				color: #eee;
@@ -109,6 +106,10 @@
 				<br />
 				<input type="text" id="some5" name="some5" value="" />
 				<div id="list_test"><ul id="ul_list_test"></ul></div>
+				<br />
+				<br />
+				<br />
+				<textarea id="some8" name="some8" rows="8" cols="40"></textarea>
 				<input type="submit" name="some_button" id="some_button" value="" />
 			</fieldset>
 			
@@ -171,7 +172,7 @@
 			});
 			
 			
-			/*var instance3 = new Meio.Autocomplete.Select($('some6'), data3, {
+			/*var instance2 = new Meio.Autocomplete.Select($('some6'), data3, {
 				syncName: 'id',
 				valueField: $('some7'),
 				valueFilter: function(data){
@@ -194,7 +195,7 @@
 				}
 			});*/
 			
-			var instance3 = new Meio.Autocomplete.Select($('some6'), data4, {
+			var instance2 = new Meio.Autocomplete.Select($('some6'), data4, {
 				syncName: true,
 				valueField: $('some7'),
 				valueFilter: function(data){
@@ -217,7 +218,7 @@
 				}
 			});
 			
-			var instance2 = new Meio.Autocomplete($('some1'), data2);
+			var instance3 = new Meio.Autocomplete($('some1'), data2);
 			var ContainerList = new Class({
 				Extends: Meio.Element.List,
 				setNode: function(){
@@ -229,7 +230,12 @@
 				applyMaxHeight: $empty
 			});
 			var containerList = new ContainerList();
-			var instance3 = new Meio.Autocomplete($('some5'), data2, {listInstance: containerList});
+			var instance4 = new Meio.Autocomplete($('some5'), data2, {listInstance: containerList});
+			
+			// textarea
+			var instance4 = new Meio.Autocomplete($('some8'), data2);
+			
+			
 		</script>
 	</body>
 </html>
