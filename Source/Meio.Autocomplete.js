@@ -139,11 +139,11 @@ provides: [Meio.Autocomplete]
 			
 			/*
 			onNoItemToList: function(elements){},
-			onSelect: function(elements){},
+			onSelect: function(elements, value){},
 			onDeselect: function(elements){},
 			*/
 			
-			elementOptions: {}, // see Element options
+			fieldOptions: {}, // see Element options
 			listOptions: {}, // see List options
 			requestOptions: {}, // see DataRequest options
 			urlOptions: {} // see URL options
@@ -160,7 +160,7 @@ provides: [Meio.Autocomplete]
 			this.addElement('list', this.options.listInstance || new Meio.Element.List(this.options.listOptions));
 			this.addListEvents();
 			
-			this.addElement('field', new Meio.Element.Field(input, this.options.elementOptions));
+			this.addElement('field', new Meio.Element.Field(input, this.options.fieldOptions));
 			this.addFieldEvents();
 			
 			this.addSelectEvents();
@@ -215,8 +215,7 @@ provides: [Meio.Autocomplete]
 					list.positionNextTo(this.elements.field.node);
 				},
 				'click': function(){
-					var list = this.elements.list;
-					if(this.active++ > 1 && !list.showing){
+					if(this.active++ > 1 && !this.elements.list.showing){
 						this.forceSetupList();
 					}
 				},
@@ -432,7 +431,7 @@ provides: [Meio.Autocomplete]
 				var values = this.get();
 				for(var i = values.length; i--;){
 					if(self.options.valueFilter.call(self, values[i]) == value){
-						self.elements.field.node.set('value', self.options.formatMatch.call(self, '', values[i], 0));
+						self.elements.field.node.set('value', self.filters.formatMatch.call(self, '', values[i], 0));
 					}
 				}
 				if(this.url) this.url.removeParameter(self.parameter);
@@ -700,7 +699,7 @@ provides: [Meio.Autocomplete]
 			var self = this;
 			return {
 				filter: function(text, data){
-					return text ? self._getValueFromKeys(data, keys).toLowerCase().contains(text) : true;
+					return text ? self._getValueFromKeys(data, keys).test(new RegExp(text.escapeRegExp(), 'i')) : true;
 				},
 				formatMatch: function(text, data){
 					return self._getValueFromKeys(data, keys);

@@ -1,3 +1,4 @@
+
 .ma-container{
 	color: #000;
 	border: 1px solid #333;
@@ -24,14 +25,14 @@
 	color: #fff;
 	background-color: #921506 !important;
 }
-.ma-container .ma-loading{
-	background-color: #fafba4 !important;
-}
 .ma-container .ma-odd{
 }
 .ma-container .ma-even{
 	background-color: #efefef;
 }
-.ma-container .ma-selected{
+.ma-loading{
+	background-color: #fafba4;
+}
+.ma-selected{
 	background-color: #ccfda8;
 }

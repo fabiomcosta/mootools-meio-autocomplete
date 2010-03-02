@@ -5,7 +5,7 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		
 		<script src="../../Assets/mootools-1.2.4-core.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../Assets/mootools-1.2.4.2-more.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../Assets/mootools-1.2.4.4-more.js" type="text/javascript" charset="utf-8"></script>
 		<!--<script src="../../../../assets/firebug/firebug-lite-compressed.js" type="text/javascript" charset="utf-8"></script>-->
 		<script src="../../../../assets/js-spec/Builder.js" type="text/javascript" charset="utf-8"></script>
 		
@@ -123,24 +123,24 @@
 			var data2 = ['aff2', 'alguma coisa2', 'something2', 'omg2', 'testing2', 'so what?2', 'other chars2', 'á latin é2', 'hmmm2', 'hmmmmmm2', 'ok2', 'it\'s fine2'];
 			var data3 = '../../Specs/fixtures/data.php';
 			var data4 = [
-				{"value": 0, "text": "ajax"},
-				{"value": 1, "text": "sim ajax"},
-				{"value": 2, "text": "a very long text so we can test the width property properly"},
-				{"value": 3, "text": "aaaaa"},
-				{"value": 4, "text": "aff"},
-				{"value": 5, "text": "alguma coisa"},
-				{"value": 6, "text": "something"},
-				{"value": 7, "text": "omg"},
-				{"value": 8, "text": "testing"},
-				{"value": 9, "text": "so what?"},
-				{"value": 10, "text": "other chars"},
-				{"value": 11, "text": "á latin é"},
-				{"value": 12, "text": "hmmm"},
-				{"value": 13, "text": "chars test > gg"},
-				{"value": 14, "text": "chars test < gg"},
-				{"value": 15, "text": "chars test & gg"},
-				{"value": 16, "text": "ok"},
-				{"value": 17, "text": "it\" fine"}
+			    {"value": 0, "text": "Brazil"},
+			    {"value": 1, "text": "Ajax"},
+			    {"value": 2, "text": "Options"},
+			    {"value": 3, "text": "Mootools"},
+			    {"value": 4, "text": "Meio"},
+			    {"value": 5, "text": "Código"},
+			    {"value": 6, "text": "Meio.Autocomplete"},
+			    {"value": 7, "text": "Whale"},
+			    {"value": 8, "text": "testing"},
+			    {"value": 9, "text": "so what?"},
+			    {"value": 10, "text": "other chars"},
+			    {"value": 11, "text": "á latin é"},
+			    {"value": 12, "text": "Brasil"},
+			    {"value": 13, "text": "chars test > gg"},
+			    {"value": 14, "text": "chars test < gg"},
+			    {"value": 15, "text": "chars test & gg"},
+			    {"value": 16, "text": "ok"},
+			    {"value": 17, "text": "it\" fine"}
 			];
 
 			var instance = new Meio.Autocomplete($('some'), data1, {
@@ -206,13 +206,13 @@
 				},
 				filter: {
 					filter: function(text, data){
-						return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true;
+						return text ? data.text.test(new RegExp('^' + text.escapeRegExp(), 'i')) : true;
 					},
 					formatMatch: function(text, data, i){
 						return data.text;
 					},
 					formatItem: function(text, data){
-						return text ? data.text.replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data.text;
+						return text ? data.text.replace(new RegExp('(' + text.escapeRegExp() + ')', 'gi'), '<strong>$1</strong>') : data.text;
 					}
 				},
 				urlOptions: {

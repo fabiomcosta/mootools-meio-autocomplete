@@ -12,6 +12,7 @@
 		</style>
 		<link  href="meio.aucomplete.css" rel="stylesheet" type="text/css" />
 		<script src="../Assets/mootools-1.2.4-core.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../Assets/mootools-1.2.4.4-more.js" type="text/javascript" charset="utf-8"></script>
 		<script src="../Assets/jasmine/Builder.js" type="text/javascript" charset="utf-8"></script>
 		
 		<script type="text/javascript" charset="utf-8">
@@ -55,7 +56,7 @@
 
 			var instance = new Meio.Autocomplete($('some'), data, {
 				selectOnTab: false,
-				onNoItemsToList: function(elements){
+				onNoItemToList: function(elements){
 					elements.field.node.highlight('#ff0000');
 				},
 				filter: {
