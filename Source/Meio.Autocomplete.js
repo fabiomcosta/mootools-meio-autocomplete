@@ -8,6 +8,7 @@ authors:
 
 requires:
  - core/1.2.4: [Class.Extras, Element.Event, Element.Style]
+ - more/1.2.3.1: Element.Forms
 
 license: MIT-style license
 
@@ -122,7 +123,6 @@ provides: [Meio.Autocomplete]
 			listInstance: null,
 			
 			filter: {
-				type: 'contains'
 				/*
 					its posible to pass the filters directly or by passing a type and optionaly a path.
 					
@@ -132,7 +132,7 @@ provides: [Meio.Autocomplete]
 					
 					or
 					
-					type: 'startswith' // can be any defined on the Meio.Autocomplete.Filter object
+					type: 'startswith' or 'contains' // can be any defined on the Meio.Autocomplete.Filter object
 					path: 'a.b.c' // path to the text value on each object thats contained on the data array
 				*/
 			},
@@ -687,11 +687,8 @@ provides: [Meio.Autocomplete]
 		filters: {},
 		
 		get: function(options){
-			var type = options.type, filters = options;
-			if(type){
-				var keys = (options.path || '').split('.');
-				if(this.filters[type]) filters = this.filters[type](this, keys);
-			}
+			var type = options.type, keys = (options.path || '').split('.');
+			var filters = (type && this.filters[type]) ? this.filters[type](this, keys) : options;
 			return $merge(this.defaults(keys), filters);
 		},
 		

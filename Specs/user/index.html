@@ -204,14 +204,16 @@
 				onNoItemsToList: function(elements){
 					elements.field.node.highlight('#ff0000');
 				},
-				filter: function(text, data){
-					return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true; // 'startswith' filter
-				},
-				formatMatch: function(text, data, i){
-					return data.text;
-				},
-				formatItem: function(text, data){
-					return text ? data.text.replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data.text;
+				filter: {
+					filter: function(text, data){
+						return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true;
+					},
+					formatMatch: function(text, data, i){
+						return data.text;
+					},
+					formatItem: function(text, data){
+						return text ? data.text.replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data.text;
+					}
 				},
 				urlOptions: {
 					max: 10
