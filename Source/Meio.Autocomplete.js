@@ -397,8 +397,13 @@ provides: [Meio.Autocomplete]
 			if(this.options.syncName){
 				this.syncWithValueField(data);
 			}
-			this.addEvent('select', function(elements, data){
-				this.options.valueField.set('value', this.options.valueFilter.call(this, data));
+			this.addEvents({
+				'select': function(elements, data){
+					this.options.valueField.set('value', this.options.valueFilter.call(this, data));
+				},
+				'deselect': function(elements){
+					this.options.valueField.set('value', '');
+				}
 			});
 		},
 		
