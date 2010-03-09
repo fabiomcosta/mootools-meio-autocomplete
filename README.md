@@ -24,18 +24,16 @@ This example shows most of its this plugin's options. All the values are the def
 	];
 
 	var autocomplete = new Meio.Autocomplete($('text_input_id'), data, {
-		delay: 200, 			// the delay before rendering the list of options. Usefull when you are using the autocomplete with ajax
-		minChars: 0,			// the minimum number of characters before it shows the list of options.
-		cacheLength: 20,		// the cache length. Cache will decrease the number of ajax calls. Each time you make a different query it will be cached locally.
+		delay: 200, 			// The delay before rendering the list of options. Usefull when you are using the autocomplete with ajax
+		minChars: 0,			// The minimum number of characters the user has to input before the list of options to select is shown.
+		cacheLength: 20,		// The cache length. Cache will decrease the number of ajax calls. Each time you make a different query it will be cached locally.
 		cacheType: 'shared',	// 'shared' or 'own'. The cache instance can be shared with other Meio.Autocomplete instances or this instance can have its own cache.
-		selectOnTab: true,		// if you press tab the current focused options will be selected.
-		maxVisibleItems: 10,	// this defines the height of the list. If its 10 the list will have its height adjusted to show 10 options, but you can scroll to the other of course.
-		listInstance: null,		// the instance of the list. With this options you can create a Meio.Autocomplete.List and share it with other instances of Meio.Autocomplete.
+		selectOnTab: true,		// If the user press the 'tab' key, the current focused option will be selected.
+		maxVisibleItems: 10,	// Defines the height of the list. If its 10 the list will have its height adjusted to show 10 options, but you can scroll to the other of course.
+		listInstance: null,		// The instance of the list. With this option you can create a Meio.Autocomplete.List and share it with other instances of Meio.Autocomplete in the page, using just one list DOM element, for example.
 		
-		onNoItemsToList: function(elements){ // this event is fired when theres no options to list
-			elements.field.node.highlight('#ff0000');
-		},
-		onSelect: function(elements, value){},	// this event is fired when you select an options
+		onNoItemsToList: function(elements){},	// this event is fired when theres no option to list
+		onSelect: function(elements, value){},	// this event is fired when you select an option
 		onDeselect: function(elements){},		// this event is fired when you deselect an option
 		
 		filter: {

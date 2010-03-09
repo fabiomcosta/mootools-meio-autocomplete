@@ -407,7 +407,7 @@ provides: [Meio.Autocomplete]
 		},
 		
 		syncWithValueField: function(data){
-			var valueField = this.options.valueField;
+			var valueField = $(this.options.valueField);
 			var value = valueField.get('value');
 			if(!valueField || !value) return;
 			
