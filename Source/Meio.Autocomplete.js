@@ -441,7 +441,6 @@ provides: [Meio.Autocomplete]
 		
 	});
 	
-	
 	Meio.Element = new Class({
 		
 		Implements: [Events],
@@ -900,7 +899,7 @@ provides: [Meio.Autocomplete]
 	
 	globalCache = new Meio.Autocomplete.Cache();
 	
-	if(typeof global.Meio == 'undefined') global.Meio = Meio;
-	else $extend(global.Meio, Meio);
+	if($defined(global.Meio)) $extend(global.Meio, Meio);
+	else global.Meio = Meio;
 	
 })(this);
