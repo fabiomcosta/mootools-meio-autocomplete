@@ -441,6 +441,39 @@ provides: [Meio.Autocomplete]
 		
 	});
 	
+	// Transforms a select on an autocomplete field
+	
+	Meio.Autocomplete.SelectOne = new Class({
+		
+		Extends: Meio.Autocomplete.Select,
+		
+		options: {
+			filter: {
+				path: 'text' // path to the text value on each object thats contained on the data array
+			}
+		},
+		
+		//overwritten
+		initialize: function(select, options){
+			this.select = $(select);
+			var selectOptions = this.select.options, data = [];
+			for(var i = 0, selectOption; selectOption = selectOptions[i++];){
+				data.push({value: selectOption.value, text: selectOption.innerHTML});
+			}
+			var field = new Element('input', {type: 'text'});
+			var valueField = new Element('input', {type: 'hidden', name: select.get('name')});
+			field.replaces(this.select);
+			valueField.inject(field, 'after');
+			this.parent(field, data, $merge(options, {
+				valueField: valueField,
+				valueFilter: function(data){
+					return data.value;
+				}
+			}));
+		}
+		
+	});
+	
 	Meio.Element = new Class({
 		
 		Implements: [Events],

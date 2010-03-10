@@ -87,7 +87,7 @@
 		
 	</head>
 	<body>
-		<form method="post" action="">
+		<form id="form" method="post" action="">
 			<fieldset>
 				<input type="text" id="some" name="some" value="" />
 				<input type="text" id="some1" name="some1" value="" />
@@ -110,11 +110,38 @@
 				<br />
 				<br />
 				<textarea id="some8" name="some8" rows="8" cols="40"></textarea>
+				<br />
+				<br />
+				<br />
+				<select name="select" id="select">
+					<option value="value1">option1</option>
+					<option value="value2">option2</option>
+					<option value="value3">option3</option>
+					<option value="value4">option4</option>
+					<option value="value5">option5</option>
+					<option value="value6">option6</option>
+					<option value="value7">option7</option>
+					<option value="value8">option8</option>
+					<option value="value9">option9</option>
+					<option value="value10">option10</option>
+					<optgroup label="x">
+						<option value="value11">option11</option>
+						<option value="value12">option12</option>
+						<option value="value13">option13</option>
+					</optgroup>
+				</select>
+				<br />
+				<br />
+				<br />
 				<input type="submit" name="some_button" id="some_button" value="" />
 			</fieldset>
 			
 			<a title="Test refreshAll" href="#" onclick="instance.refreshAll(); return false;">Test refreshAll</a>
 		</form>
+		
+		
+		
+		
 		
 		<script type="text/javascript">
 			
@@ -237,6 +264,14 @@
 			// textarea
 			var instance4 = new Meio.Autocomplete($('some8'), data2);
 			
+			// SelectOne
+			var instance5 = new Meio.Autocomplete.SelectOne($('select'));
+			
+			
+			$('form').addEvent('submit', function(e){
+				alert(this.toQueryString());
+				e.preventDefault();
+			});
 			
 		</script>
 	</body>
