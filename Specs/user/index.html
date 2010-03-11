@@ -98,8 +98,9 @@
 				<br />
 				<input type="text" id="some4" name="some4" value="" />
 				<br />
-				<select>
+				<select id="selectefff" name="ccc">
 					<option value="option1">option1</option>
+					<option value="option2">option2</option>
 				</select>
 				<br />
 				<br />
@@ -114,6 +115,7 @@
 				<br />
 				<br />
 				<select name="select" id="select">
+					<option value="">--- select one ---</option>
 					<option value="value1">option1</option>
 					<option value="value2">option2</option>
 					<option value="value3">option3</option>
@@ -265,7 +267,7 @@
 			var instance4 = new Meio.Autocomplete($('some8'), data2);
 			
 			// SelectOne
-			var instance5 = new Meio.Autocomplete.SelectOne($('select'));
+			var instance5 = new Meio.Autocomplete.Select.One($('select'));
 			
 			
 			$('form').addEvent('submit', function(e){

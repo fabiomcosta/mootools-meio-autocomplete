@@ -315,7 +315,8 @@ provides: [Meio.Autocomplete]
 			if(list.focusedItem){
 				var text = list.focusedItem.get('title');
 				this.elements.field.node.set('value', text);
-				this.fireEvent('select', [this.elements, this.itemsData[list.focusedItem.get('data-index')], text]);
+				var index = list.focusedItem.get('data-index');
+				this.fireEvent('select', [this.elements, this.itemsData[index], text, index]);
 			}
 			list.hide();
 		},
@@ -332,10 +333,10 @@ provides: [Meio.Autocomplete]
 		
 		addSelectEvents: function(){
 			this.addEvents({
-				onSelect: function(elements){
+				select: function(elements){
 					elements.field.addSelectedClass();
 				},
-				onDeselect: function(elements){
+				deselect: function(elements){
 					elements.field.removeSelectedClass();
 				}
 			});
@@ -393,23 +394,32 @@ provides: [Meio.Autocomplete]
 		// overwritten
 		initialize: function(input, data, options){
 			this.parent(input, data, options);
+			this.valueField = $(this.options.valueField);
+			
+			if(!this.valueField) return;
+			
 			if(this.options.syncName){
 				this.syncWithValueField(data);
 			}
+			
+			this.addValueFieldEvents();
+		},
+		
+		addValueFieldEvents: function(){
 			this.addEvents({
 				'select': function(elements, data){
-					this.options.valueField.set('value', this.options.valueFilter.call(this, data));
+					this.valueField.set('value', this.options.valueFilter.call(this, data));
 				},
 				'deselect': function(elements){
-					this.options.valueField.set('value', '');
+					this.valueField.set('value', '');
 				}
 			});
 		},
 		
 		syncWithValueField: function(data){
-			var valueField = $(this.options.valueField);
-			var value = valueField.get('value');
-			if(!valueField || !value) return;
+			var value = this.getValueFromValueField();
+			
+			if(!value) return;
 			
 			this.addParameter(data);
 			this.addDataReadyEvent(value);
@@ -420,7 +430,7 @@ provides: [Meio.Autocomplete]
 		addParameter: function(data){
 			this.parameter = {
 				name: this.options.syncName,
-				value: function(){ return this.options.valueField.value; }.bind(this)
+				value: function(){ return this.valueField.value; }.bind(this)
 			};
 			if(this.data.url) this.data.url.addParameter(this.parameter);
 		},
@@ -437,13 +447,17 @@ provides: [Meio.Autocomplete]
 				if(this.url) this.url.removeParameter(self.parameter);
 				this.removeEvent('ready', runOnce);
 			});
+		},
+		
+		getValueFromValueField: function(){
+			return this.valueField.get('value');
 		}
 		
 	});
 	
 	// Transforms a select on an autocomplete field
 	
-	Meio.Autocomplete.SelectOne = new Class({
+	Meio.Autocomplete.Select.One = new Class({
 		
 		Extends: Meio.Autocomplete.Select,
 		
@@ -456,20 +470,46 @@ provides: [Meio.Autocomplete]
 		//overwritten
 		initialize: function(select, options){
 			this.select = $(select);
-			var selectOptions = this.select.options, data = [];
-			for(var i = 0, selectOption; selectOption = selectOptions[i++];){
-				data.push({value: selectOption.value, text: selectOption.innerHTML});
-			}
-			var field = new Element('input', {type: 'text'});
-			var valueField = new Element('input', {type: 'hidden', name: select.get('name')});
-			field.replaces(this.select);
-			valueField.inject(field, 'after');
-			this.parent(field, data, $merge(options, {
-				valueField: valueField,
-				valueFilter: function(data){
-					return data.value;
-				}
+			this.replaceSelect();
+			this.parent(this.field, this.createDataArray(), $merge(options, {
+				valueField: this.select,
+				valueFilter: function(data){ return data.value; }
 			}));
+		},
+		
+		replaceSelect: function(){
+			var selectedOption = this.select.getSelected()[0];
+			this.field = new Element('input', {type: 'text'});
+			var optionValue = selectedOption.get('value');
+			if($chk(optionValue)) this.field.set('value', selectedOption.get('html'));
+			this.select.setStyle('display', 'none');
+			this.field.inject(this.select, 'after');
+		},
+		
+		createDataArray: function(){
+			var selectOptions = this.select.options, data = [];
+			for(var i = 0, selectOption, optionValue; selectOption = selectOptions[i++];){
+				optionValue = selectOption.value;
+				if($chk(optionValue)) data.push({value: optionValue, text: selectOption.innerHTML});
+			}
+			return data;
+		},
+		
+		addValueFieldEvents: function(){
+			this.addEvents({
+				'select': function(elements, data, text, index){
+					var option = this.valueField.getElement('option[value="' + this.options.valueFilter.call(this, data) + '"]');
+					if(option) option.selected = true;
+				},
+				'deselect': function(elements){
+					var option = this.valueField.getSelected()[0];
+					if(option) option.selected = false;
+				}
+			});
+		},
+		
+		getValueFromValueField: function(){
+			return this.valueField.getSelected()[0].get('value');
 		}
 		
 	});
