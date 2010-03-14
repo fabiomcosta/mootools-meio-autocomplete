@@ -577,8 +577,8 @@ provides: [Meio.Autocomplete]
 			this.keyPressControl = {};
 			this.boundEvents = ['paste', 'focus', 'blur', 'click', 'keyup', 'keyrepeat'];
 			if(browserEngine.trident4) this.boundEvents.push('keypress'); // yeah super ugly, but what can be awesome with ie?
-			this.parent(field);
 			this.setOptions(options);
+			this.parent(field);
 			
 			$(global).addEvent('unload', function(){
 				this.node.set('autocomplete', 'on'); // if autocomplete is off when you reload the page the input value gets erased
@@ -647,8 +647,8 @@ provides: [Meio.Autocomplete]
 		
 		initialize: function(options){
 			this.boundEvents = ['mousedown', 'mouseover'];
-			this.parent();
 			this.setOptions(options);
+			this.parent();
 			this.focusedItem = null;
 		},
 		
