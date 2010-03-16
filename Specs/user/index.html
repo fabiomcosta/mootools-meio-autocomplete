@@ -135,6 +135,20 @@
 				<br />
 				<br />
 				<br />
+				
+				<form>
+				  <div>
+				    New Jersey:
+				    <input id="field1" type="text" />
+				    <input id="value-field1" type="text" />
+				  </div>
+				  <div style="clear:left;">
+				    Pennsylvania:
+				    <input id="field2" type="text" />
+				    <input id="value-field2" type="text" />
+				  </div>
+				</form>
+
 				<input type="submit" name="some_button" id="some_button" value="" />
 			</fieldset>
 			
@@ -274,6 +288,39 @@
 			
 			// SelectOne
 			var instance5 = new Meio.Autocomplete.Select.One($('select'));
+			
+			
+			
+			var data5 = [
+				{identifier: 1, value: 'Newark, NJ'},
+				{identifier: 2, value: 'Camden, NJ'},
+				{identifier: 3, value: 'Trenton, NJ'}
+			];
+			var data6 = [
+				{identifier: 1, value: 'Philadelphia, PA'},
+				{identifier: 2, value: 'Harrisburg, PA'},
+				{identifier: 3, value: 'Pittsburgh, PA'}
+			];
+			new Meio.Autocomplete.Select('field1', data5, {
+				valueField: $('value-field1'),
+				valueFilter: function(data){
+					return data.identifier;
+				},
+				filter: {
+					type: 'contains',
+					path: 'value'
+				}
+			});
+			new Meio.Autocomplete.Select('field2', data6, {
+				valueField: $('value-field2'),
+				valueFilter: function(data){
+					return data.identifier;
+				},
+				filter: {
+					type: 'contains',
+					path: 'value'
+				}
+			});
 			
 			
 			$('form').addEvent('submit', function(e){

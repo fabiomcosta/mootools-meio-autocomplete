@@ -202,9 +202,7 @@ provides: [Meio.Autocomplete]
 				'keyup': function(e){
 					var field = this.elements.field;
 					if(!keysThatDontChangeValueOnKeyUp[e.code]){
-						if(!field.keyPressControl[e.key]){
-							this.setupList();
-						}
+						if(!field.keyPressControl[e.key]) this.setupList();
 						field.keyPressControl[e.key] = false;
 					}
 				},
@@ -659,8 +657,7 @@ provides: [Meio.Autocomplete]
 			node = $(node);
 			// uggly hack to fix the height of the autocomplete list
 			// TODO rethink about it
-			this.node.setStyle('height', node.getCoordinates(this.list).bottom);
-			this.node.setStyle('height', node.getCoordinates(this.list).bottom);
+			for(var i = 2;i--;) this.node.setStyle('height', node.getCoordinates(this.list).bottom);
 		},
 		
 		mouseover: function(e){
@@ -804,8 +801,9 @@ provides: [Meio.Autocomplete]
 		Implements: [Options, Events],
 		
 		initialize: function(data, cache){
-			this.data = data;
 			this._cache = cache;
+			this.data = data;
+			this.dataString = JSON.encode(this.data);
 		},
 		
 		get: function(){
@@ -817,7 +815,7 @@ provides: [Meio.Autocomplete]
 		},
 		
 		prepare: function(text){
-			this.cachedKey = text;
+			this.cachedKey = this.dataString + (text || '');
 			this.fireEvent('ready');
 		},
 		
