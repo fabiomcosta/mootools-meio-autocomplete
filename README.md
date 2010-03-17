@@ -81,7 +81,7 @@ This example shows most of its this plugin's options. All the values are the def
 Demos
 -----
 
-Checkout the Demos folder. Ill create some public ones as soon as i can.
+See the documentation page, it's full of demos.
 
 Credits
 -------
