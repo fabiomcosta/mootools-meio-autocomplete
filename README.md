@@ -30,7 +30,6 @@ This example shows most of its this plugin's options. All the values are the def
 		cacheType: 'shared',	// 'shared' or 'own'. The cache instance can be shared with other Meio.Autocomplete instances or this instance can have its own cache.
 		selectOnTab: true,		// If the user press the 'tab' key, the current focused option will be selected.
 		maxVisibleItems: 10,	// Defines the height of the list. If its 10 the list will have its height adjusted to show 10 options, but you can scroll to the other of course.
-		listInstance: null,		// The instance of the list. With this option you can create a Meio.Autocomplete.List and share it with other instances of Meio.Autocomplete in the page, using just one list DOM element, for example.
 		
 		onNoItemsToList: function(elements){},	// this event is fired when theres no option to list
 		onSelect: function(elements, value){},	// this event is fired when you select an option
@@ -75,7 +74,9 @@ This example shows most of its this plugin's options. All the values are the def
 								// ex: if you pass [{'name': 'x', 'value': function(){ return 2; }}] the url generated to get the list of options will have the 'x' parameter with value '2'.
 			max: 20				// the max number of options that should be listed. This will be sent to the ajax request as the 'limit' parameter.
 		}
-	});
+	},
+		listInstance // The instance of the list. Passing a Meio.Autocomplete.List will allow you to have just one list DOM element, saving resources on a heavy page.
+	);
 
 Demos
 -----

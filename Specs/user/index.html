@@ -156,11 +156,8 @@
 		</form>
 		
 		
-		
-		
-		
 		<script type="text/javascript">
-			
+
 			var data = '../../Specs/fixtures/data.txt';
 			var data1 = '../../Specs/fixtures/data2.txt';
 			var data2 = ['aff2', 'alguma coisa2', 'something2', 'omg2', 'testing2', 'so what?2', 'other chars2', 'á latin é2', 'hmmm2', 'hmmmmmm2', 'ok2', 'it\'s fine2'];
@@ -219,7 +216,6 @@
 				}
 				
 			});
-			
 			
 			/*var instance2 = new Meio.Autocomplete.Select($('some6'), data3, {
 				syncName: 'id',
@@ -290,7 +286,6 @@
 			var instance5 = new Meio.Autocomplete.Select.One($('select'));
 			
 			
-			
 			var data5 = [
 				{identifier: 1, value: 'Newark, NJ'},
 				{identifier: 2, value: 'Camden, NJ'},
@@ -301,6 +296,9 @@
 				{identifier: 2, value: 'Harrisburg, PA'},
 				{identifier: 3, value: 'Pittsburgh, PA'}
 			];
+
+			var meioList = new Meio.Element.List();
+			
 			new Meio.Autocomplete.Select('field1', data5, {
 				valueField: $('value-field1'),
 				valueFilter: function(data){
@@ -310,7 +308,8 @@
 					type: 'contains',
 					path: 'value'
 				}
-			});
+			}, meioList);
+			
 			new Meio.Autocomplete.Select('field2', data6, {
 				valueField: $('value-field2'),
 				valueFilter: function(data){
@@ -320,9 +319,9 @@
 					type: 'contains',
 					path: 'value'
 				}
-			});
+			}, meioList);
 			
-			
+
 			$('form').addEvent('submit', function(e){
 				alert(this.toQueryString());
 				e.preventDefault();

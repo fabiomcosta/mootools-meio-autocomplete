@@ -120,7 +120,6 @@ provides: [Meio.Autocomplete]
 			selectOnTab: true,
 			maxVisibleItems: 10,
 			cacheType: 'shared', // 'shared' or 'own'
-			listInstance: null,
 			
 			filter: {
 				/*
@@ -150,14 +149,14 @@ provides: [Meio.Autocomplete]
 			
 		},
 		
-		initialize: function(input, data, options){
+		initialize: function(input, data, options, listInstance){
 			this.parent();
 			this.setOptions(options);
 			this.active = 0;
 			
 			this.filters = Meio.Autocomplete.Filter.get(this.options.filter);
 			
-			this.addElement('list', this.options.listInstance || new Meio.Element.List(this.options.listOptions));
+			this.addElement('list', listInstance || new Meio.Element.List(this.options.listOptions));
 			this.addListEvents();
 			
 			this.addElement('field', new Meio.Element.Field(input, this.options.fieldOptions));
@@ -657,7 +656,7 @@ provides: [Meio.Autocomplete]
 			node = $(node);
 			// uggly hack to fix the height of the autocomplete list
 			// TODO rethink about it
-			for(var i = 2;i--;) this.node.setStyle('height', node.getCoordinates(this.list).bottom);
+			for(var i = 2; i--;) this.node.setStyle('height', node.getCoordinates(this.list).bottom);
 		},
 		
 		mouseover: function(e){
@@ -731,10 +730,10 @@ provides: [Meio.Autocomplete]
 		},
 		
 		positionNextTo: function(fieldNode){
-			var width = this.options.width;
+			var width = this.options.width, listNode = this.node;
 			var elPosition = fieldNode.getCoordinates();
-			this.node.setStyle('width', width == 'field' ? fieldNode.getWidth().toInt() - this.node.getStyle('border-left-width').toInt() - this.node.getStyle('border-right-width').toInt() : width);
-			this.node.setPosition({x: elPosition.left, y: elPosition.bottom});
+			listNode.setStyle('width', width == 'field' ? fieldNode.getWidth().toInt() - listNode.getStyle('border-left-width').toInt() - listNode.getStyle('border-right-width').toInt() : width);
+			listNode.setPosition({x: elPosition.left, y: elPosition.bottom});
 		},
 		
 		show: function(){

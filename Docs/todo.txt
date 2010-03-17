@@ -76,7 +76,7 @@ http://www.alistapart.com/articles/accent-folding-for-auto-complete/
 
 initial synchronize
 ---------------------
-With 'initial synchronize' i mean that the sync fields and the autocomplete field would have theyr values synced when the page loads.
+With 'initial synchronize' i mean that the sync fields and the autocomplete field would have their values synced when the page loads.
 
 I was trying to make the initial synchronize feature but i think its costly and error-prone enought to be discarded. It should be done server-side.
 
@@ -95,3 +95,9 @@ Like when your on a edit page (if the current text input is empty).
 * Should have easily customizable styles;
 * Should be easy to make the results dependent on another input values;
 * Should be optimized to have more than one instance on one page.
+
+
+Mooshells:
+When the same list is shared by more than one instance the mouseclick doesnt work properly. verify.
+http://mootools.net/shell/fabiomcosta/XKnTg/2/
+
