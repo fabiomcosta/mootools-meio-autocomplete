@@ -389,8 +389,8 @@ provides: [Meio.Autocomplete]
 		},
 		
 		// overwritten
-		initialize: function(input, data, options){
-			this.parent(input, data, options);
+		initialize: function(input, data, options, listInstance){
+			this.parent(input, data, options, listInstance);
 			this.valueField = $(this.options.valueField);
 			
 			if(!this.valueField) return;
@@ -465,13 +465,13 @@ provides: [Meio.Autocomplete]
 		},
 		
 		//overwritten
-		initialize: function(select, options){
+		initialize: function(select, options, listInstance){
 			this.select = $(select);
 			this.replaceSelect();
 			this.parent(this.field, this.createDataArray(), $merge(options, {
 				valueField: this.select,
 				valueFilter: function(data){ return data.value; }
-			}));
+			}), listInstance);
 		},
 		
 		replaceSelect: function(){
