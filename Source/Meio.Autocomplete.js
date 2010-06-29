@@ -17,9 +17,8 @@ provides: [Meio.Autocomplete]
 ...
 */
 
-(function(global){
+(function(global, $){
 
-	var $ = global.document.id || global.$;
 	var browserEngine = Browser.Engine; // better compression and faster
 
 	// Custom Events
@@ -64,9 +63,6 @@ provides: [Meio.Autocomplete]
 		return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 	};
 	
-	// Temporary thing
-	// more on Docs/todo.txt
-
 	Meio.Widget = new Class({
 		
 		initialize: function(){
@@ -82,25 +78,25 @@ provides: [Meio.Autocomplete]
 		},
 		
 		addEventsToElement: function(name, events){
-			for(eventName in events){
+			for (eventName in events){
 				this.addEventToElement(name, eventName, events[eventName]);
-			};
+			}
 		},
 		
 		attach: function(){
-			for(element in this.elements){
+			for (element in this.elements){
 				this.elements[element].attach();
 			}
 		},
 		
 		detach: function(){
-			for(element in this.elements){
+			for (element in this.elements){
 				this.elements[element].detach();
 			}
 		},
 		
 		destroy: function(){
-			for(element in this.elements){
+			for (element in this.elements){
 				this.elements[element] && this.elements[element].destroy();
 			}
 		}
@@ -174,12 +170,12 @@ provides: [Meio.Autocomplete]
 				'beforeKeyrepeat': function(e){
 					this.active = 1;
 					var e_key = e.key, list = this.elements.list;
-					if(e_key == 'up' || e_key == 'down' || (e_key == 'enter' && list.showing)) e.preventDefault();
+					if (e_key == 'up' || e_key == 'down' || (e_key == 'enter' && list.showing)) e.preventDefault();
 				},
 				'delayedKeyrepeat': function(e){
 					var e_key = e.key, field = this.elements.field;
 					field.keyPressControl[e_key] = true;
-					switch(e_key){
+					switch (e_key){
 					case 'up': case 'down':
 						this.focusItem(e_key);
 						break;
@@ -187,7 +183,7 @@ provides: [Meio.Autocomplete]
 						this.setInputValue();
 						break;
 					case 'tab':
-						if(this.options.selectOnTab) this.setInputValue();
+						if (this.options.selectOnTab) this.setInputValue();
 						field.keyPressControl[e_key] = false; // tab blurs the input so the keyup event wont happen at the same input you made a keydown
 						break;
 					case 'esc':
@@ -200,8 +196,8 @@ provides: [Meio.Autocomplete]
 				},
 				'keyup': function(e){
 					var field = this.elements.field;
-					if(!keysThatDontChangeValueOnKeyUp[e.code]){
-						if(!field.keyPressControl[e.key]) this.setupList();
+					if (!keysThatDontChangeValueOnKeyUp[e.code]){
+						if (!field.keyPressControl[e.key]) this.setupList();
 						field.keyPressControl[e.key] = false;
 					}
 				},
@@ -212,18 +208,18 @@ provides: [Meio.Autocomplete]
 					list.positionNextTo(this.elements.field.node);
 				},
 				'click': function(){
-					if(this.active++ > 1 && !this.elements.list.showing){
+					if (this.active++ > 1 && !this.elements.list.showing){
 						this.forceSetupList();
 					}
 				},
 				'blur': function(e){
 					this.active = 0;
 					var list = this.elements.list;
-					if(list.shouldNotBlur){
+					if (list.shouldNotBlur){
 						this.elements.field.node.setCaretPosition('end');
 						list.shouldNotBlur = false;
-						if(list.focusedItem) list.hide();
-					}else{
+						if (list.focusedItem) list.hide();
+					} else {
 						list.hide();
 					}
 				},
@@ -236,7 +232,7 @@ provides: [Meio.Autocomplete]
 		addListEvents: function(){
 			this.addEventsToElement('list', {
 				'mousedown': function(e){
-					if(this.active && !e.dontHide) this.setInputValue();
+					if (this.active && !e.dontHide) this.setInputValue();
 				}
 			});
 		},
@@ -245,14 +241,14 @@ provides: [Meio.Autocomplete]
 			var text = this.inputedText, data = this.data, options = this.options, list = this.elements.list;
 			var filter = this.filters.filter, formatMatch = this.filters.formatMatch, formatItem = this.filters.formatItem; 
 			var cacheKey = data.getKey(), cached = this.cache.get(cacheKey), html;
-			if(cached){
+			if (cached){
 				html = cached.html;
 				this.itemsData = cached.data;
-			}else{
+			} else {
 				data = data.get();
 				var itemsHtml = [], itemsData = [], classes = list.options.classes;
-				for(var row, i = 0, n = 0; row = data[i++];){
-					if(filter.call(this, text, row)){
+				for (var row, i = 0, n = 0; row = data[i++];){
+					if (filter.call(this, text, row)){
 						itemsHtml.push(
 							'<li title="', encode(formatMatch.call(this, text, row)),
 							'" data-index="', n,
@@ -271,14 +267,14 @@ provides: [Meio.Autocomplete]
 			list.focusedItem = null;
 			this.fireEvent('deselect', [this.elements]);
 			list.list.set('html', html);
-			if(this.options.maxVisibleItems) list.applyMaxHeight(this.options.maxVisibleItems);
+			if (this.options.maxVisibleItems) list.applyMaxHeight(this.options.maxVisibleItems);
 		},
 		
 		setupList: function(){
 			this.inputedText = this.elements.field.node.get('value');
-			if(this.inputedText !== this.oldInputedText){
+			if (this.inputedText !== this.oldInputedText){
 				this.forceSetupList(this.inputedText);
-			}else{
+			} else {
 				this.elements.list.hide();
 			}
 			return true;
@@ -286,7 +282,7 @@ provides: [Meio.Autocomplete]
 		
 		forceSetupList: function(inputedText){
 			inputedText = inputedText || this.elements.field.node.get('value');
-			if(inputedText.length >= this.options.minChars){
+			if (inputedText.length >= this.options.minChars){
 				$clear(this.prepareTimer);
 				this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, this.inputedText);
 			}
@@ -294,14 +290,14 @@ provides: [Meio.Autocomplete]
 		
 		dataReady: function(){
 			this.update();
-			if(this.onUpdate){
+			if (this.onUpdate){
 				this.onUpdate();
 				this.onUpdate = null;
 			}
 			var list = this.elements.list;
-			if(list.list.get('html')){
-				if(this.active) list.show();
-			}else{
+			if (list.list.get('html')){
+				if (this.active) list.show();
+			} else {
 				this.fireEvent('noItemToList', [this.elements]);
 				list.hide();
 			}
@@ -309,7 +305,7 @@ provides: [Meio.Autocomplete]
 		
 		setInputValue: function(){
 			var list = this.elements.list;
-			if(list.focusedItem){
+			if (list.focusedItem){
 				var text = list.focusedItem.get('title');
 				this.elements.field.node.set('value', text);
 				var index = list.focusedItem.get('data-index');
@@ -320,9 +316,9 @@ provides: [Meio.Autocomplete]
 		
 		focusItem: function(direction){
 			var list = this.elements.list;
-			if(list.showing){
+			if (list.showing){
 				list.focusItem(direction);
-			}else{
+			} else {
 				this.forceSetupList();
 				this.onUpdate = function(){ list.focusItem(direction); };
 			}
@@ -348,10 +344,10 @@ provides: [Meio.Autocomplete]
 		
 		initCache: function(){
 			var cacheLength = this.options.cacheLength;
-			if(this.options.cacheType == 'shared'){
+			if (this.options.cacheType == 'shared'){
 				this.cache = globalCache;
 				this.cache.setMaxLength(cacheLength);
-			}else{ // 'own'
+			} else { // 'own'
 				this.cache = new Meio.Autocomplete.Cache(cacheLength);
 			}
 		},
@@ -393,9 +389,9 @@ provides: [Meio.Autocomplete]
 			this.parent(input, data, options, listInstance);
 			this.valueField = $(this.options.valueField);
 			
-			if(!this.valueField) return;
+			if (!this.valueField) return;
 			
-			if(this.options.syncName){
+			if (this.options.syncName){
 				this.syncWithValueField(data);
 			}
 			
@@ -416,7 +412,7 @@ provides: [Meio.Autocomplete]
 		syncWithValueField: function(data){
 			var value = this.getValueFromValueField();
 			
-			if(!value) return;
+			if (!value) return;
 			
 			this.addParameter(data);
 			this.addDataReadyEvent(value);
@@ -429,19 +425,19 @@ provides: [Meio.Autocomplete]
 				name: this.options.syncName,
 				value: function(){ return this.valueField.value; }.bind(this)
 			};
-			if(this.data.url) this.data.url.addParameter(this.parameter);
+			if (this.data.url) this.data.url.addParameter(this.parameter);
 		},
 		
 		addDataReadyEvent: function(value){
 			var self = this;
 			this.data.addEvent('ready', function runOnce(){
 				var values = this.get();
-				for(var i = values.length; i--;){
-					if(self.options.valueFilter.call(self, values[i]) == value){
+				for (var i = values.length; i--;){
+					if (self.options.valueFilter.call(self, values[i]) == value){
 						self.elements.field.node.set('value', self.filters.formatMatch.call(self, '', values[i], 0));
 					}
 				}
-				if(this.url) this.url.removeParameter(self.parameter);
+				if (this.url) this.url.removeParameter(self.parameter);
 				this.removeEvent('ready', runOnce);
 			});
 		},
@@ -478,7 +474,7 @@ provides: [Meio.Autocomplete]
 			var selectedOption = this.select.getSelected()[0];
 			this.field = new Element('input', {type: 'text'});
 			var optionValue = selectedOption.get('value');
-			if($chk(optionValue)) this.field.set('value', selectedOption.get('html'));
+			if ($chk(optionValue)) this.field.set('value', selectedOption.get('html'));
 			this.select.setStyle('display', 'none');
 			this.field.inject(this.select, 'after');
 		},
@@ -487,7 +483,7 @@ provides: [Meio.Autocomplete]
 			var selectOptions = this.select.options, data = [];
 			for(var i = 0, selectOption, optionValue; selectOption = selectOptions[i++];){
 				optionValue = selectOption.value;
-				if($chk(optionValue)) data.push({value: optionValue, text: selectOption.innerHTML});
+				if ($chk(optionValue)) data.push({value: optionValue, text: selectOption.innerHTML});
 			}
 			return data;
 		},
@@ -496,11 +492,11 @@ provides: [Meio.Autocomplete]
 			this.addEvents({
 				'select': function(elements, data, text, index){
 					var option = this.valueField.getElement('option[value="' + this.options.valueFilter.call(this, data) + '"]');
-					if(option) option.selected = true;
+					if (option) option.selected = true;
 				},
 				'deselect': function(elements){
 					var option = this.valueField.getSelected()[0];
-					if(option) option.selected = false;
+					if (option) option.selected = false;
 				}
 			});
 		},
@@ -538,13 +534,13 @@ provides: [Meio.Autocomplete]
 		},
 		
 		attach: function(){
-			for(e in this.bound){
+			for (e in this.bound){
 				this.node.addEvent(e, this.bound[e]);
 			}
 		},
 		
 		detach: function(){
-			for(e in this.bound){
+			for (e in this.bound){
 				this.node.removeEvent(e, this.bound[e]);
 			}
 		},
@@ -573,12 +569,12 @@ provides: [Meio.Autocomplete]
 		initialize: function(field, options){
 			this.keyPressControl = {};
 			this.boundEvents = ['paste', 'focus', 'blur', 'click', 'keyup', 'keyrepeat'];
-			if(browserEngine.trident4) this.boundEvents.push('keypress'); // yeah super ugly, but what can be awesome with ie?
+			if (browserEngine.trident4) this.boundEvents.push('keypress'); // yeah super ugly, but what can be awesome with ie?
 			this.setOptions(options);
 			this.parent(field);
 			
 			$(global).addEvent('unload', function(){
-				if(this.node) this.node.set('autocomplete', 'on'); // if autocomplete is off when you reload the page the input value gets erased
+				if (this.node) this.node.set('autocomplete', 'on'); // if autocomplete is off when you reload the page the input value gets erased
 			}.bind(this));
 		},
 		
@@ -621,7 +617,7 @@ provides: [Meio.Autocomplete]
 		// ie6 only, uglyness
 		// this fix the form being submited on the press of the enter key
 		keypress: function(e){
-			if(e.key == 'enter') this.bound.keyrepeat(e);
+			if (e.key == 'enter') this.bound.keyrepeat(e);
 		}
 		
 	});
@@ -652,17 +648,17 @@ provides: [Meio.Autocomplete]
 		applyMaxHeight: function(maxVisibleItems){
 			var listChildren = this.list.childNodes;
 			var node = listChildren[maxVisibleItems - 1] || (listChildren.length ? listChildren[listChildren.length - 1] : null);
-			if(!node) return;
+			if (!node) return;
 			node = $(node);
 			// uggly hack to fix the height of the autocomplete list
 			// TODO rethink about it
-			for(var i = 2; i--;) this.node.setStyle('height', node.getCoordinates(this.list).bottom);
+			for (var i = 2; i--;) this.node.setStyle('height', node.getCoordinates(this.list).bottom);
 		},
 		
 		mouseover: function(e){
 			var item = this.getItemFromEvent(e), hoverClass = this.options.classes.hover;
-			if(!item) return true;
-			if(this.focusedItem) this.focusedItem.removeClass(hoverClass);
+			if (!item) return true;
+			if (this.focusedItem) this.focusedItem.removeClass(hoverClass);
 			item.addClass(hoverClass);
 			this.focusedItem = item;
 			this.fireEvent('focusItem', [this.focusedItem]);
@@ -671,7 +667,7 @@ provides: [Meio.Autocomplete]
 		mousedown: function(e){
 			e.preventDefault();
 			this.shouldNotBlur = true;
-			if(!(this.focusedItem = this.getItemFromEvent(e))){
+			if (!(this.focusedItem = this.getItemFromEvent(e))){
 				e.dontHide = true;
 				return true;
 			} 
@@ -680,16 +676,15 @@ provides: [Meio.Autocomplete]
 		
 		focusItem: function(direction){
 			var hoverClass = this.options.classes.hover, newFocusedItem;
-			if(this.focusedItem){
-				if((newFocusedItem = this.focusedItem[direction == 'up' ? 'getPrevious' : 'getNext']())){
+			if (this.focusedItem){
+				if ((newFocusedItem = this.focusedItem[direction == 'up' ? 'getPrevious' : 'getNext']())){
 					this.focusedItem.removeClass(hoverClass);
 					newFocusedItem.addClass(hoverClass);
 					this.focusedItem = newFocusedItem;
 					this.scrollFocusedItem(direction);
 				}
-			}
-			else{
-				if((newFocusedItem = this.list.getFirst())){
+			} else {
+				if ((newFocusedItem = this.list.getFirst())){
 					newFocusedItem.addClass(hoverClass);
 					this.focusedItem = newFocusedItem;
 				}
@@ -699,14 +694,14 @@ provides: [Meio.Autocomplete]
 		scrollFocusedItem: function(direction){
 			var focusedItemCoordinates = this.focusedItem.getCoordinates(this.list),
 				scrollTop = this.node.scrollTop;
-			if(direction == 'down'){
+			if (direction == 'down'){
 				var delta = focusedItemCoordinates.bottom - this.node.getStyle('height').toInt();
-				if((delta - scrollTop) > 0){
+				if ((delta - scrollTop) > 0){
 					this.node.scrollTop = delta;
 				}
-			}else{
+			} else {
 				var top = focusedItemCoordinates.top;
-				if(scrollTop && scrollTop > top){
+				if (scrollTop && scrollTop > top){
 					this.node.scrollTop = top;
 				}
 			}
@@ -714,8 +709,8 @@ provides: [Meio.Autocomplete]
 		
 		getItemFromEvent: function(e){
 			var target = e.target;
-			while(target && target.tagName != 'LI'){
-				if(target === this.node) return null;
+			while (target && target.tagName != 'LI'){
+				if (target === this.node) return null;
 				target = target.parentNode;
 			}
 			return $(target);
@@ -723,7 +718,7 @@ provides: [Meio.Autocomplete]
 		
 		render: function(){
 			var node = new Element('div', {'class': this.options.classes.container});
-			if(node.bgiframe) node.bgiframe({top: 0, left: 0});
+			if (node.bgiframe) node.bgiframe({top: 0, left: 0});
 			this.list = new Element('ul').inject(node);
 			$(document.body).grab(node);
 			return node;
@@ -780,7 +775,7 @@ provides: [Meio.Autocomplete]
 		
 		_getValueFromKeys: function(obj, keys){
 			var key, value = obj;
-			for(var i = 0; key = keys[i++];) value = value[key];
+			for (var i = 0; key = keys[i++];) value = value[key];
 			return value;
 		}
 		
@@ -846,9 +841,9 @@ provides: [Meio.Autocomplete]
 		
 		prepare: function(text){
 			this.cachedKey = this.url.evaluate(text);
-			if(this._cache.has(this.cachedKey)){
+			if (this._cache.has(this.cachedKey)){
 				this.fireEvent('ready');
-			}else{
+			} else {
 				this.request.send({url: this.cachedKey});
 			}
 		},
@@ -893,7 +888,7 @@ provides: [Meio.Autocomplete]
 			this.url += this.url.contains('?') ? '&' : '?';
 			this.dynamicExtraParams = [];
 			var params = $splat(this.options.extraParams);
-			for(var i = params.length; i--;){
+			for (var i = params.length; i--;){
 				this.addParameter(params[i]);
 			}
 			if(this.options.max) this.addParameter('limit=' + this.options.max);
@@ -903,16 +898,16 @@ provides: [Meio.Autocomplete]
 			text = text || '';
 			var params = this.dynamicExtraParams, url = [];
 			url.push('q=' + encodeURIComponent(text));
-			for(var i = params.length; i--;){
+			for (var i = params.length; i--;){
 				url.push(encodeURIComponent(params[i].name) + '=' + encodeURIComponent($lambda(params[i].value)()));
 			}
 			return this.url + url.join('&');
 		},
 		
 		addParameter: function(param){
-			if(isFinite(param.nodeType) || $type(param.value) == 'function'){
+			if (isFinite(param.nodeType) || $type(param.value) == 'function'){
 				this.dynamicExtraParams.push(param);
-			}else{
+			} else {
 				this.url += (($type(param) == 'string') ? param : encodeURIComponent(param.name) + '=' + encodeURIComponent(param.value)) + '&';
 			}
 		},
@@ -932,8 +927,8 @@ provides: [Meio.Autocomplete]
 		},
 		
 		set: function(key, value){
-			if(!this.cache[key]){
-				if(this.getLength() >= this.maxLength){
+			if (!this.cache[key]){
+				if (this.getLength() >= this.maxLength){
 					var keyToRemove = this.pos.shift();
 					this.cache[keyToRemove] = null;
 					delete this.cache[keyToRemove];
@@ -972,4 +967,4 @@ provides: [Meio.Autocomplete]
 	if($defined(global.Meio)) $extend(global.Meio, Meio);
 	else global.Meio = Meio;
 	
-})(this);
+})(this, document.id || $);
