@@ -183,8 +183,10 @@
 			];
 			var data5 = '../../Specs/fixtures/data3.txt';
 
-			var instance = new Meio.Autocomplete($('some'), data3, {
+			var instance = new Meio.Autocomplete.Select($('some'), data3, {
 				
+				syncName: 'id',
+				valueField: $('some1'),
 				selectOnTab: false,
 				onNoItemToList: function(elements){
 					elements.field.node.highlight('#ff0000');

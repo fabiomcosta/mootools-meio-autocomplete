@@ -394,8 +394,6 @@ provides: [Meio.Autocomplete]
 			if (this.options.syncName){
 				this.syncWithValueField(data);
 			}
-			
-			this.addValueFieldEvents();
 		},
 		
 		addValueFieldEvents: function(){
@@ -412,12 +410,13 @@ provides: [Meio.Autocomplete]
 		syncWithValueField: function(data){
 			var value = this.getValueFromValueField();
 			
-			if (!value) return;
-			
-			this.addParameter(data);
-			this.addDataReadyEvent(value);
-			
-			this.data.prepare(this.elements.field.node.get('value'));
+			if (value){
+				this.addParameter(data);
+				this.addDataReadyEvent(value);
+				this.data.prepare(this.elements.field.node.get('value'));
+			} else {
+				this.addValueFieldEvents();
+			}
 		},
 		
 		addParameter: function(data){
@@ -430,7 +429,7 @@ provides: [Meio.Autocomplete]
 		
 		addDataReadyEvent: function(value){
 			var self = this;
-			this.data.addEvent('ready', function runOnce(){
+			var runOnce = function(){
 				var values = this.get();
 				for (var i = values.length; i--;){
 					if (self.options.valueFilter.call(self, values[i]) == value){
@@ -438,8 +437,10 @@ provides: [Meio.Autocomplete]
 					}
 				}
 				if (this.url) this.url.removeParameter(self.parameter);
+				self.addValueFieldEvents();
 				this.removeEvent('ready', runOnce);
-			});
+			};
+			this.data.addEvent('ready', runOnce);
 		},
 		
 		getValueFromValueField: function(){
