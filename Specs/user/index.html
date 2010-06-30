@@ -19,8 +19,7 @@
 				]
 			});
 		</script>
-		
-		<style>
+		<style type="text/css">
 			*{
 				margin:0;
 				padding:0;
@@ -182,8 +181,9 @@
 			    {"value": 16, "text": "ok"},
 			    {"value": 17, "text": "it\" fine"}
 			];
+			var data5 = '../../Specs/fixtures/data3.txt';
 
-			var instance = new Meio.Autocomplete($('some'), data1, {
+			var instance = new Meio.Autocomplete($('some'), data5, {
 				
 				selectOnTab: false,
 				onNoItemsToList: function(elements){
@@ -209,12 +209,11 @@
 						$('some3')
 					]
 				},
-				listOptions:{
-					classes: {
-						container: 'omg'
+				requestOptions: {
+					formatResponse: function(response){
+						return response.autocompleteData;
 					}
 				}
-				
 			});
 			
 			/*var instance2 = new Meio.Autocomplete.Select($('some6'), data3, {

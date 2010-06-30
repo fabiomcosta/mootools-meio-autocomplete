@@ -826,7 +826,10 @@ provides: [Meio.Autocomplete]
 		Extends: Meio.Autocomplete.Data,
 		
 		options: {
-			noCache: true
+			noCache: true,
+			formatResponse: function(jsonResponse){
+				return jsonResponse;
+			}
 		},
 		
 		initialize: function(url, cache, element, options, urlOptions){
@@ -859,7 +862,7 @@ provides: [Meio.Autocomplete]
 					self.element.removeLoadingClass();
 				},
 				success: function(jsonResponse){
-					self.data = jsonResponse;
+					self.data = self.options.formatResponse(jsonResponse);
 					self.fireEvent('ready');
 				}
 			});

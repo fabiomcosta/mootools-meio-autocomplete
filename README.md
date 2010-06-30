@@ -66,7 +66,10 @@ This example shows most of its this plugin's options. All the values are the def
 			}
 		},
 		requestOptions: {
-			noCache: true	// nocache is setted by default to avoid cache problem on ie
+			formatResponse: function(jsonResponse){ // this function should return the array of autocomplete data from your jsonResponse
+				return jsonResponse;
+			},
+			noCache: true,	// nocache is setted by default to avoid cache problem on ie
 			// you can pass any of the Request.JSON options here -> http://mootools.net/docs/core/Request/Request.JSON
 		},
 		urlOptions: {
