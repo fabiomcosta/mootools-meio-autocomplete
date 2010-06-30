@@ -238,15 +238,15 @@ provides: [Meio.Autocomplete]
 		},
 		
 		update: function(){
-			var text = this.inputedText, data = this.data, options = this.options, list = this.elements.list;
-			var filter = this.filters.filter, formatMatch = this.filters.formatMatch, formatItem = this.filters.formatItem; 
+			var data = this.data, list = this.elements.list;
 			var cacheKey = data.getKey(), cached = this.cache.get(cacheKey), html;
 			if (cached){
 				html = cached.html;
 				this.itemsData = cached.data;
 			} else {
 				data = data.get();
-				var itemsHtml = [], itemsData = [], classes = list.options.classes;
+				var itemsHtml = [], itemsData = [], classes = list.options.classes, text = this.inputedText;
+				var filter = this.filters.filter, formatMatch = this.filters.formatMatch, formatItem = this.filters.formatItem;
 				for (var row, i = 0, n = 0; row = data[i++];){
 					if (filter.call(this, text, row)){
 						itemsHtml.push(
