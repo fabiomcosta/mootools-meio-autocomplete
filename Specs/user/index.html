@@ -183,10 +183,10 @@
 			];
 			var data5 = '../../Specs/fixtures/data3.txt';
 
-			var instance = new Meio.Autocomplete($('some'), data5, {
+			var instance = new Meio.Autocomplete($('some'), data3, {
 				
 				selectOnTab: false,
-				onNoItemsToList: function(elements){
+				onNoItemToList: function(elements){
 					elements.field.node.highlight('#ff0000');
 				},
 				filter: {
@@ -208,11 +208,6 @@
 						{name: $('some2').get('name'), value: function(){ return $('some2').get('value') }},
 						$('some3')
 					]
-				},
-				requestOptions: {
-					formatResponse: function(response){
-						return response.autocompleteData;
-					}
 				}
 			});
 			
@@ -222,7 +217,7 @@
 				valueFilter: function(data){
 					return data.id;
 				},
-				onNoItemsToList: function(elements){
+				onNoItemToList: function(elements){
 					elements.field.node.highlight('#ff0000');
 				},
 				filter: function(text, data){
@@ -245,7 +240,7 @@
 				valueFilter: function(data){
 					return data.value;
 				},
-				onNoItemsToList: function(elements){
+				onNoItemToList: function(elements){
 					elements.field.node.highlight('#ff0000');
 				},
 				filter: {
