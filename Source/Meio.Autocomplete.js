@@ -877,6 +877,7 @@ provides: [Meio.Autocomplete]
 		Implements: [Options],
 		
 		options: {
+			queryVarName: 'q',
 			extraParams: null,
 			max: 20
 		},
@@ -891,13 +892,13 @@ provides: [Meio.Autocomplete]
 			for (var i = params.length; i--;){
 				this.addParameter(params[i]);
 			}
-			if(this.options.max) this.addParameter('limit=' + this.options.max);
+			if (this.options.max) this.addParameter('limit=' + this.options.max);
 		},
 		
 		evaluate: function(text){
 			text = text || '';
 			var params = this.dynamicExtraParams, url = [];
-			url.push('q=' + encodeURIComponent(text));
+			url.push(this.options.queryVarName + '=' + encodeURIComponent(text));
 			for (var i = params.length; i--;){
 				url.push(encodeURIComponent(params[i].name) + '=' + encodeURIComponent($lambda(params[i].value)()));
 			}

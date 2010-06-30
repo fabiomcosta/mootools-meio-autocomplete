@@ -70,6 +70,7 @@ This example shows most of its this plugin's options. All the values are the def
 			// you can pass any of the Request.JSON options here -> http://mootools.net/docs/core/Request/Request.JSON
 		},
 		urlOptions: {
+			queryVarName: 'q',	// the name of the variable that's going to the server with the query value inputed by the user.
 			extraParams: null,	// you can pass an array of elements or objects with 'value' and 'name' keys. the value key can 'value' can be a function.
 								// ex: if you pass [{'name': 'x', 'value': function(){ return 2; }}] the url generated to get the list of options will have the 'x' parameter with value '2'.
 			max: 20				// the max number of options that should be listed. This will be sent to the ajax request as the 'limit' parameter.
