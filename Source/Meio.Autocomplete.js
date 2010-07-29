@@ -434,7 +434,7 @@ provides: [Meio.Autocomplete]
 					if (self.options.valueFilter.call(self, values[i]) == value){
 						var text = self.filters.formatMatch.call(self, '', values[i], 0);
 						self.elements.field.node.set('value', text);
-						self.fireEvent('select', [self.elements, values[i], text, i])
+						self.fireEvent('select', [self.elements, values[i], text, i]);
 						break;
 					}
 				}
