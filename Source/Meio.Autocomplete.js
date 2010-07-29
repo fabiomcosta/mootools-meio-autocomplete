@@ -208,7 +208,7 @@ provides: [Meio.Autocomplete]
 					list.positionNextTo(this.elements.field.node);
 				},
 				'click': function(){
-					if (this.active++ > 1 && !this.elements.list.showing){
+					if (++this.active > 2 && !this.elements.list.showing){
 						this.forceSetupList();
 					}
 				},
@@ -247,18 +247,16 @@ provides: [Meio.Autocomplete]
 				data = data.get();
 				var itemsHtml = [], itemsData = [], classes = list.options.classes, text = this.inputedText;
 				var filter = this.filters.filter, formatMatch = this.filters.formatMatch, formatItem = this.filters.formatItem;
-				for (var row, i = 0, n = 0; row = data[i++];){
-					if (filter.call(this, text, row)){
-						itemsHtml.push(
-							'<li title="', encode(formatMatch.call(this, text, row)),
-							'" data-index="', n,
-							'" class="', (n%2 ? classes.even : classes.odd), '">',
-							formatItem.call(this, text, row, n),
-							'</li>'
-						);
-						itemsData.push(row);
-						n++;
-					}
+				for (var row, i = 0, n = 0; row = data[i++];) if (filter.call(this, text, row)){
+					itemsHtml.push(
+						'<li title="', encode(formatMatch.call(this, text, row)),
+						'" data-index="', n,
+						'" class="', (n%2 ? classes.even : classes.odd), '">',
+						formatItem.call(this, text, row, n),
+						'</li>'
+					);
+					itemsData.push(row);
+					n++;
 				}
 				html = itemsHtml.join('');
 				this.cache.set(cacheKey, {html: html, data: itemsData});
@@ -283,7 +281,7 @@ provides: [Meio.Autocomplete]
 		forceSetupList: function(inputedText){
 			inputedText = inputedText || this.elements.field.node.get('value');
 			if (inputedText.length >= this.options.minChars){
-				$clear(this.prepareTimer);
+				clearInterval(this.prepareTimer);
 				this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, this.inputedText);
 			}
 		},
@@ -327,10 +325,10 @@ provides: [Meio.Autocomplete]
 		addSelectEvents: function(){
 			this.addEvents({
 				select: function(elements){
-					elements.field.addSelectedClass();
+					elements.field.addClass('selected');
 				},
 				deselect: function(elements){
-					elements.field.removeSelectedClass();
+					elements.field.removeClass('selected');
 				}
 			});
 		},
@@ -430,14 +428,17 @@ provides: [Meio.Autocomplete]
 		addDataReadyEvent: function(value){
 			var self = this;
 			var runOnce = function(){
+				self.addValueFieldEvents();
 				var values = this.get();
 				for (var i = values.length; i--;){
 					if (self.options.valueFilter.call(self, values[i]) == value){
-						self.elements.field.node.set('value', self.filters.formatMatch.call(self, '', values[i], 0));
+						var text = self.filters.formatMatch.call(self, '', values[i], 0);
+						self.elements.field.node.set('value', text);
+						self.fireEvent('select', [self.elements, values[i], text, i])
+						break;
 					}
 				}
 				if (this.url) this.url.removeParameter(self.parameter);
-				self.addValueFieldEvents();
 				this.removeEvent('ready', runOnce);
 			};
 			this.data.addEvent('ready', runOnce);
@@ -546,6 +547,14 @@ provides: [Meio.Autocomplete]
 			}
 		},
 		
+		addClass: function(type){
+			this.node.addClass(this.options.classes[type]);
+		},
+		
+		removeClass: function(type){
+			this.node.removeClass(this.options.classes[type]);
+		},
+		
 		toElement: function(){
 			this.node;
 		},
@@ -586,7 +595,7 @@ provides: [Meio.Autocomplete]
 		
 		// this let me get the value of the input on keydown and keypress
 		keyrepeat: function(e){
-			$clear(this.keyrepeatTimer);
+			clearInterval(this.keyrepeatTimer);
 			this.keyrepeatTimer = this._keyrepeat.delay(1, this, e);
 		},
 		
@@ -597,22 +606,6 @@ provides: [Meio.Autocomplete]
 		destroy: function(){
 			this.detach();
 			this.node.removeAttribute('autocomplete');
-		},
-		
-		addLoadingClass: function(){
-			this.node.addClass(this.options.classes.loading);
-		},
-		
-		removeLoadingClass: function(){
-			this.node.removeClass(this.options.classes.loading);
-		},
-		
-		addSelectedClass: function(){
-			this.node.addClass(this.options.classes.selected);
-		},
-		
-		removeSelectedClass: function(){
-			this.node.removeClass(this.options.classes.selected);
 		},
 		
 		// ie6 only, uglyness
@@ -857,10 +850,10 @@ provides: [Meio.Autocomplete]
 			this.request = new Request.JSON(this.options);
 			this.request.addEvents({
 				request: function(){
-					self.element.addLoadingClass();
+					self.element.addClass('loading');
 				},
 				complete: function(){
-					self.element.removeLoadingClass();
+					self.element.removeClass('loading');
 				},
 				success: function(jsonResponse){
 					self.data = self.options.formatResponse(jsonResponse);
@@ -910,7 +903,7 @@ provides: [Meio.Autocomplete]
 		},
 		
 		addParameter: function(param){
-			if (isFinite(param.nodeType) || $type(param.value) == 'function'){
+			if (param.nodeType == 1 || $type(param.value) == 'function'){
 				this.dynamicExtraParams.push(param);
 			} else {
 				this.url += (($type(param) == 'string') ? param : encodeURIComponent(param.name) + '=' + encodeURIComponent(param.value)) + '&';
@@ -972,4 +965,4 @@ provides: [Meio.Autocomplete]
 	if($defined(global.Meio)) $extend(global.Meio, Meio);
 	else global.Meio = Meio;
 	
-})(this, document.id || $);
+})(window || this, document.id || $);
