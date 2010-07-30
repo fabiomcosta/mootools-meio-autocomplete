@@ -22,7 +22,7 @@ provides: [Meio.Autocomplete]
 	var browserEngine = Browser.Engine; // better compression and faster
 
 	// Custom Events
-	
+
 	// thanks Jan Kassens
 	$extend(Element.NativeEvents, {
 		'paste': 2, 'input': 2
