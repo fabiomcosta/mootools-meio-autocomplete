@@ -7,7 +7,7 @@ authors:
  - Fábio Miranda Costa
 
 requires:
- - core/1.2.4: [Class.Extras]
+ - Core/Class.Extras
 
 license: MIT-style license Original plugin copyright Copyright (c) 2006 Brandon Aaron (http://brandonaaron.net) Dual licensed under the MIT (http://www.opensource.org/licenses/mit-license.php) and GPL (http://www.opensource.org/licenses/gpl-license.php) licenses. Version 2.1.1
 
@@ -16,9 +16,8 @@ provides: [BGIFrame]
 ...
 */
 
-(function(global){
+(function(global, $){
 	
-	var $ = global.document.id || global.$;
 	var isIE6 = Browser.Engine.trident4; // better compression and faster
 
 	var BgIframe = new Class({
@@ -32,12 +31,13 @@ provides: [BGIFrame]
 			src		: 'javascript:false;'
 		},
 		initialize: function(element, options){
-			if(!isIE6) return;
+			if (!isIE6) return;
 			this.setOptions(options);
 			this.element = $(element);
 			var firstChild = this.element.getFirst();
-			if(!(firstChild && firstChild.hasClass('bgiframe')))
+			if (!(firstChild && firstChild.hasClass('bgiframe'))){
 				this.element.grab(document.createElement(this.render()), 'top');
+			}
 		},
 		toPx: function(n){ 
 			return isFinite(n) ? n + 'px' : n;
@@ -56,8 +56,8 @@ provides: [BGIFrame]
 	});
 	
 	Element.implement('bgiframe', function(options){
-		if(isIE6) new BgIframe(this, options);
+		if (isIE6) new BgIframe(this, options);
 		return this;
 	});
 	
-})(this);
+})(this, document.id || $);

@@ -1,7 +1,18 @@
 name: Meio.Autocomplete
+web: "[mootools.net/forge/p/meio_autocomplete](http://mootools.net/forge/p/meio_autocomplete)"
+authors: "[Fábio M. Costa](http://meiocodigo.com/)"
+description: "Meio.Autocomplete - A mootools plugin for enabling autocomplete of a text input or textarea."
+license: "MIT License"
+copyright: "&copy; 2010, Fábio M. Costa"
+
+sources:
+  - "Source/Meio.Autocomplete.js"
+
+# Values for MooTools forge
+
 author: fabiomiranda
+current: 1.0
 category: Forms
 tags: [input, autocomplete]
-demo: http://mootools.net/shell/jRRbE/121/
-docs: http://www.meiocodigo.com/projects/meio-autocomplete/
-current: 0.8.5
+docs: http://meiocodigo.com/projects/meio-autocomplete/
+demo: http://jsfiddle.net/fabiomcosta/eZpuL/

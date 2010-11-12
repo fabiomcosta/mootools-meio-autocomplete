@@ -35,7 +35,7 @@
 			}
 			.ma-container ul{
 				margin: 0;
-				padding: 0;	
+				padding: 0;
 				list-style: none;
 				overflow: hidden;
 				width: 100%;
@@ -160,10 +160,10 @@
 		
 		<script type="text/javascript">
 
-			var data = '../../Specs/fixtures/data.txt';
-			var data1 = '../../Specs/fixtures/data2.txt';
+			var data = '../fixtures/data.txt';
+			var data1 = '../fixtures/data2.txt';
 			var data2 = ['aff2', 'alguma coisa2', 'something2', 'omg2', 'testing2', 'so what?2', 'other chars2', 'á latin é2', 'hmmm2', 'hmmmmmm2', 'ok2', 'it\'s fine2'];
-			var data3 = '../../Specs/fixtures/data.php';
+			var data3 = '../fixtures/data.php';
 			var data4 = [
 			    {"value": 0, "text": "Brazil"},
 			    {"value": 1, "text": "Ajax"},
@@ -184,7 +184,7 @@
 			    {"value": 16, "text": "ok"},
 			    {"value": 17, "text": "it\" fine"}
 			];
-			var data5 = '../../Specs/fixtures/data3.txt';
+			var data5 = '../fixtures/data3.txt';
 
 			var instance = new Meio.Autocomplete.Select($('some'), data3, {
 				
@@ -200,7 +200,7 @@
 				},
 				onSelect: function(elements, data){
 					[$('some4')].each(function(el){
-						el.set('value', data.value);
+						el.set('value', data.text);
 					});
 				},
 				onDeselect: function(elements){
