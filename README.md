@@ -5,6 +5,12 @@ Meio.Autocomplete - a mootools plugin for creating autocomplete fields.
 
 ![Screenshot](http://github.com/fabiomcosta/mootools-meio-autocomplete/raw/master/Assets/image_forge.png)
 
+Note
+----
+
+1.x and below are the versions made to be used with Mootools 1.2.x.
+2.x and greater are the versions made to be used with Mootools 1.3.x.
+
 Introduction
 ------------
 
