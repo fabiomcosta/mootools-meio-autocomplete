@@ -143,25 +143,25 @@ provides: [Meio.Autocomplete]
 		},
 		
 		addEventsToElement: function(name, events){
-			for (eventName in events){
+			for (var eventName in events){
 				this.addEventToElement(name, eventName, events[eventName]);
 			}
 		},
 		
 		attach: function(){
-			for (element in this.elements){
+			for (var element in this.elements){
 				this.elements[element].attach();
 			}
 		},
 		
 		detach: function(){
-			for (element in this.elements){
+			for (var element in this.elements){
 				this.elements[element].detach();
 			}
 		},
 		
 		destroy: function(){
-			for (element in this.elements){
+			for (var element in this.elements){
 				this.elements[element] && this.elements[element].destroy();
 			}
 		}
@@ -601,13 +601,13 @@ provides: [Meio.Autocomplete]
 		},
 		
 		attach: function(){
-			for (e in this.bound){
+			for (var e in this.bound){
 				this.node.addEvent(e, this.bound[e]);
 			}
 		},
 		
 		detach: function(){
-			for (e in this.bound){
+			for (var e in this.bound){
 				this.node.removeEvent(e, this.bound[e]);
 			}
 		},
