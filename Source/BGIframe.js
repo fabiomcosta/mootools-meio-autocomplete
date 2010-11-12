@@ -18,7 +18,7 @@ provides: [BGIFrame]
 
 (function(global, $){
 	
-	var isIE6 = Browser.Engine.trident4; // better compression and faster
+	var isIE6 = Browser.ie6; // better compression and faster
 
 	var BgIframe = new Class({
 		Implements: Options,

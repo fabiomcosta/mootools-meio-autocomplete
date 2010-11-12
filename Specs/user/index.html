@@ -4,8 +4,8 @@
 		<title>Meio Plugin Specs</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 		
-		<script src="../../Assets/mootools-1.2.4-core.js" type="text/javascript" charset="utf-8"></script>
-		<script src="../../Assets/mootools-1.2.4.4-more.js" type="text/javascript" charset="utf-8"></script>
+		<script src="../../Assets/mootools-core-1.3-full-nocompat.js" type="text/javascript"></script>
+		<script src="../../Assets/mootools-more-1.3.0.1.js" type="text/javascript"></script>
 		<!--<script src="../../../../assets/firebug/firebug-lite-compressed.js" type="text/javascript" charset="utf-8"></script>-->
 		<script src="../../../../assets/js-spec/Builder.js" type="text/javascript" charset="utf-8"></script>
 		
@@ -272,8 +272,8 @@
 					this.list = $('ul_list_test');
 				},
 				hide: function(){ this.showing = false; },
-				positionNextTo: $empty,
-				applyMaxHeight: $empty
+				positionNextTo: function(){},
+				applyMaxHeight: function(){}
 			});
 			var containerList = new ContainerList();
 			var instance4 = new Meio.Autocomplete($('some5'), data2, {listInstance: containerList});

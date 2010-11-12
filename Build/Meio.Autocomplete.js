@@ -18,7 +18,7 @@ provides: [BGIFrame]
 
 (function(global, $){
 	
-	var isIE6 = Browser.Engine.trident4; // better compression and faster
+	var isIE6 = Browser.ie6; // better compression and faster
 
 	var BgIframe = new Class({
 		Implements: Options,
@@ -84,16 +84,16 @@ provides: [Meio.Autocomplete]
 
 (function(global, $){
 
-	var browserEngine = Browser.Engine; // better compression and faster
+	var browser = Browser; // better compression and faster
 
 	// Custom Events
 
 	// thanks Jan Kassens
-	$extend(Element.NativeEvents, {
+	Object.append(Element.NativeEvents, {
 		'paste': 2, 'input': 2
 	});
 	Element.Events.paste = {
-		base : (browserEngine.presto || (browserEngine.gecko && browserEngine.version < 19)) ? 'input' : 'paste',
+		base : (browser.opera || (browser.firefox && browser.version < 3)) ? 'input' : 'paste',
 		condition: function(e){
 			this.fireEvent('paste', e, 1);
 			return false;
@@ -102,8 +102,8 @@ provides: [Meio.Autocomplete]
 	
 	// the key event that repeats
 	Element.Events.keyrepeat = {
-		base : (browserEngine.gecko || browserEngine.presto) ? 'keypress' : 'keydown',
-		condition: $lambda(true)
+		base : (browser.firefox || browser.opera) ? 'keypress' : 'keydown',
+		condition: Function.from(true)
 	};
 	
 	// Autocomplete itself
@@ -139,29 +139,29 @@ provides: [Meio.Autocomplete]
 		},
 		
 		addEventToElement: function(name, eventName, event){
-			this.elements[name].addEvent(eventName, event.bindWithEvent(this));
+			this.elements[name].addEvent(eventName, event.bind(this));
 		},
 		
 		addEventsToElement: function(name, events){
-			for (eventName in events){
+			for (var eventName in events){
 				this.addEventToElement(name, eventName, events[eventName]);
 			}
 		},
 		
 		attach: function(){
-			for (element in this.elements){
+			for (var element in this.elements){
 				this.elements[element].attach();
 			}
 		},
 		
 		detach: function(){
-			for (element in this.elements){
+			for (var element in this.elements){
 				this.elements[element].detach();
 			}
 		},
 		
 		destroy: function(){
-			for (element in this.elements){
+			for (var element in this.elements){
 				this.elements[element] && this.elements[element].destroy();
 			}
 		}
@@ -399,7 +399,7 @@ provides: [Meio.Autocomplete]
 		},
 		
 		initData: function(data){
-			this.data = ($type(data) == 'string') ?
+			this.data = (typeOf(data) == 'string') ?
 				new Meio.Autocomplete.Data.Request(data, this.cache, this.elements.field, this.options.requestOptions, this.options.urlOptions) :
 				new Meio.Autocomplete.Data(data, this.cache);
 			this.data.addEvent('ready', this.dataReady.bind(this));
@@ -531,7 +531,7 @@ provides: [Meio.Autocomplete]
 		initialize: function(select, options, listInstance){
 			this.select = $(select);
 			this.replaceSelect();
-			this.parent(this.field, this.createDataArray(), $merge(options, {
+			this.parent(this.field, this.createDataArray(), Object.merge(options || {}, {
 				valueField: this.select,
 				valueFilter: function(data){ return data.value; }
 			}), listInstance);
@@ -541,7 +541,7 @@ provides: [Meio.Autocomplete]
 			var selectedOption = this.select.getSelected()[0];
 			this.field = new Element('input', {type: 'text'});
 			var optionValue = selectedOption.get('value');
-			if ($chk(optionValue)) this.field.set('value', selectedOption.get('html'));
+			if (optionValue || optionValue === 0) this.field.set('value', selectedOption.get('html'));
 			this.select.setStyle('display', 'none');
 			this.field.inject(this.select, 'after');
 		},
@@ -550,7 +550,7 @@ provides: [Meio.Autocomplete]
 			var selectOptions = this.select.options, data = [];
 			for(var i = 0, selectOption, optionValue; selectOption = selectOptions[i++];){
 				optionValue = selectOption.value;
-				if ($chk(optionValue)) data.push({value: optionValue, text: selectOption.innerHTML});
+				if (optionValue || optionValue === 0) data.push({value: optionValue, text: selectOption.innerHTML});
 			}
 			return data;
 		},
@@ -596,18 +596,18 @@ provides: [Meio.Autocomplete]
 					this[evt] && this[evt](e);
 					this.fireEvent(evt, e);
 					return true;
-				}.bindWithEvent(this);
+				}.bind(this);
 			}, this);
 		},
 		
 		attach: function(){
-			for (e in this.bound){
+			for (var e in this.bound){
 				this.node.addEvent(e, this.bound[e]);
 			}
 		},
 		
 		detach: function(){
-			for (e in this.bound){
+			for (var e in this.bound){
 				this.node.removeEvent(e, this.bound[e]);
 			}
 		},
@@ -624,7 +624,7 @@ provides: [Meio.Autocomplete]
 			this.node;
 		},
 		
-		render: $empty
+		render: function(){}
 		
 	});
 
@@ -644,7 +644,7 @@ provides: [Meio.Autocomplete]
 		initialize: function(field, options){
 			this.keyPressControl = {};
 			this.boundEvents = ['paste', 'focus', 'blur', 'click', 'keyup', 'keyrepeat'];
-			if (browserEngine.trident4) this.boundEvents.push('keypress'); // yeah super ugly, but what can be awesome with ie?
+			if (browser.ie6) this.boundEvents.push('keypress'); // yeah super ugly, but what can be awesome with ie?
 			this.setOptions(options);
 			this.parent(field);
 			
@@ -809,7 +809,7 @@ provides: [Meio.Autocomplete]
 		get: function(options){
 			var type = options.type, keys = (options.path || '').split('.');
 			var filters = (type && this.filters[type]) ? this.filters[type](this, keys) : options;
-			return $merge(this.defaults(keys), filters);
+			return Object.merge(this.defaults(keys), filters);
 		},
 		
 		define: function(name, options){
@@ -875,7 +875,7 @@ provides: [Meio.Autocomplete]
 			this._cache.set(key, data);
 		},
 		
-		refreshKey: $empty
+		refreshKey: function(){}
 		
 	});
 	
@@ -927,7 +927,7 @@ provides: [Meio.Autocomplete]
 		},
 		
 		refreshKey: function(urlOptions){
-			urlOptions = $merge(this.urlOptions, {url: this.rawUrl}, urlOptions || {});
+			urlOptions = Object.merge(this.urlOptions, {url: this.rawUrl}, urlOptions || {});
 			this.url = new Meio.Autocomplete.Data.Request.URL(urlOptions.url, urlOptions);
 		}
 		
@@ -949,7 +949,7 @@ provides: [Meio.Autocomplete]
 			this.url = url;
 			this.url += this.url.contains('?') ? '&' : '?';
 			this.dynamicExtraParams = [];
-			var params = $splat(this.options.extraParams);
+			var params = Array.from(this.options.extraParams);
 			for (var i = params.length; i--;){
 				this.addParameter(params[i]);
 			}
@@ -961,16 +961,16 @@ provides: [Meio.Autocomplete]
 			var params = this.dynamicExtraParams, url = [];
 			url.push(this.options.queryVarName + '=' + encodeURIComponent(text));
 			for (var i = params.length; i--;){
-				url.push(encodeURIComponent(params[i].name) + '=' + encodeURIComponent($lambda(params[i].value)()));
+				url.push(encodeURIComponent(params[i].name) + '=' + encodeURIComponent(Function.from(params[i].value)()));
 			}
 			return this.url + url.join('&');
 		},
 		
 		addParameter: function(param){
-			if (param.nodeType == 1 || $type(param.value) == 'function'){
+			if (param.nodeType == 1 || typeOf(param.value) == 'function'){
 				this.dynamicExtraParams.push(param);
 			} else {
-				this.url += (($type(param) == 'string') ? param : encodeURIComponent(param.name) + '=' + encodeURIComponent(param.value)) + '&';
+				this.url += ((typeOf(param) == 'string') ? param : encodeURIComponent(param.name) + '=' + encodeURIComponent(param.value)) + '&';
 			}
 		},
 		
