@@ -4,7 +4,6 @@ authors: "[Fábio M. Costa](http://meiocodigo.com/)"
 description: "Meio.Autocomplete - A mootools plugin for enabling autocomplete of a text input or textarea."
 license: "MIT License"
 copyright: "&copy; 2010, Fábio M. Costa"
-
 sources:
   - "Source/Meio.Autocomplete.js"
 
@@ -15,4 +14,4 @@ current: 2.0
 category: Forms
 tags: [input, autocomplete]
 docs: http://meiocodigo.com/projects/meio-autocomplete/
-demo: http://jsfiddle.net/fabiomcosta/eZpuL/
+demo: http://jsfiddle.net/fabiomcosta/eZpuL/3/
