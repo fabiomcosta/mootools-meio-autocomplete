@@ -722,7 +722,7 @@ provides: [Meio.Autocomplete]
 		
 		positionNextTo: function(fieldNode){
 			var width = this.options.width, listNode = this.node;
-			var elPosition = fieldNode.getCoordinates();
+			var elPosition = fieldNode.getCoordinates(this.options.container);
 			listNode.setStyle('width', width == 'field' ? fieldNode.getWidth().toInt() - listNode.getStyle('border-left-width').toInt() - listNode.getStyle('border-right-width').toInt() : width);
 			listNode.setPosition({x: elPosition.left, y: elPosition.bottom});
 		},
