@@ -36,18 +36,18 @@ provides: [Meio.Autocomplete]
 			return false;
 		}
 	};
-	
+
 	// the key event that repeats
 	Element.Events.keyrepeat = {
 		base : (browser.firefox || browser.opera) ? 'keypress' : 'keydown',
 		condition: Function.from(true)
 	};
-	
+
 	// Autocomplete itself
 
 	var Meio = global.Meio || {};
 	var globalCache;
-	
+
 	var keysThatDontChangeValueOnKeyUp = {
 		9:   1,  // tab
 		16:  1,  // shift
@@ -59,114 +59,114 @@ provides: [Meio.Autocomplete]
 		38:  1,  // up
 		39:  1,  // right
 		40:  1   // down
-	}; 
-	
+	};
+
 	var encode = function(str){
 		return str.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 	};
-	
+
 	Meio.Widget = new Class({
-		
+
 		initialize: function(){
 			this.elements = {};
 		},
-		
+
 		addElement: function(name, obj){
 			this.elements[name] = obj;
 		},
-		
+
 		addEventToElement: function(name, eventName, event){
 			this.elements[name].addEvent(eventName, event.bind(this));
 		},
-		
+
 		addEventsToElement: function(name, events){
 			for (var eventName in events){
 				this.addEventToElement(name, eventName, events[eventName]);
 			}
 		},
-		
+
 		attach: function(){
 			for (var element in this.elements){
 				this.elements[element].attach();
 			}
 		},
-		
+
 		detach: function(){
 			for (var element in this.elements){
 				this.elements[element].detach();
 			}
 		},
-		
+
 		destroy: function(){
 			for (var element in this.elements){
 				this.elements[element] && this.elements[element].destroy();
 			}
 		}
 	});
-	
+
 	Meio.Autocomplete = new Class({
-		
+
 		Extends: Meio.Widget,
-		
+
 		Implements: [Options, Events],
-		
+
 		options: {
-			
+
 			delay: 200,
 			minChars: 0,
 			cacheLength: 20,
 			selectOnTab: true,
 			maxVisibleItems: 10,
 			cacheType: 'shared', // 'shared' or 'own'
-			
+
 			filter: {
 				/*
 					its posible to pass the filters directly or by passing a type and optionaly a path.
-					
+
 					filter: function(text, data){}
 					formatMatch: function(text, data, i){}
 					formatItem: function(text, data){}
-					
+
 					or
-					
+
 					type: 'startswith' or 'contains' // can be any defined on the Meio.Autocomplete.Filter object
 					path: 'a.b.c' // path to the text value on each object thats contained on the data array
 				*/
 			},
-			
+
 			/*
 			onNoItemToList: function(elements){},
 			onSelect: function(elements, value){},
 			onDeselect: function(elements){},
 			*/
-			
+
 			fieldOptions: {}, // see Element options
 			listOptions: {}, // see List options
 			requestOptions: {}, // see DataRequest options
 			urlOptions: {} // see URL options
-			
+
 		},
-		
+
 		initialize: function(input, data, options, listInstance){
 			this.parent();
 			this.setOptions(options);
 			this.active = 0;
-			
+
 			this.filters = Meio.Autocomplete.Filter.get(this.options.filter);
-			
+
 			this.addElement('list', listInstance || new Meio.Element.List(this.options.listOptions));
 			this.addListEvents();
-			
+
 			this.addElement('field', new Meio.Element.Field(input, this.options.fieldOptions));
 			this.addFieldEvents();
-			
+
 			this.addSelectEvents();
-			
+
 			this.attach();
 			this.initCache();
 			this.initData(data);
 		},
-		
+
 		addFieldEvents: function(){
 			this.addEventsToElement('field', {
 				'beforeKeyrepeat': function(e){
@@ -230,7 +230,7 @@ provides: [Meio.Autocomplete]
 				}
 			});
 		},
-		
+
 		addListEvents: function(){
 			this.addEventsToElement('list', {
 				'mousedown': function(e){
@@ -238,7 +238,7 @@ provides: [Meio.Autocomplete]
 				}
 			});
 		},
-		
+
 		update: function(){
 			var data = this.data, list = this.elements.list;
 			var cacheKey = data.getKey(), cached = this.cache.get(cacheKey), html;
@@ -269,7 +269,7 @@ provides: [Meio.Autocomplete]
 			list.list.set('html', html);
 			if (this.options.maxVisibleItems) list.applyMaxHeight(this.options.maxVisibleItems);
 		},
-		
+
 		setupList: function(){
 			this.inputedText = this.elements.field.node.get('value');
 			if (this.inputedText !== this.oldInputedText){
@@ -279,7 +279,7 @@ provides: [Meio.Autocomplete]
 			}
 			return true;
 		},
-		
+
 		forceSetupList: function(inputedText){
 			inputedText = inputedText || this.elements.field.node.get('value');
 			if (inputedText.length >= this.options.minChars){
@@ -287,7 +287,7 @@ provides: [Meio.Autocomplete]
 				this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, this.inputedText);
 			}
 		},
-		
+
 		dataReady: function(){
 			this.update();
 			if (this.onUpdate){
@@ -302,7 +302,7 @@ provides: [Meio.Autocomplete]
 				list.hide();
 			}
 		},
-		
+
 		setInputValue: function(){
 			var list = this.elements.list;
 			if (list.focusedItem){
@@ -313,7 +313,7 @@ provides: [Meio.Autocomplete]
 			}
 			list.hide();
 		},
-		
+
 		focusItem: function(direction){
 			var list = this.elements.list;
 			if (list.showing){
@@ -323,7 +323,7 @@ provides: [Meio.Autocomplete]
 				this.onUpdate = function(){ list.focusItem(direction); };
 			}
 		},
-		
+
 		addSelectEvents: function(){
 			this.addEvents({
 				select: function(elements){
@@ -334,14 +334,14 @@ provides: [Meio.Autocomplete]
 				}
 			});
 		},
-		
+
 		initData: function(data){
 			this.data = (typeOf(data) == 'string') ?
 				new Meio.Autocomplete.Data.Request(data, this.cache, this.elements.field, this.options.requestOptions, this.options.urlOptions) :
 				new Meio.Autocomplete.Data(data, this.cache);
 			this.data.addEvent('ready', this.dataReady.bind(this));
 		},
-		
+
 		initCache: function(){
 			var cacheLength = this.options.cacheLength;
 			if (this.options.cacheType == 'shared'){
@@ -351,12 +351,12 @@ provides: [Meio.Autocomplete]
 				this.cache = new Meio.Autocomplete.Cache(cacheLength);
 			}
 		},
-		
+
 		refreshCache: function(cacheLength){
 			this.cache.refresh();
 			this.cache.setMaxLength(cacheLength || this.options.cacheLength);
 		},
-		
+
 		refreshAll: function(cacheLength, urlOptions){
 			// TODO, do you really need to refresh the url? see a better way of doing this
 			this.refreshCache(cacheLength);
@@ -364,18 +364,18 @@ provides: [Meio.Autocomplete]
 		}
 
 	});
-	
+
 	// This is the same autocomplete class but it acts like a normal select element.
 	// When you select an option from the autocomplete it will set the value of a given element (valueField)
 	// with the return of the valueFilter.
 	// if the syncAtInit option is set to true, it will synchonize the value of the autocomplete with the corresponding data
 	// from the valueField's value.
 	// to understand better see the user specs.
-	
+
 	Meio.Autocomplete.Select = new Class({
-		
+
 		Extends: Meio.Autocomplete,
-		
+
 		options: {
 			syncName: 'id', // if falsy it wont sync at start
 			valueField: null,
@@ -383,20 +383,20 @@ provides: [Meio.Autocomplete]
 				return data.id;
 			}
 		},
-		
+
 		// overwritten
 		initialize: function(input, data, options, listInstance){
 			this.parent(input, data, options, listInstance);
 			this.valueField = $(this.options.valueField);
-			
+
 			if (!this.valueField) return;
-			
+
 			this.syncWithValueField(data);
 		},
-		
+
 		syncWithValueField: function(data){
 			var value = this.getValueFromValueField();
-			
+
 			if (value && this.options.syncName){
 				this.addParameter(data);
 				this.addDataReadyEvent(value);
@@ -405,7 +405,7 @@ provides: [Meio.Autocomplete]
 				this.addValueFieldEvents();
 			}
 		},
-		
+
 		addValueFieldEvents: function(){
 			this.addEvents({
 				'select': function(elements, data){
@@ -416,7 +416,7 @@ provides: [Meio.Autocomplete]
 				}
 			});
 		},
-		
+
 		addParameter: function(data){
 			this.parameter = {
 				name: this.options.syncName,
@@ -426,7 +426,7 @@ provides: [Meio.Autocomplete]
 			};
 			if (this.data.url) this.data.url.addParameter(this.parameter);
 		},
-		
+
 		addDataReadyEvent: function(value){
 			var self = this;
 			var runOnce = function(){
@@ -445,25 +445,25 @@ provides: [Meio.Autocomplete]
 			};
 			this.data.addEvent('ready', runOnce);
 		},
-		
+
 		getValueFromValueField: function(){
 			return this.valueField.get('value');
 		}
-		
+
 	});
-	
+
 	// Transforms a select on an autocomplete field
-	
+
 	Meio.Autocomplete.Select.One = new Class({
-		
+
 		Extends: Meio.Autocomplete.Select,
-		
+
 		options: {
 			filter: {
 				path: 'text' // path to the text value on each object thats contained on the data array
 			}
 		},
-		
+
 		//overwritten
 		initialize: function(select, options, listInstance){
 			this.select = $(select);
@@ -473,7 +473,7 @@ provides: [Meio.Autocomplete]
 				valueFilter: function(data){ return data.value; }
 			}), listInstance);
 		},
-		
+
 		replaceSelect: function(){
 			var selectedOption = this.select.getSelected()[0];
 			this.field = new Element('input', {type: 'text'});
@@ -482,7 +482,7 @@ provides: [Meio.Autocomplete]
 			this.select.setStyle('display', 'none');
 			this.field.inject(this.select, 'after');
 		},
-		
+
 		createDataArray: function(){
 			var selectOptions = this.select.options, data = [];
 			for(var i = 0, selectOption, optionValue; selectOption = selectOptions[i++];){
@@ -491,7 +491,7 @@ provides: [Meio.Autocomplete]
 			}
 			return data;
 		},
-		
+
 		addValueFieldEvents: function(){
 			this.addEvents({
 				'select': function(elements, data, text, index){
@@ -504,27 +504,27 @@ provides: [Meio.Autocomplete]
 				}
 			});
 		},
-		
+
 		getValueFromValueField: function(){
 			return this.valueField.getSelected()[0].get('value');
 		}
-		
+
 	});
-	
+
 	Meio.Element = new Class({
-		
+
 		Implements: [Events],
-		
+
 		initialize: function(node){
 			this.setNode(node);
 			this.createBoundEvents();
 			this.attach();
 		},
-		
+
 		setNode: function(node){
 			this.node = node ? $(node) || $$(node)[0] : this.render();
 		},
-		
+
 		createBoundEvents: function(){
 			this.bound = {};
 			this.boundEvents.each(function(evt){
@@ -536,94 +536,94 @@ provides: [Meio.Autocomplete]
 				}.bind(this);
 			}, this);
 		},
-		
+
 		attach: function(){
 			for (var e in this.bound){
 				this.node.addEvent(e, this.bound[e]);
 			}
 		},
-		
+
 		detach: function(){
 			for (var e in this.bound){
 				this.node.removeEvent(e, this.bound[e]);
 			}
 		},
-		
+
 		addClass: function(type){
 			this.node.addClass(this.options.classes[type]);
 		},
-		
+
 		removeClass: function(type){
 			this.node.removeClass(this.options.classes[type]);
 		},
-		
+
 		toElement: function(){
 			this.node;
 		},
-		
+
 		render: function(){}
-		
+
 	});
 
 	Meio.Element.Field = new Class({
-		
+
 		Extends: Meio.Element,
-		
+
 		Implements: [Options],
-		
+
 		options: {
 			classes: {
 				loading: 'ma-loading',
 				selected: 'ma-selected'
 			}
 		},
-		
+
 		initialize: function(field, options){
 			this.keyPressControl = {};
 			this.boundEvents = ['paste', 'focus', 'blur', 'click', 'keyup', 'keyrepeat'];
 			if (browser.ie6) this.boundEvents.push('keypress'); // yeah super ugly, but what can be awesome with ie?
 			this.setOptions(options);
 			this.parent(field);
-			
+
 			$(global).addEvent('unload', function(){
 				if (this.node) this.node.set('autocomplete', 'on'); // if autocomplete is off when you reload the page the input value gets erased
 			}.bind(this));
 		},
-		
+
 		setNode: function(element){
 			this.parent(element);
 			this.node.set('autocomplete', 'off');
 		},
-		
+
 		// this let me get the value of the input on keydown and keypress
 		keyrepeat: function(e){
 			clearInterval(this.keyrepeatTimer);
 			this.keyrepeatTimer = this._keyrepeat.delay(1, this, e);
 		},
-		
+
 		_keyrepeat: function(e){
 			this.fireEvent('delayedKeyrepeat', e);
 		},
-		
+
 		destroy: function(){
 			this.detach();
 			this.node.removeAttribute('autocomplete');
 		},
-		
+
 		// ie6 only, uglyness
 		// this fix the form being submited on the press of the enter key
 		keypress: function(e){
 			if (e.key == 'enter') this.bound.keyrepeat(e);
 		}
-		
+
 	});
 
 	Meio.Element.List = new Class({
-		
+
 		Extends: Meio.Element,
-		
+
 		Implements: [Options],
-		
+
 		options: {
 			width: 'field', // you can pass any other value settable by set('width') to the list container
 			classes: {
@@ -633,14 +633,14 @@ provides: [Meio.Autocomplete]
 				even: 'ma-even'
 			}
 		},
-		
+
 		initialize: function(options){
 			this.boundEvents = ['mousedown', 'mouseover'];
 			this.setOptions(options);
 			this.parent();
 			this.focusedItem = null;
 		},
-		
+
 		applyMaxHeight: function(maxVisibleItems){
 			var listChildren = this.list.childNodes;
 			var node = listChildren[maxVisibleItems - 1] || (listChildren.length ? listChildren[listChildren.length - 1] : null);
@@ -649,7 +649,7 @@ provides: [Meio.Autocomplete]
 			// uggly hack to fix the height of the autocomplete list
 			for (var i = 2; i--;) this.node.setStyle('height', node.getCoordinates(this.list).bottom);
 		},
-		
+
 		mouseover: function(e){
 			var item = this.getItemFromEvent(e), hoverClass = this.options.classes.hover;
 			if (!item) return true;
@@ -658,17 +658,17 @@ provides: [Meio.Autocomplete]
 			this.focusedItem = item;
 			this.fireEvent('focusItem', [this.focusedItem]);
 		},
-		
+
 		mousedown: function(e){
 			e.preventDefault();
 			this.shouldNotBlur = true;
 			if (!(this.focusedItem = this.getItemFromEvent(e))){
 				e.dontHide = true;
 				return true;
-			} 
+			}
 			this.focusedItem.removeClass(this.options.classes.hover);
 		},
-		
+
 		focusItem: function(direction){
 			var hoverClass = this.options.classes.hover, newFocusedItem;
 			if (this.focusedItem){
@@ -685,7 +685,7 @@ provides: [Meio.Autocomplete]
 				}
 			}
 		},
-		
+
 		scrollFocusedItem: function(direction){
 			var focusedItemCoordinates = this.focusedItem.getCoordinates(this.list),
 				scrollTop = this.node.scrollTop;
@@ -701,7 +701,7 @@ provides: [Meio.Autocomplete]
 				}
 			}
 		},
-		
+
 		getItemFromEvent: function(e){
 			var target = e.target;
 			while (target && target.tagName.toLowerCase() != 'li'){
@@ -710,7 +710,7 @@ provides: [Meio.Autocomplete]
 			}
 			return $(target);
 		},
-		
+
 		render: function(){
 			var node = new Element('div', {'class': this.options.classes.container});
 			if (node.bgiframe) node.bgiframe({top: 0, left: 0});
@@ -718,41 +718,41 @@ provides: [Meio.Autocomplete]
 			$(document.body).grab(node);
 			return node;
 		},
-		
+
 		positionNextTo: function(fieldNode){
 			var width = this.options.width, listNode = this.node;
 			var elPosition = fieldNode.getCoordinates();
 			listNode.setStyle('width', width == 'field' ? fieldNode.getWidth().toInt() - listNode.getStyle('border-left-width').toInt() - listNode.getStyle('border-right-width').toInt() : width);
 			listNode.setPosition({x: elPosition.left, y: elPosition.bottom});
 		},
-		
+
 		show: function(){
 			this.node.scrollTop = 0;
 			this.node.setStyle('visibility', 'visible');
 			this.showing = true;
 		},
-		
+
 		hide: function(){
 			this.showing = false;
 			this.node.setStyle('visibility', 'hidden');
 		}
-		
+
 	});
-	
+
 	Meio.Autocomplete.Filter = {
-		
+
 		filters: {},
-		
+
 		get: function(options){
 			var type = options.type, keys = (options.path || '').split('.');
 			var filters = (type && this.filters[type]) ? this.filters[type](this, keys) : options;
 			return Object.merge(this.defaults(keys), filters);
 		},
-		
+
 		define: function(name, options){
 			this.filters[name] = options;
 		},
-		
+
 		defaults: function(keys){
 			var self = this;
 			return {
@@ -767,15 +767,15 @@ provides: [Meio.Autocomplete]
 				}
 			};
 		},
-		
+
 		_getValueFromKeys: function(obj, keys){
 			var key, value = obj;
 			for (var i = 0; key = keys[i++];) value = value[key];
 			return value;
 		}
-		
+
 	};
-	
+
 	Meio.Autocomplete.Filter.define('contains', function(self, keys){return {};});
 	Meio.Autocomplete.Filter.define('startswith', function(self, keys){
 		return {
@@ -784,49 +784,49 @@ provides: [Meio.Autocomplete]
 			}
 		};
 	});
-	
+
 	Meio.Autocomplete.Data = new Class({
-		
+
 		Implements: [Options, Events],
-		
+
 		initialize: function(data, cache){
 			this._cache = cache;
 			this.data = data;
 			this.dataString = JSON.encode(this.data);
 		},
-		
+
 		get: function(){
 			return this.data;
 		},
-		
+
 		getKey: function(){
 			return this.cachedKey;
 		},
-		
+
 		prepare: function(text){
 			this.cachedKey = this.dataString + (text || '');
 			this.fireEvent('ready');
 		},
-		
+
 		cache: function(key, data){
 			this._cache.set(key, data);
 		},
-		
+
 		refreshKey: function(){}
-		
+
 	});
-	
+
 	Meio.Autocomplete.Data.Request = new Class({
-		
+
 		Extends: Meio.Autocomplete.Data,
-		
+
 		options: {
 			noCache: true,
 			formatResponse: function(jsonResponse){
 				return jsonResponse;
 			}
 		},
-		
+
 		initialize: function(url, cache, element, options, urlOptions){
 			this.setOptions(options);
 			this.rawUrl = url;
@@ -836,16 +836,21 @@ provides: [Meio.Autocomplete]
 			this.refreshKey();
 			this.createRequest();
 		},
-		
+
 		prepare: function(text){
+			var request = this.request;
+
 			this.cachedKey = this.url.evaluate(text);
 			if (this._cache.has(this.cachedKey)){
 				this.fireEvent('ready');
 			} else {
-				this.request.send({url: this.cachedKey});
+				if (request.isRunning()) {
+					request.cancel();
+				}
+				request.send({url: this.cachedKey});
 			}
 		},
-		
+
 		createRequest: function(){
 			var self = this;
 			this.request = new Request.JSON(this.options);
@@ -862,24 +867,24 @@ provides: [Meio.Autocomplete]
 				}
 			});
 		},
-		
+
 		refreshKey: function(urlOptions){
 			urlOptions = Object.merge(this.urlOptions, {url: this.rawUrl}, urlOptions || {});
 			this.url = new Meio.Autocomplete.Data.Request.URL(urlOptions.url, urlOptions);
 		}
-		
+
 	});
-	
+
 	Meio.Autocomplete.Data.Request.URL = new Class({
-		
+
 		Implements: [Options],
-		
+
 		options: {
 			queryVarName: 'q',
 			extraParams: null,
 			max: 20
 		},
-		
+
 		initialize: function(url, options){
 			this.setOptions(options);
 			this.rawUrl = url;
@@ -892,7 +897,7 @@ provides: [Meio.Autocomplete]
 			}
 			if (this.options.max) this.addParameter('limit=' + this.options.max);
 		},
-		
+
 		evaluate: function(text){
 			text = text || '';
 			var params = this.dynamicExtraParams, url = [];
@@ -902,7 +907,7 @@ provides: [Meio.Autocomplete]
 			}
 			return this.url + url.join('&');
 		},
-		
+
 		addParameter: function(param){
 			if (param.nodeType == 1 || typeOf(param.value) == 'function'){
 				this.dynamicExtraParams.push(param);
@@ -910,21 +915,21 @@ provides: [Meio.Autocomplete]
 				this.url += ((typeOf(param) == 'string') ? param : encodeURIComponent(param.name) + '=' + encodeURIComponent(param.value)) + '&';
 			}
 		},
-		
+
 		// TODO remove non dynamic parameters
 		removeParameter: function(param){
 			this.dynamicExtraParams.erase(param);
 		}
-		
+
 	});
-	
+
 	Meio.Autocomplete.Cache = new Class({
-		
+
 		initialize: function(maxLength){
 			this.refresh();
 			this.setMaxLength(maxLength);
 		},
-		
+
 		set: function(key, value){
 			if (!this.cache[key]){
 				if (this.getLength() >= this.maxLength){
@@ -937,32 +942,32 @@ provides: [Meio.Autocomplete]
 			}
 			return this;
 		},
-		
+
 		get: function(key){
 			return this.cache[key || ''] || null;
 		},
-		
+
 		has: function(key){
 			return !!this.get(key);
 		},
-		
+
 		getLength: function(){
 			return this.pos.length;
 		},
-		
+
 		refresh: function(){
 			this.cache = {};
 			this.pos = [];
 		},
-		
+
 		setMaxLength: function(maxLength){
 			this.maxLength = Math.max(maxLength, 1);
 		}
-		
+
 	});
-	
+
 	globalCache = new Meio.Autocomplete.Cache();
-	
+
 	global.Meio = Meio;
-	
+
 })(this, document.id || $);
