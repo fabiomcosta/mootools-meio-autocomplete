@@ -824,7 +824,8 @@ provides: [Meio.Autocomplete]
 			noCache: true,
 			formatResponse: function(jsonResponse){
 				return jsonResponse;
-			}
+			},
+			link: 'cancel'
 		},
 		
 		initialize: function(url, cache, element, options, urlOptions){
