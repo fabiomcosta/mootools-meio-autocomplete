@@ -626,6 +626,7 @@ provides: [Meio.Autocomplete]
 		
 		options: {
 			width: 'field', // you can pass any other value settable by set('width') to the list container
+			container: document.body,
 			classes: {
 				container: 'ma-container',
 				hover: 'ma-hover',
@@ -715,13 +716,13 @@ provides: [Meio.Autocomplete]
 			var node = new Element('div', {'class': this.options.classes.container});
 			if (node.bgiframe) node.bgiframe({top: 0, left: 0});
 			this.list = new Element('ul').inject(node);
-			$(document.body).grab(node);
+			$(this.options.container).grab(node);
 			return node;
 		},
 		
 		positionNextTo: function(fieldNode){
 			var width = this.options.width, listNode = this.node;
-			var elPosition = fieldNode.getCoordinates();
+			var elPosition = fieldNode.getCoordinates(this.options.container);
 			listNode.setStyle('width', width == 'field' ? fieldNode.getWidth().toInt() - listNode.getStyle('border-left-width').toInt() - listNode.getStyle('border-right-width').toInt() : width);
 			listNode.setPosition({x: elPosition.left, y: elPosition.bottom});
 		},
