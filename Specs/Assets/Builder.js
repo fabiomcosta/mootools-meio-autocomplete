@@ -26,11 +26,11 @@ var Builder = {
 			this.includeJs(path + files);
 		}
 	},
-	
+
 	includeJs: function(filePath){
 		document.writeln('<script type="text/javascript" src="' + filePath + '.js?' + new Date().getTime() + '"></script>');
 	},
-	
+
 	build: function(root, filesTree){
 		this.includeFiles(root, filesTree);
 	}
