@@ -72,5 +72,17 @@ if __name__ == '__main__':
     builder = Builder()
     builder.build('Meio.Autocomplete', (
         'BGIframe',
+        'Meio.Base',
+        'Meio.Widget',
+        'Meio.Element',
+        'Meio.Element.Field',
+        'Meio.Element.List',
         'Meio.Autocomplete',
+        'Meio.Autocomplete.Select',
+        'Meio.Autocomplete.Select.One',
+        'Meio.Autocomplete.Filter',
+        'Meio.Autocomplete.Data',
+        'Meio.Autocomplete.Data.Request',
+        'Meio.Autocomplete.Data.Request.URL',
+        'Meio.Autocomplete.Cache',
     ))

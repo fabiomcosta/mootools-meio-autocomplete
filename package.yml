@@ -5,7 +5,19 @@ description: "Meio.Autocomplete - A mootools plugin for enabling autocomplete of
 license: "MIT License"
 copyright: "&copy; 2010, Fábio M. Costa"
 sources:
+  - "Source/Meio.Base.js"
+  - "Source/Meio.Widget.js"
+  - "Source/Meio.Element.js"
+  - "Source/Meio.Element.Field.js"
+  - "Source/Meio.Element.List.js"
   - "Source/Meio.Autocomplete.js"
+  - "Source/Meio.Autocomplete.Select.js"
+  - "Source/Meio.Autocomplete.Select.One.js"
+  - "Source/Meio.Autocomplete.Filter.js"
+  - "Source/Meio.Autocomplete.Data.js"
+  - "Source/Meio.Autocomplete.Data.Request.js"
+  - "Source/Meio.Autocomplete.Data.Request.URL.js"
+  - "Source/Meio.Autocomplete.Cache.js"
 
 # Values for MooTools forge
 
