@@ -26,6 +26,7 @@ provides: [Meio.Element.List]
 
         options: {
             width: 'field', // you can pass any other value settable by set('width') to the list container
+            container: 'body',
             classes: {
                 container: 'ma-container',
                 hover: 'ma-hover',
@@ -115,7 +116,7 @@ provides: [Meio.Element.List]
             var node = new Element('div', {'class': this.options.classes.container});
             if (node.bgiframe) node.bgiframe({top: 0, left: 0});
             this.list = new Element('ul').inject(node);
-            $(document.body).grab(node);
+            $$(this.options.container)[0].grab(node);
             return node;
         },
 

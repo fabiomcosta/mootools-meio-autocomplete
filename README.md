@@ -1,5 +1,5 @@
 Meio.Autocomplete - Copyright (c) 2010 [Fábio Miranda Costa](http://meiocodigo.com/)
-========================================================================
+====================================================================================
 
 Meio.Autocomplete - a mootools plugin for creating autocomplete fields.
 
@@ -9,7 +9,7 @@ Note
 ----
 
 1.x and below are the versions made to be used with Mootools 1.2.x.
-2.x and greater are the versions made to be used with Mootools 1.3.x.
+2.x and greater are the versions made to be used with Mootools 1.3.x or greater.
 
 Introduction
 ------------
@@ -63,7 +63,8 @@ This example shows most of its this plugin's options. All the values are the def
             }
         },
         listOptions: {
-            width: 'field',    // you can pass any other value settable by set('width') to the list container
+            width: 'field',     // you can pass any other value settable by set('width') to the list container
+            container: 'body', // CSS selector representing the element that the list is going to be inserted
             classes: {
                 container: 'ma-container',
                 hover: 'ma-hover',        // applied to the focused options

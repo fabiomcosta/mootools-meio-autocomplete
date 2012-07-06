@@ -34,7 +34,7 @@ provides: [Meio.Element.Field]
         initialize: function(field, options) {
             this.keyPressControl = {};
             this.boundEvents = ['paste', 'focus', 'blur', 'click', 'keyup', 'keyrepeat'];
-            if (Browser.ie6) this.boundEvents.push('keypress'); // yeah super ugly, but what can be awesome with ie?
+            if (Browser.ie6) this.boundEvents.push('keypress'); // ie6 doesnt fire keydown on enter
             this.setOptions(options);
             this.parent(field);
 
@@ -67,7 +67,7 @@ provides: [Meio.Element.Field]
         // ie6 only, uglyness
         // this fix the form being submited on the press of the enter key
         keypress: function(e) {
-            if (e.key == 'enter') this.bound.keyrepeat(e);
+            if (e.key === 'enter') this.bound.keyrepeat(e);
         }
 
     });
