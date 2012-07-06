@@ -29,63 +29,68 @@ This example shows most of its this plugin's options. All the values are the def
         {"value": 1, "text": "Ajax"},
     ];
 
-    var autocomplete = new Meio.Autocomplete($('text_input_id'), data, {
-        delay: 200,             // The delay before rendering the list of options. Usefull when you are using the autocomplete with ajax
-        minChars: 0,            // The minimum number of characters the user has to input before the list of options to select is shown.
-        cacheLength: 20,        // The cache length. Cache will decrease the number of ajax calls. Each time you make a different query it will be cached locally.
-        cacheType: 'shared',    // 'shared' or 'own'. The cache instance can be shared with other Meio.Autocomplete instances or this instance can have its own cache.
-        selectOnTab: true,      // If the user press the 'tab' key, the current focused option will be selected.
-        maxVisibleItems: 10,    // Defines the height of the list. If its 10 the list will have its height adjusted to show 10 options, but you can scroll to the other of course.
+    var autocomplete = new Meio.Autocomplete(
+        $('text_input_id'),
+        data, // can be an array
+              // or an url (a JSON request will be created
+              // or a function that should provide the data (see examples inside the documentation)
+        {
+            delay: 200,             // The delay before rendering the list of options. Usefull when you are using the autocomplete with ajax
+            minChars: 0,            // The minimum number of characters the user has to input before the list of options to select is shown.
+            cacheLength: 20,        // The cache length. Cache will decrease the number of ajax calls. Each time you make a different query it will be cached locally.
+            cacheType: 'shared',    // 'shared' or 'own'. The cache instance can be shared with other Meio.Autocomplete instances or this instance can have its own cache.
+            selectOnTab: true,      // If the user press the 'tab' key, the current focused option will be selected.
+            maxVisibleItems: 10,    // Defines the height of the list. If its 10 the list will have its height adjusted to show 10 options, but you can scroll to the other of course.
 
-        onNoItemToList: function(elements){},    // this event is fired when theres no option to list
-        onSelect: function(elements, value){},   // this event is fired when you select an option
-        onDeselect: function(elements){},        // this event is fired when you deselect an option
+            onNoItemToList: function(elements){},    // this event is fired when theres no option to list
+            onSelect: function(elements, value){},   // this event is fired when you select an option
+            onDeselect: function(elements){},        // this event is fired when you deselect an option
 
-        filter: {
-            /*
-                its posible to pass the filters directly or by passing a type and optionaly a path.
+            filter: {
+                /*
+                    its posible to pass the filters directly or by passing a type and optionaly a path.
 
-                filter: function(text, data){}            // filters the data array
-                formatMatch: function(text, data, i){}    // this function should return the text value of the data element
-                formatItem: function(text, data){}        // the return of this function will be applied to the 'html' of the li's
+                    filter: function(text, data){}            // filters the data array
+                    formatMatch: function(text, data, i){}    // this function should return the text value of the data element
+                    formatItem: function(text, data){}        // the return of this function will be applied to the 'html' of the li's
 
-                or
+                    or
 
-                type: 'startswith' or 'contains' // can be any defined on the Meio.Autocomplete.Filter object
-                path: 'a.b.c' // path to the text value on each object thats contained on the data array
-            */
-        },
-
-        fieldOptions: {
-            classes: {
-                loading: 'ma-loading',    // applied to the field when theres an ajax call being made
-                selected: 'ma-selected'   // applied to the field when theres a selected value
-            }
-        },
-        listOptions: {
-            width: 'field',     // you can pass any other value settable by set('width') to the list container
-            container: 'body', // CSS selector representing the element that the list is going to be inserted
-            classes: {
-                container: 'ma-container',
-                hover: 'ma-hover',        // applied to the focused options
-                odd: 'ma-odd',            // applied to the odd li's
-                even: 'ma-even'           // applied to the even li's
-            }
-        },
-        requestOptions: {
-            formatResponse: function(jsonResponse){ // this function should return the array of autocomplete data from your jsonResponse
-                return jsonResponse;
+                    type: 'startswith' or 'contains' // can be any defined on the Meio.Autocomplete.Filter object
+                    path: 'a.b.c' // path to the text value on each object thats contained on the data array
+                */
             },
-            noCache: true,    // nocache is setted by default to avoid cache problem on ie
-            // you can pass any of the Request.JSON options here -> http://mootools.net/docs/core/Request/Request.JSON
+
+            fieldOptions: {
+                classes: {
+                    loading: 'ma-loading',    // applied to the field when theres an ajax call being made
+                    selected: 'ma-selected'   // applied to the field when theres a selected value
+                }
+            },
+            listOptions: {
+                width: 'field',     // you can pass any other value settable by set('width') to the list container
+                container: 'body', // CSS selector representing the element that the list is going to be inserted
+                classes: {
+                    container: 'ma-container',
+                    hover: 'ma-hover',        // applied to the focused options
+                    odd: 'ma-odd',            // applied to the odd li's
+                    even: 'ma-even'           // applied to the even li's
+                }
+            },
+            requestOptions: {
+                formatResponse: function(jsonResponse){ // this function should return the array of autocomplete data from your jsonResponse
+                    return jsonResponse;
+                },
+                noCache: true,    // nocache is setted by default to avoid cache problem on ie
+                // you can pass any of the Request.JSON options here -> http://mootools.net/docs/core/Request/Request.JSON
+            },
+            urlOptions: {
+                queryVarName: 'q',  // the name of the variable that's going to the server with the query value inputed by the user.
+                extraParams: null,  // you can pass an array of elements or objects with 'value' and 'name' keys. the value key can 'value' can be a function.
+                                    // ex: if you pass [{'name': 'x', 'value': function(){ return 2; }}] the url generated to get the list of options will have the 'x' parameter with value '2'.
+                max: 20             // the max number of options that should be listed. This will be sent to the ajax request as the 'limit' parameter.
+            }
         },
-        urlOptions: {
-            queryVarName: 'q',  // the name of the variable that's going to the server with the query value inputed by the user.
-            extraParams: null,  // you can pass an array of elements or objects with 'value' and 'name' keys. the value key can 'value' can be a function.
-                                // ex: if you pass [{'name': 'x', 'value': function(){ return 2; }}] the url generated to get the list of options will have the 'x' parameter with value '2'.
-            max: 20             // the max number of options that should be listed. This will be sent to the ajax request as the 'limit' parameter.
-        }
-    },
         listInstance   // The instance of the list. Passing a Meio.Autocomplete.List will allow you to have just one list DOM element, saving resources on a heavy page.
     );
 

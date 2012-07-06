@@ -22,6 +22,7 @@
                     'Meio.Autocomplete.Select.One',
                     'Meio.Autocomplete.Filter',
                     'Meio.Autocomplete.Data',
+                    'Meio.Autocomplete.Data.Source',
                     'Meio.Autocomplete.Data.Request',
                     'Meio.Autocomplete.Data.Request.URL',
                     'Meio.Autocomplete.Cache'
@@ -100,6 +101,8 @@
     <body>
         <form id="form" method="post" action="">
             <fieldset>
+                <input type="text" id="request-function" name="request-function" value="" />
+                <br />
                 <input type="text" id="some" name="some" value="" />
                 <input type="text" id="some1" name="some1" value="" />
                 <input type="text" id="some2" name="some2" value="" />
@@ -290,7 +293,7 @@
                 applyMaxHeight: function(){}
             });
             var containerList = new ContainerList();
-            var instance4 = new Meio.Autocomplete($('some5'), data2, {listInstance: containerList});
+            var instance4 = new Meio.Autocomplete($('some5'), data2, {}, containerList);
 
             // textarea
             var instance4 = new Meio.Autocomplete($('some8'), data2);
@@ -334,6 +337,9 @@
                 }
             }, meioList);
 
+            new Meio.Autocomplete($('request-function'), function(text, complete) {
+                complete(['some', 'other']);
+            });
 
             $('form').addEvent('submit', function(e){
                 alert(this.toQueryString());

@@ -82,6 +82,7 @@ if __name__ == '__main__':
         'Meio.Autocomplete.Select.One',
         'Meio.Autocomplete.Filter',
         'Meio.Autocomplete.Data',
+        'Meio.Autocomplete.Data.Source',
         'Meio.Autocomplete.Data.Request',
         'Meio.Autocomplete.Data.Request.URL',
         'Meio.Autocomplete.Cache',

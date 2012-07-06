@@ -284,13 +284,13 @@ provides: [Meio.Element.Field]
         initialize: function(field, options) {
             this.keyPressControl = {};
             this.boundEvents = ['paste', 'focus', 'blur', 'click', 'keyup', 'keyrepeat'];
-            if (Browser.ie6) this.boundEvents.push('keypress'); // yeah super ugly, but what can be awesome with ie?
+            if (Browser.ie6) this.boundEvents.push('keypress'); // ie6 doesnt fire keydown on enter
             this.setOptions(options);
             this.parent(field);
 
             $(global).addEvent('unload', function() {
                 // if autocomplete is off when you reload the page the input value gets erased
-                if (this.node) this.node.set('autocomplete', 'on'); 
+                if (this.node) $(this.node).set('autocomplete', 'on'); 
             }.bind(this));
         },
 
@@ -317,7 +317,7 @@ provides: [Meio.Element.Field]
         // ie6 only, uglyness
         // this fix the form being submited on the press of the enter key
         keypress: function(e) {
-            if (e.key == 'enter') this.bound.keyrepeat(e);
+            if (e.key === 'enter') this.bound.keyrepeat(e);
         }
 
     });
@@ -352,6 +352,7 @@ provides: [Meio.Element.List]
 
         options: {
             width: 'field', // you can pass any other value settable by set('width') to the list container
+            container: 'body',
             classes: {
                 container: 'ma-container',
                 hover: 'ma-hover',
@@ -441,7 +442,7 @@ provides: [Meio.Element.List]
             var node = new Element('div', {'class': this.options.classes.container});
             if (node.bgiframe) node.bgiframe({top: 0, left: 0});
             this.list = new Element('ul').inject(node);
-            $(document.body).grab(node);
+            $$(this.options.container)[0].grab(node);
             return node;
         },
 
@@ -742,6 +743,7 @@ provides: [Meio.Autocomplete]
         initData: function(data) {
             this.data = (typeOf(data) == 'string') ?
                 new Meio.Autocomplete.Data.Request(data, this.cache, this.elements.field, this.options.requestOptions, this.options.urlOptions) :
+                (typeOf(data) == 'function') ? new Meio.Autocomplete.Data.Source(data, this.cache, this.elements.field) :
                 new Meio.Autocomplete.Data(data, this.cache);
             this.data.addEvent('ready', this.dataReady.bind(this));
         },
@@ -1053,8 +1055,8 @@ Meio.Autocomplete.Data = new Class({
     Implements: [Options, Events],
 
     initialize: function(data, cache) {
-        this._cache = cache;
         this.data = data;
+        this._cache = cache;
         this.dataString = JSON.encode(this.data);
     },
 
@@ -1078,6 +1080,48 @@ Meio.Autocomplete.Data = new Class({
     refreshKey: function() {}
 
 });
+
+/*
+---
+
+description: A plugin for enabling autocomplete of a text input or textarea.
+
+authors:
+ - Fábio Miranda Costa
+
+requires:
+ - Meio.Autocomplete.Data
+
+license: MIT-style license
+
+provides: [Meio.Autocomplete.Data.Source]
+
+...
+*/
+
+Meio.Autocomplete.Data.Source = new Class({
+
+    Extends: Meio.Autocomplete.Data,
+
+    initialize: function(source, cache, element) {
+        this.source = source;
+        this._cache = cache;
+        this.element = element;
+    },
+
+    prepare: function(text) {
+        this.element.addClass('loading');
+        this.source(text, this.done.bind(this));
+    },
+
+    done: function(data) {
+        this.data = data;
+        this.element.removeClass('loading');
+        this.fireEvent('ready');
+    }
+
+});
+
 
 /*
 ---

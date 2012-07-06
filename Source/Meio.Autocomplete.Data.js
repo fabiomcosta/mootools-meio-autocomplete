@@ -22,8 +22,8 @@ Meio.Autocomplete.Data = new Class({
     Implements: [Options, Events],
 
     initialize: function(data, cache) {
-        this._cache = cache;
         this.data = data;
+        this._cache = cache;
         this.dataString = JSON.encode(this.data);
     },
 

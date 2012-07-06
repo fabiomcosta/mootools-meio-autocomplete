@@ -273,6 +273,7 @@ provides: [Meio.Autocomplete]
         initData: function(data) {
             this.data = (typeOf(data) == 'string') ?
                 new Meio.Autocomplete.Data.Request(data, this.cache, this.elements.field, this.options.requestOptions, this.options.urlOptions) :
+                (typeOf(data) == 'function') ? new Meio.Autocomplete.Data.Source(data, this.cache, this.elements.field) :
                 new Meio.Autocomplete.Data(data, this.cache);
             this.data.addEvent('ready', this.dataReady.bind(this));
         },
