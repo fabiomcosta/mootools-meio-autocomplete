@@ -57,7 +57,7 @@ class Builder:
         try:
             os.mkdir(self.build_folder)
         except OSError:
-            # ok the folder might be still there
+            # ok, the folder was there already
             pass
         self.add_files('javascript_files', files, root=root, extension=self.extension)
 
