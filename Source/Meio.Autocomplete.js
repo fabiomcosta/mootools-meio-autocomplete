@@ -231,7 +231,10 @@ provides: [Meio.Autocomplete]
             }
             var list = this.elements.list;
             if (list.list.get('html')) {
-                if (this.active) list.show();
+                if (this.active) {
+                    list.show();
+                    if (list.list.getChildren().length === 1) this.focusItem();
+                }
             } else {
                 this.fireEvent('noItemToList', [this.elements]);
                 list.hide();
