@@ -219,7 +219,7 @@ provides: [Meio.Autocomplete]
             inputedText = inputedText || this.elements.field.node.get('value');
             if (inputedText.length >= this.options.minChars) {
                 clearInterval(this.prepareTimer);
-                this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, this.inputedText);
+                this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, inputedText);
             }
         },
 
