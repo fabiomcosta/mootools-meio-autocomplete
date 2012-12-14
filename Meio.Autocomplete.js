@@ -521,6 +521,7 @@ provides: [Meio.Autocomplete]
             minChars: 0,
             cacheLength: 20,
             selectOnTab: true,
+            autoFocus: false,
             maxVisibleItems: 10,
             cacheType: 'shared', // 'shared' or 'own'
 
@@ -689,7 +690,7 @@ provides: [Meio.Autocomplete]
             inputedText = inputedText || this.elements.field.node.get('value');
             if (inputedText.length >= this.options.minChars) {
                 clearInterval(this.prepareTimer);
-                this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, this.inputedText);
+                this.prepareTimer = this.data.prepare.delay(this.options.delay, this.data, inputedText);
             }
         },
 
@@ -701,7 +702,10 @@ provides: [Meio.Autocomplete]
             }
             var list = this.elements.list;
             if (list.list.get('html')) {
+                this.fireEvent('itemToList', [this.elements]);
+                if (this.options.autoFocus && list.list.getChildren().length === 1) this.focusItem();
                 if (this.active) list.show();
+                else if(this.options.autoFocus && list.list.getChildren().length === 1) this.setInputValue();
             } else {
                 this.fireEvent('noItemToList', [this.elements]);
                 list.hide();
@@ -1014,7 +1018,7 @@ Meio.Autocomplete.Filter = {
 
     _getValueFromKeys: function(obj, keys) {
         var key, value = obj;
-        for (var i = 0; key = keys[i++];) value = value[key];
+        for (var i = 0; (key = keys[i++]);) value = value[key];
         return value;
     }
 
