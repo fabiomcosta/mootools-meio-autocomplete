@@ -40,8 +40,10 @@ This example shows most of its this plugin's options. All the values are the def
             cacheLength: 20,        // The cache length. Cache will decrease the number of ajax calls. Each time you make a different query it will be cached locally.
             cacheType: 'shared',    // 'shared' or 'own'. The cache instance can be shared with other Meio.Autocomplete instances or this instance can have its own cache.
             selectOnTab: true,      // If the user press the 'tab' key, the current focused option will be selected.
+            autoFocus: true,        // Auto focus if there is only one option. Also selects this one option if element is not active (user moved to other field while request running).
             maxVisibleItems: 10,    // Defines the height of the list. If its 10 the list will have its height adjusted to show 10 options, but you can scroll to the other of course.
 
+            onItemToList: function(elements){},      // this event is fired when theres an option to list
             onNoItemToList: function(elements){},    // this event is fired when theres no option to list
             onSelect: function(elements, value){},   // this event is fired when you select an option
             onDeselect: function(elements){},        // this event is fired when you deselect an option
