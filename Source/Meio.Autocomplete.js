@@ -51,7 +51,7 @@ provides: [Meio.Autocomplete]
             minChars: 0,
             cacheLength: 20,
             selectOnTab: true,
-            autoFocus: true,
+            autoFocus: false,
             maxVisibleItems: 10,
             cacheType: 'shared', // 'shared' or 'own'
 
