@@ -47,7 +47,7 @@ Meio.Autocomplete.Filter = {
 
     _getValueFromKeys: function(obj, keys) {
         var key, value = obj;
-        for (var i = 0; key = keys[i++];) value = value[key];
+        for (var i = 0; (key = keys[i++]);) value = value[key];
         return value;
     }
 

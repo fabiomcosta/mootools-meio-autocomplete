@@ -30,11 +30,11 @@
             });
         </script>
         <style type="text/css">
-            *{
-                margin:0;
-                padding:0;
+            * {
+                margin: 0;
+                padding: 0;
             }
-            .ma-container{
+            .ma-container {
                 color: #eee;
                 border: 5px solid #226622;
                 background-color: #228822;
@@ -43,14 +43,14 @@
                 overflow-y: auto;
                 overflow-x: hidden;
             }
-            .ma-container ul{
+            .ma-container ul {
                 margin: 0;
                 padding: 0;
                 list-style: none;
                 overflow: hidden;
                 width: 100%;
             }
-            .ma-container li{
+            .ma-container li {
                 padding: 2px 5px;
                 line-height: 16px;
                 cursor: pointer;
@@ -58,33 +58,33 @@
                 width: 100%;
                 overflow: hidden;
             }
-            .ma-container .ma-hover{
+            .ma-container .ma-hover {
                 background: #223322;
             }
-            .ma-container .ma-loading{
+            .ma-container .ma-loading {
                 background: yellow !important;
             }
-            .ma-even{
+            .ma-even {
                 background: #227722;
             }
-            .ma-container .ma-selected{
+            .ma-container .ma-selected {
                 background: green !important;
             }
-            .ma-selected{
+            .ma-selected {
                 background: green;
             }
 
-            #list_test{
+            #list_test {
                 width: 240px;
                 height: 220px;
                 overflow-x: hidden;
                 overflow-y: auto;
                 border: 1px solid green;
             }
-            #list_test ul{
+            #list_test ul {
                 list-style: none;
             }
-            #list_test li{
+            #list_test li {
                 float: left;
                 padding: 5px;
                 cursor: pointer;
@@ -92,7 +92,7 @@
                 height: 40px;
                 border: 1px solid red;
             }
-            #list_test li.ma-hover{
+            #list_test li.ma-hover {
                 background: #223322;
             }
         </style>
@@ -203,19 +203,21 @@
                 syncName: 'id',
                 valueField: $('some1'),
                 selectOnTab: false,
-                onNoItemToList: function(elements){
+                onNoItemToList: function(elements) {
                     elements.field.node.highlight('#ff0000');
                 },
                 filter: {
                     type: 'startswith',
                     path: 'text'
                 },
-                onSelect: function(elements, data){
+                onSelect: function(elements, data) {
+                    console.log('hell yeah');
+
                     [$('some4')].each(function(el){
                         el.set('value', data.text);
                     });
                 },
-                onDeselect: function(elements){
+                onDeselect: function(elements) {
                     [$('some4')].each(function(el){
                         el.set('value', '');
                     });
@@ -236,19 +238,19 @@
             /*var instance2 = new Meio.Autocomplete.Select($('some6'), data3, {
                 syncName: 'id',
                 valueField: $('some7'),
-                valueFilter: function(data){
+                valueFilter: function(data) {
                     return data.id;
                 },
-                onNoItemToList: function(elements){
+                onNoItemToList: function(elements) {
                     elements.field.node.highlight('#ff0000');
                 },
-                filter: function(text, data){
+                filter: function(text, data) {
                     return text ? data.text.test(new RegExp('^' + text.escapeRegExp())) : true; // 'startswith' filter
                 },
-                formatMatch: function(text, data, i){
+                formatMatch: function(text, data, i) {
                     return data.text;
                 },
-                formatItem: function(text, data){
+                formatItem: function(text, data) {
                     return text ? data.text.replace(new RegExp('(' + text.escapeRegExp() + ')', 'g'), '<strong>$1</strong>') : data.text;
                 },
                 urlOptions: {
@@ -259,14 +261,14 @@
             var instance2 = new Meio.Autocomplete.Select($('some6'), data4, {
                 syncName: true,
                 valueField: $('some7'),
-                valueFilter: function(data){
+                valueFilter: function(data) {
                     return data.value;
                 },
-                onNoItemToList: function(elements){
+                onNoItemToList: function(elements) {
                     elements.field.node.highlight('#ff0000');
                 },
                 filter: {
-                    filter: function(text, data){
+                    filter: function(text, data) {
                         return text ? data.text.test(new RegExp('^' + text.escapeRegExp(), 'i')) : true;
                     },
                     formatMatch: function(text, data, i){
@@ -289,8 +291,8 @@
                     this.list = $('ul_list_test');
                 },
                 hide: function(){ this.showing = false; },
-                positionNextTo: function(){},
-                applyMaxHeight: function(){}
+                positionNextTo: function() {},
+                applyMaxHeight: function() {}
             });
             var containerList = new ContainerList();
             var instance4 = new Meio.Autocomplete($('some5'), data2, {}, containerList);
@@ -317,7 +319,7 @@
 
             new Meio.Autocomplete.Select('field1', data5, {
                 valueField: $('value-field1'),
-                valueFilter: function(data){
+                valueFilter: function(data) {
                     return data.identifier;
                 },
                 filter: {
@@ -328,7 +330,7 @@
 
             new Meio.Autocomplete.Select('field2', data6, {
                 valueField: $('value-field2'),
-                valueFilter: function(data){
+                valueFilter: function(data) {
                     return data.identifier;
                 },
                 filter: {
@@ -341,7 +343,7 @@
                 complete(['some', 'other']);
             });
 
-            $('form').addEvent('submit', function(e){
+            $('form').addEvent('submit', function(e) {
                 alert(this.toQueryString());
                 e.preventDefault();
             });
