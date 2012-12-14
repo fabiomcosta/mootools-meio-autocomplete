@@ -233,9 +233,9 @@ provides: [Meio.Autocomplete]
             var list = this.elements.list;
             if (list.list.get('html')) {
                 this.fireEvent('itemToList', [this.elements]);
-             			if (this.options.autoFocus && list.list.getChildren().length === 1) this.focusItem();
-            				if (this.active) list.show();
-            				else if(this.options.autoFocus && list.list.getChildren().length === 1) this.setInputValue();
+                if (this.options.autoFocus && list.list.getChildren().length === 1) this.focusItem();
+                if (this.active) list.show();
+                else if(this.options.autoFocus && list.list.getChildren().length === 1) this.setInputValue();
             } else {
                 this.fireEvent('noItemToList', [this.elements]);
                 list.hide();
