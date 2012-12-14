@@ -43,6 +43,7 @@ This example shows most of its this plugin's options. All the values are the def
             autoFocus: true,        // Auto focus if there is only one option. Also selects this one option if element is not active (user moved to other field while request running).
             maxVisibleItems: 10,    // Defines the height of the list. If its 10 the list will have its height adjusted to show 10 options, but you can scroll to the other of course.
 
+            onItemToList: function(elements){},      // this event is fired when theres an option to list
             onNoItemToList: function(elements){},    // this event is fired when theres no option to list
             onSelect: function(elements, value){},   // this event is fired when you select an option
             onDeselect: function(elements){},        // this event is fired when you deselect an option
