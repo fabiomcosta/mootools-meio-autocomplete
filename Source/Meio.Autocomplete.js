@@ -52,6 +52,7 @@ provides: [Meio.Autocomplete]
             cacheLength: 20,
             selectOnTab: true,
             autoFocus: false,
+            autoSelect: false,
             maxVisibleItems: 10,
             cacheType: 'shared', // 'shared' or 'own'
 
@@ -151,14 +152,14 @@ provides: [Meio.Autocomplete]
                     }
                 },
                 'blur': function(e) {
-                    this.active = 0;
                     var list = this.elements.list;
                     if (list.shouldNotBlur) {
                         this.elements.field.node.setCaretPosition('end');
                         list.shouldNotBlur = false;
-                        if (list.focusedItem) list.hide();
                     } else {
-                        list.hide();
+                        this.active = 0;
+                        if (this.options.autoSelect && list.showing) this.setInputValue();
+                        else list.hide();
                     }
                 },
                 'paste': function() {
@@ -235,7 +236,7 @@ provides: [Meio.Autocomplete]
                 this.fireEvent('itemToList', [this.elements]);
                 if (this.options.autoFocus && list.list.getChildren().length === 1) this.focusItem();
                 if (this.active) list.show();
-                else if(this.options.autoFocus && list.list.getChildren().length === 1) this.setInputValue();
+                else if(this.options.autoSelect && list.list.getChildren().length === 1) this.setInputValue();
             } else {
                 this.fireEvent('noItemToList', [this.elements]);
                 list.hide();
