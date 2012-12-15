@@ -62,7 +62,6 @@ provides: [Meio.Element.List]
 
         mousedown: function(e) {
             e.preventDefault();
-            this.shouldNotBlur = true;
             if (!(this.focusedItem = this.getItemFromEvent(e))) {
                 e.dontHide = true;
                 return true;
