@@ -236,7 +236,7 @@ provides: [Meio.Autocomplete]
                 this.fireEvent('itemToList', [this.elements]);
                 if (this.options.autoFocus && list.list.getChildren().length === 1) this.focusItem();
                 if (this.active) list.show();
-                else if(this.options.autoFocus && list.list.getChildren().length === 1) this.setInputValue();
+                else if(this.options.autoSelect && list.list.getChildren().length === 1) this.setInputValue();
             } else {
                 this.fireEvent('noItemToList', [this.elements]);
                 list.hide();
