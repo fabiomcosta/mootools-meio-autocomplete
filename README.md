@@ -49,6 +49,30 @@ This example shows most of its this plugin's options. All the values are the def
     );
 
 
+Demos
+-----
+
+### Meio.Autocomplete.Select with a local Array
+
+http://jsfiddle.net/fabiomcosta/eZpuL/1229/embedded/result,js,html,css/
+
+### Meio.Autocomplete.Select with a URL (It will make Ajax requests to the passed URL)
+
+http://jsfiddle.net/fabiomcosta/rrBnB/31/embedded/result,js,html,css
+
+### Meio.Autocomplete.Select with a local Array and using [accent folding](http://www.alistapart.com/articles/accent-folding-for-auto-complete/)
+
+http://jsfiddle.net/fabiomcosta/FP9FA/10/embedded/result,js,html,css/
+
+### Meio.Autocomplete.Select.One
+
+http://jsfiddle.net/fabiomcosta/EC5D2/13/embedded/result,js,html,css/
+
+### Meio.Autocomplete.Select with the same Meio.Element.List instance
+
+http://jsfiddle.net/fabiomcosta/wz84W/7/embedded/result,js,html,css/
+
+
 API Docs
 --------
 
@@ -157,30 +181,6 @@ Meio.Autocomplete
 * **syncName** - (mixed: defaults to 'id') Defines the parameter that will contain the unique identifier of the option that is selected at that moment (ondomready). If falsy it wont synchronize the value.
 * **valueField** - (mixed: defaults to null) A string ID of the Element or an Element that will receive the unique identifier of the selected option. This is the field that will be used on your server-side so be sure it has the correct name attribute.
 * **valueFilter** - (function: defaults to function(data){ return data.id; }) This function should return the unique identifier of the 'data' object.
-
-
-Demos
------
-
-### Meio.Autocomplete.Select with a local Array
-
-http://jsfiddle.net/fabiomcosta/eZpuL/1229/embedded/result,js,html,css/
-
-### Meio.Autocomplete.Select with a URL (It will make Ajax requests to the passed URL)
-
-http://jsfiddle.net/fabiomcosta/rrBnB/31/embedded/result,js,html,css
-
-### Meio.Autocomplete.Select with a local Array and using [accent folding](http://www.alistapart.com/articles/accent-folding-for-auto-complete/)
-
-http://jsfiddle.net/fabiomcosta/FP9FA/10/embedded/result,js,html,css/
-
-### Meio.Autocomplete.Select.One
-
-http://jsfiddle.net/fabiomcosta/EC5D2/13/embedded/result,js,html,css/
-
-### Meio.Autocomplete.Select with the same Meio.Element.List instance
-
-http://jsfiddle.net/fabiomcosta/wz84W/7/embedded/result,js,html,css/
 
 
 Credits
