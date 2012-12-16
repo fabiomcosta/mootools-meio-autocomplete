@@ -185,7 +185,7 @@ provides: [Meio.Autocomplete]
                 data = data.get();
                 var itemsHtml = [], itemsData = [], classes = list.options.classes, text = this.inputedText;
                 var filter = this.filters.filter, formatMatch = this.filters.formatMatch, formatItem = this.filters.formatItem;
-                for (var row, i = 0, n = 0; row = data[i++];) if (filter.call(this, text, row)) {
+                for (var row, i = 0, n = 0; (row = data[i++]);) if (filter.call(this, text, row)) {
                     itemsHtml.push(
                         '<li title="', encode(formatMatch.call(this, text, row)),
                         '" data-index="', n,
@@ -287,8 +287,10 @@ provides: [Meio.Autocomplete]
             if (this.options.cacheType == 'shared') {
                 this.cache = Meio.Autocomplete.Cache.instance;
                 this.cache.setMaxLength(cacheLength);
-            } else { // 'own'
+            } else if (this.options.cacheType == 'own') { // 'own'
                 this.cache = new Meio.Autocomplete.Cache(cacheLength);
+            } else { // deactivates cache
+                this.cache = new Meio.Autocomplete.FakeCache();
             }
         },
 

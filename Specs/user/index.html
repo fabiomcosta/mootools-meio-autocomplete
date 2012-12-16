@@ -149,7 +149,6 @@
                 <br />
                 <br />
                 <br />
-
                 <form>
                   <div>
                     New Jersey:
@@ -168,7 +167,6 @@
 
             <a title="Test refreshAll" href="#" onclick="instance.refreshAll(); return false;">Test refreshAll</a>
         </form>
-
 
         <script>
 
@@ -203,6 +201,7 @@
                 syncName: 'id',
                 valueField: $('some1'),
                 selectOnTab: false,
+                cacheType: false,
                 onNoItemToList: function(elements) {
                     elements.field.node.highlight('#ff0000');
                 },
@@ -211,13 +210,13 @@
                     path: 'text'
                 },
                 onSelect: function(elements, data) {
-                    console.log('hell yeah');
-
+                    console.log('onSelect');
                     [$('some4')].each(function(el){
                         el.set('value', data.text);
                     });
                 },
                 onDeselect: function(elements) {
+                    console.log('onDeselect');
                     [$('some4')].each(function(el){
                         el.set('value', '');
                     });
@@ -227,7 +226,7 @@
                         {
                             name: $('some2').get('name'),
                             value: function() {
-                                return $('some2').get('value')
+                                return $('some2').get('value');
                             }
                         },
                         $('some3')

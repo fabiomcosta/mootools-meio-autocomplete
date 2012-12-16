@@ -21,7 +21,7 @@ provides: [Meio.Autocomplete.Cache]
 
     global.Meio.Autocomplete = global.Meio.Autocomplete || {};
 
-    global.Meio.Autocomplete.Cache = new Class({
+    var Cache = global.Meio.Autocomplete.Cache = new Class({
 
         initialize: function(maxLength) {
             this.refresh();
@@ -62,6 +62,18 @@ provides: [Meio.Autocomplete.Cache]
             this.maxLength = Math.max(maxLength, 1);
         }
 
+    });
+
+    global.Meio.Autocomplete.FakeCache = new Class({
+        Extends: Cache,
+
+        get: function() {
+            return null;
+        },
+
+        set: function() {
+            return this;
+        }
     });
 
     global.Meio.Autocomplete.Cache.instance = new Meio.Autocomplete.Cache();

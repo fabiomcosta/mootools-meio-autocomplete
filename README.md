@@ -96,18 +96,19 @@ Options, Events.
 
 * **delay** - (number: defaults to 200) The delay before rendering the list of options. Usefull when you are using the autocomplete with ajax
 * **minChars** - (number: defaults to 0) The minimum number of characters the user has to input before the list of options to select is shown.
+* **cacheType** - (mixed: defaults to 'shared') Can be 'shared' or 'own'.
+ * **'shared'** - The cache instance will be shared with other Meio.Autocomplete instances in the same page.
+ * **'own'** - The Meio.Autocomplete instance will have its own cache.
+ * **false** - Disables cache.
 * **cacheLength** - (number: defaults to 20) The cache length. Cache will decrease the number of ajax calls. Each time you make a different query it will be cached locally.
-* **cacheType** - (string: defaults to 'shared') Can be 'shared' or 'own'.
- * **shared** - The cache instance will be shared with other Meio.Autocomplete instances in the same page.
- * **own** - The Meio.Autocomplete instance will have its own cache.
 * **selectOnTab** - (boolean: defaults to true) If the user press the 'tab' key, the current focused option will be selected.
-* **autoFocus** - (boolean: defaults to true) Auto focus if there is only one option. Also selects this one option if element is not active (user moved to other field while request running).
+* **autoFocus** - (boolean: defaults to false) Auto focus first option if there is only one option. Also selects this one option if element is not active (user moved to other field while request running).
 * **maxVisibleItems** - (number: defaults to 10) Defines the height of the list. If its 10, for example, the list will have its height adjusted to show 10 options, but you can still scroll to the others.
 * **filter** - (object) The filter options. Its posible to pass the filter functions directly or by passing a type and optionaly a path.
  * **type** - (string: defaults to 'contains') If 'contains' is used, the items that contains the inputted text will be listed. If 'startswith' is used, only the items that starts with the inputted text will be listed. You can still define your own filter using the Meio.Autocomplete.Filter.define method, see the code to understand how it works.
  * **path** - (string: default to '') Should define the path to the text key into the objects that are in the data array. Ex: 'a.b.c' will get the 'c' key from the object {a: {b: {c: 'some-text'}}}.
  * or
- * **filter** - (function(text, data))	Filters the data array. It should return true if the 'data' should be listed while the passed 'text' is inputted in the field.
+ * **filter** - (function(text, data)) Filters the data array. It should return true if the 'data' should be listed while the passed 'text' is inputted in the field.
  * **formatMatch** - (function(text, data, i)) This function should return the text that will be matched with the current inputted text into the field.
  * **formatItem** - (function(text, data)) The return of this function will be applied to the 'html' of the li's into the list.
 * **fieldOptions** - (object) The options that are gonna be applied to the field element.
@@ -194,6 +195,13 @@ Inspiration and some ideas came from:
 
 Changelog
 ---------
+
+##### 2.0.1
+
+* Moved full Documentation to Github.
+* NEW: **cacheType** option now can be false, which completely disables cache.
+* NEW: **autoFocus** option (boolean: defaults to true) Auto focus first option if there is only one.
+Also selects this one option if element is not active (user moved to other field while request running).
 
 ##### 2.0
 * This is basically the same as 1.0 but with full support for Mootools 1.3 and greater.
