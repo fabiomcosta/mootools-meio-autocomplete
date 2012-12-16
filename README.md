@@ -54,23 +54,23 @@ Demos
 
 ### Meio.Autocomplete.Select with a local Array
 
-http://jsfiddle.net/fabiomcosta/eZpuL/1229/embedded/result,js,html,css/
+http://jsfiddle.net/fabiomcosta/eZpuL/1229/
 
 ### Meio.Autocomplete.Select with a URL (It will make Ajax requests to the passed URL)
 
-http://jsfiddle.net/fabiomcosta/rrBnB/31/embedded/result,js,html,css
+http://jsfiddle.net/fabiomcosta/rrBnB/31/
 
 ### Meio.Autocomplete.Select with a local Array and using [accent folding](http://www.alistapart.com/articles/accent-folding-for-auto-complete/)
 
-http://jsfiddle.net/fabiomcosta/FP9FA/10/embedded/result,js,html,css/
+http://jsfiddle.net/fabiomcosta/FP9FA/10/
 
 ### Meio.Autocomplete.Select.One
 
-http://jsfiddle.net/fabiomcosta/EC5D2/13/embedded/result,js,html,css/
+http://jsfiddle.net/fabiomcosta/EC5D2/13/
 
 ### Meio.Autocomplete.Select with the same Meio.Element.List instance
 
-http://jsfiddle.net/fabiomcosta/wz84W/7/embedded/result,js,html,css/
+http://jsfiddle.net/fabiomcosta/wz84W/7/
 
 
 API Docs
