@@ -22,7 +22,7 @@ sources:
 # Values for MooTools forge
 
 author: fabiomiranda
-current: 2.0
+current: 2.0.1
 category: Forms
 tags: [input, autocomplete]
 docs: http://meiocodigo.com/projects/meio-autocomplete/
