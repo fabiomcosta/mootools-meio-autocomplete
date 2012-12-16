@@ -11,7 +11,7 @@ requires:
 
 license: MIT-style license
 
-provides: [Meio.Autocomplete.Cache]
+provides: [Meio.Autocomplete.Cache, Meio.Autocomplete.FakeCache]
 
 ...
 */
