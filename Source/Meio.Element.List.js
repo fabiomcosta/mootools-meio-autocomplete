@@ -126,6 +126,11 @@ provides: [Meio.Element.List]
             listNode.setStyle('width', width == 'field' ? fieldNode.getWidth().toInt() - listNode.getStyle('border-left-width').toInt() - listNode.getStyle('border-right-width').toInt() : width);
             listNode.setPosition({x: elPosition.left, y: elPosition.bottom});
         },
+        
+        destroy: function() {
+ 		         this.detach();
+			         this.node.destroy(); // @ToDo to be save, we should not destroy it when list is shared
+		      },
 
         show: function() {
             this.node.scrollTop = 0;
