@@ -139,12 +139,7 @@ provides: [Meio.Autocomplete]
                         field.keyPressControl[e.key] = false;
                     }
                 },
-                'focus': function() {
-                    this.active = 1;
-                    var list = this.elements.list;
-                    list.focusedItem = null;
-                    list.positionNextTo(this.elements.field.node);
-                },
+                'focus': this.onFocus,
                 'click': function() {
                     if (++this.active > 2 && !this.elements.list.showing) {
                         this.forceSetupList();
@@ -165,6 +160,7 @@ provides: [Meio.Autocomplete]
                     return this.setupList();
                 }
             });
+            if (this.elements.field.node.getProperty('autofocus')) this.onFocus();
         },
 
         addListEvents: function() {
@@ -251,6 +247,13 @@ provides: [Meio.Autocomplete]
                 this.fireEvent('select', [this.elements, this.itemsData[index], text, index]);
             }
             list.hide();
+        },
+        
+        onFocus: function() {
+            this.active = 1;
+            var list = this.elements.list;
+            list.focusedItem = null;
+            list.positionNextTo(this.elements.field.node);
         },
 
         focusItem: function(direction) {
