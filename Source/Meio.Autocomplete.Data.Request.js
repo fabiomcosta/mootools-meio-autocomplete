@@ -43,6 +43,8 @@ Meio.Autocomplete.Data.Request = new Class({
         if (this._cache.has(this.cachedKey)) {
             this.fireEvent('ready');
         } else {
+     		if (this.request.isRunning())
+				this.request.cancel();
             this.request.send({url: this.cachedKey});
         }
     },
